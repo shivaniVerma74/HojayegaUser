@@ -174,7 +174,7 @@ class _HomeBodyState extends State<HomeScreen> {
                                   color: Colors.grey,
                                   blurRadius: 2,
                                   offset: Offset(0, 1),
-                              )
+                              ),
                             ],
                         ),
                         child: const TextField(
@@ -192,7 +192,9 @@ class _HomeBodyState extends State<HomeScreen> {
                             hintText: "Product Store etc",
                             border: InputBorder.none,
                           ),
-                        ))),
+                        ),
+                    ),
+                ),
                 const SizedBox(
                   width: 10,
                 ),

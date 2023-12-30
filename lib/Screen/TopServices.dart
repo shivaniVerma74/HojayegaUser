@@ -1,307 +1,279 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
-import 'package:ho_jayega_user_main/Helper/appBar.dart';
-import 'package:ho_jayega_user_main/Helper/color.dart';
-
-import 'ServiceDetails.dart';
 
 class TopService extends StatefulWidget {
   const TopService({Key? key}) : super(key: key);
 
   @override
-  State<TopService> createState() => _TopServiceState();
+  State<TopService> createState() => _Project1State();
 }
 
-class _TopServiceState extends State<TopService> {
-  List<String> categoryList = [
+class _Project1State extends State<TopService> {
+  var TextList1 = [
     'Men Salon',
     'Beauty Parlour',
     'Unisex Salon',
-    'Home Services',
-    'Spa',
-    'Pet Salo & Spa'
-  ];
-  List<String> selectList = [
-    'Salon',
-    'Education',
-    'Pet industry',
-    'Dr',
-    'Home Services'
+    'Men Salon',
+    'Unisex Salon',
+    'Men Salon',
   ];
 
-  List<String> topServicesList = ['Vedika P&D Service', 'Rb Saloon'];
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: colors.appbarColor,
-        appBar: PreferredSize(
-          preferredSize: Size.fromHeight(80),
-          child: commonAppBar(
-            context,
-            text: "Top Services",
+    Size size = MediaQuery.of(context).size;
+    return Scaffold(
+      drawer: Drawer(child: Text('menu')),
+      backgroundColor: Color(0xFFE2EBFE),
+      appBar: AppBar(
+        centerTitle: true,
+        actions: const [
+          Padding(
+            padding: EdgeInsets.only(right: 30, bottom: 20),
+            child: CircleAvatar(
+              backgroundImage: AssetImage(
+                  'assets/images/girl.png'), // Replace with your image path
+            ),
           ),
+        ],
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+              bottomLeft: Radius.circular(25),
+              bottomRight: Radius.circular(25)),
         ),
-        body: Container(
-          padding: const EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 10),
-          child: ListView(
+        title: const Padding(
+          padding: EdgeInsets.only(bottom: 30),
+          child: Text('Top Services '),
+        ),
+        backgroundColor: const Color(0xFF112c48),
+      ),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.only(top: 10),
+          child: Column(
             children: [
               Row(
-                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  Expanded(
-                      child: Container(
-                          height: 40,
-                          decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(4),
-                              boxShadow: const [
-                                BoxShadow(
-                                    color: Colors.grey,
-                                    blurRadius: 2,
-                                    offset: Offset(0, 1))
-                              ]),
-                          child: const TextField(
-                            maxLines: 1,
-                            textAlign: TextAlign.left,
-                            decoration: InputDecoration(
-                              contentPadding: EdgeInsets.symmetric(vertical: 5),
-                              prefixIcon: Icon(
-                                Icons.search,
-                                color: Colors.green,
-                              ),
-                              hintStyle: TextStyle(
-                                fontSize: 14,
-                              ),
-                              hintText: "Search Services",
-                              border: InputBorder.none,
-                            ),
-                          ))),
-                  const SizedBox(
-                    width: 10,
+                  Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      color: const Color(0xFFFFFFFF),
+                    ),
+                    child: Center(
+                      child: Text(
+                        'Search Services....',
+                        style:
+                            TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
+                      ),
+                    ),
+                    height: 35,
+                    width: 200,
                   ),
                   Container(
-                      padding: const EdgeInsets.all(4.0),
-                      height: 40,
-                      decoration: BoxDecoration(
-                          color: Colors.green,
-                          borderRadius: BorderRadius.circular(4),
-                          boxShadow: const [
-                            BoxShadow(
-                                color: Colors.grey,
-                                blurRadius: 2,
-                                offset: Offset(0, 1))
-                          ]),
-                      child: const Center(
-                          child: Text(
-                        "Search By km.",
-                        style: TextStyle(color: Colors.white, fontSize: 12),
-                      )))
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      color: Color(0xFF2BA530),
+                    ),
+                    child: Center(
+                      child: Text(
+                        'Search by Km.',
+                        style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                        ),
+                      ),
+                    ),
+                    height: 40,
+                    width: 80,
+                  ),
                 ],
               ),
               const SizedBox(
-                height: 20,
-              ),
-              Container(
-                padding: EdgeInsets.symmetric(vertical: 5, horizontal: 5),
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    border: Border.all(color: colors.primary)),
-                child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: selectList
-                        .map((e) => Row(
-                              children: [
-                                const Icon(
-                                  Icons.radio_button_off_outlined,
-                                  size: 12,
-                                ),
-                                Text(
-                                  e, style: TextStyle(
-                                      fontSize: 12, color: colors.primary),
-                                )
-                              ],
-                            ),
-                    ).toList()),
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              Text(
-                'Select category\'s',
-                style: TextStyle(
-                    fontSize: 18,
-                    color: Colors.black.withOpacity(0.8),
-                    fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(
                 height: 10,
               ),
-              Container(
-                child: GridView.builder(
-                  physics: NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  primary: false,
-                  padding: const EdgeInsets.all(0),
-                  itemCount: categoryList.length,
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 3,
-                    crossAxisSpacing: 10,
-                    childAspectRatio: 0.8,
-                    mainAxisSpacing: 10.0,
+              Padding(
+                padding: const EdgeInsets.only(left: 27, right: 27),
+                child: Container(
+                  height: 28,
+                  decoration: BoxDecoration(
+                    border: Border.all(),
+                    borderRadius: BorderRadius.circular(6),
+                    color: Color(0xFFFFFFFF),
                   ),
-                  itemBuilder: (context, index) {
-                    return Column(
-                      children: [
-                        Container(
-                          height: 120,
-                          decoration: BoxDecoration(
-                              color: Colors.amber,
-                              image: const DecorationImage(
-                                  image: AssetImage(
-                                      'assets/images/SPLASH SCREEN (1).png'),
-                                  fit: BoxFit.fill),
-                              borderRadius: BorderRadius.circular(10)),
-                        ),
-                        Center(
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 5.0),
-                            child: Text(
-                              categoryList[index],
-                              style: TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.black.withOpacity(0.8),
-                                  fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                        ),
-                      ],
-                    );
-                  },
+                  child: Row(
+                    children: const [
+                      Icon(Icons.circle_rounded, size: 15),
+                      Text(
+                        "salon",
+                        style: TextStyle(fontSize: 10),
+                      ),
+                      SizedBox(
+                        width: 8,
+                      ),
+                      Icon(Icons.circle_rounded, size: 15),
+                      Text(
+                        "Education",
+                        style: TextStyle(fontSize: 10),
+                      ),
+                      SizedBox(
+                        width: 8,
+                      ),
+                      Icon(Icons.circle_rounded, size: 15),
+                      Text(
+                        "Pet Industry",
+                        style: TextStyle(fontSize: 10),
+                      ),
+                      SizedBox(
+                        width: 8,
+                      ),
+                      Icon(Icons.circle_rounded, size: 15),
+                      Text(
+                        "Dr",
+                        style: TextStyle(fontSize: 12),
+                      ),
+                      SizedBox(
+                        width: 8,
+                      ),
+                      Icon(Icons.circle_rounded, size: 15),
+                      Text(
+                        "Home Services",
+                        style: TextStyle(fontSize: 10),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              Padding(
+                padding: const EdgeInsets.only(
+                  left: 20,
+                  right: 20,
+                  top: 20,
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: const [
+                    Text("Select Category's",
+                        style:
+                            TextStyle(fontWeight: FontWeight.w700, fontSize: 20)),
+                  ],
                 ),
               ),
               const SizedBox(
-                height: 20,
-              ),
-              Text(
-                'Top Services',
-                style: TextStyle(
-                    fontSize: 18,
-                    color: Colors.black.withOpacity(0.8),
-                    fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(
                 height: 10,
               ),
               Container(
-                child: GridView.builder(
-                  physics: NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  primary: false,
-                  padding: const EdgeInsets.all(0),
-                  itemCount: topServicesList.length,
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    crossAxisSpacing: 10,
-                    childAspectRatio: 0.8,
-                    mainAxisSpacing: 10.0,
+                height: size.height * 0.33,
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 20, right: 20),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Expanded(
+                        child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: 6,
+                          itemExtent: 125,
+                          itemBuilder: (context, index) {
+                            return Column(
+                              children: [
+                                Container(
+                                  width: double.infinity,
+                                  child: Image.asset('assets/images/girl.png'),
+                                ),
+                                Text(TextList1[index],
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.w700,
+                                    ),
+                                ),
+                              ],
+                            );
+                          },
+                        ),
+                      ),
+                      Container(
+                        height: size.height * 0.18,
+                        child: Expanded(
+                          child: ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            itemCount: 6,
+                            itemExtent: 125,
+                            itemBuilder: (context, index) {
+                              return Column(
+                                children: [
+                                  Container(
+                                    // height: ,
+                                    width: double.infinity,
+                                    child: Image.asset('assets/images/girl.png'),
+                                  ),
+                                  Text(TextList1[index],
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.w700,
+                                      ),
+                                  ),
+                                ],
+                              );
+                            },
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 20, right: 20, bottom: 10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: const [
+                    Text("Top Services",
+                        style:
+                            TextStyle(fontWeight: FontWeight.w700, fontSize: 20)),
+                  ],
+                ),
+              ),
+              Container(
+                margin: EdgeInsets.only(left: 20, right: 20),
+                height: 260,
+                width: double.infinity,
+                child: GridView.builder(
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      crossAxisSpacing: 10,
+                      mainAxisSpacing: 10,
+                      mainAxisExtent: 250),
+                  itemCount: 2,
                   itemBuilder: (context, index) {
-                    return InkWell(
-                      onTap: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => ServiceDetails()));
-                      },
-                      child: Container(
-                        decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(10)),
+                    return Container(
+                        decoration: const BoxDecoration(
+                            borderRadius: BorderRadius.only(
+                                topRight: Radius.circular(12),
+                                topLeft: Radius.circular(12)),
+                            color: Colors.white),
                         child: Column(
                           children: [
-                            Expanded(
-                              flex: 3,
-                              child: Container(
-                                // height: 120,
-                                decoration: BoxDecoration(
-                                    image: const DecorationImage(
-                                        image: AssetImage(
-                                            'assets/images/SPLASH SCREEN (1).png'),
-                                        fit: BoxFit.fill),
-                                    borderRadius: BorderRadius.circular(10)),
-                              ),
+                            Image.asset('assets/images/girl.png', height: 180),
+                            const Text(
+                              'RB saloon',
+                              style: TextStyle(fontSize: 13),
                             ),
-                            Expanded(
-                              flex: 1,
-                              child: Container(
-                                padding: EdgeInsets.symmetric(vertical: 5),
-                                width: MediaQuery.of(context).size.width * 0.4,
-                                child: Column(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      topServicesList[index],
-                                      style: TextStyle(
-                                          fontSize: 14,
-                                          color: Colors.black.withOpacity(0.8),
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    Row(
-                                      children: const [
-                                        Icon(
-                                          Icons.star,
-                                          color: Colors.orange,
-                                          size: 14,
-                                        ),
-                                        Icon(
-                                          Icons.star,
-                                          color: Colors.orange,
-                                          size: 14,
-                                        ),
-                                        Icon(
-                                          Icons.star,
-                                          color: Colors.orange,
-                                          size: 14,
-                                        ),
-                                        Icon(
-                                          Icons.star,
-                                          color: Colors.orange,
-                                          size: 14,
-                                        ),
-                                        Icon(
-                                          Icons.star,
-                                          color: Colors.orange,
-                                          size: 14,
-                                        )
-                                      ],
-                                    ),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        const Text(
-                                          '2KM',
-                                          style: TextStyle(fontSize: 14),
-                                        ),
-                                        Text(
-                                          index == 0 ? 'Open' : 'Close',
-                                          style: TextStyle(
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.bold,
-                                              color: index == 0
-                                                  ? Colors.green
-                                                  : Colors.red),
-                                        )
-                                      ],
-                                    )
-                                  ],
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: const [
+                                Text(
+                                  '2KM',
+                                  style: TextStyle(fontSize: 13),
                                 ),
-                              ),
+                                Text(
+                                  'open',
+                                  style: TextStyle(fontSize: 13),
+                                ),
+                              ],
                             ),
                           ],
                         ),
-                      ),
                     );
                   },
                 ),

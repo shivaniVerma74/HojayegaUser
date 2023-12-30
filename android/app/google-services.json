@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "402648619677",
+    "project_id": "hojayegadriver",
+    "storage_bucket": "hojayegadriver.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:402648619677:android:5bd1272f6b513183535274",
+        "android_client_info": {
+          "package_name": "com.hojayega.driver"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCryRGjZje0TXvAilndLVUNiF5dbSeQK8c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:402648619677:android:959a23b41680468c535274",
+        "android_client_info": {
+          "package_name": "com.hojayega.user"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCryRGjZje0TXvAilndLVUNiF5dbSeQK8c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

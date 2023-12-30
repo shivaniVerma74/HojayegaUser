@@ -41,6 +41,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
     }
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -68,7 +69,9 @@ class _BottomNavBarState extends State<BottomNavBar> {
                                   ? "My Bookings"
                                   : selectedIndex == 4
                                       ? "Pick & Drop"
-                                      : "My Orders"))),
+                                      : "My Orders"),
+          ),
+      ),
       body: _child,
       drawer: Drawer(
         child: ListView(children: [
@@ -86,7 +89,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
                 ),
                 const CircleAvatar(
                   backgroundImage: AssetImage(
-                    "assets/images/profile.png",
+                    "assets/images/bike.png",
                   ),
                   radius: 40,
                 ),
@@ -96,7 +99,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children:  [
+                  children: [
                     const Text(
                       'Hello!',
                       style: TextStyle(
@@ -104,35 +107,36 @@ class _BottomNavBarState extends State<BottomNavBar> {
                           fontWeight: FontWeight.bold,
                           color: Colors.white),
                     ),
-                    user_name == null || user_name == "" ?   const Text(
-                      'Demo',
-                      style: TextStyle(fontSize: 16, color: Colors.white),
-                    ):
-                    Text(
-                      '$user_name',
-                      style: TextStyle(fontSize: 16, color: Colors.white),
-                    ),
+                    user_name == null || user_name == ""
+                        ? const Text(
+                            'Demo',
+                            style: TextStyle(fontSize: 16, color: Colors.white),
+                          )
+                        : Text(
+                            '$user_name',
+                            style: TextStyle(fontSize: 16, color: Colors.white),
+                          ),
                   ],
                 )
               ],
             ),
           ),
           InkWell(
-              onTap: () {
-                // Navigator.push(
-                //   context,
-                //   MaterialPageRoute(builder: (context) => const  myprofile_screen()),
-                // );
-                setState(() {
-                  currentIndex = 1;
-                });
-              },
-              child: DrawerIconTab(
-                titlee: 'Home',
-                icon: Icons.home,
-                tabb: 1,
-                indexx: currentIndex,
-              ),
+            onTap: () {
+              // Navigator.push(
+              //   context,
+              //   MaterialPageRoute(builder: (context) => const  myprofile_screen()),
+              // );
+              setState(() {
+                currentIndex = 1;
+              });
+            },
+            child: DrawerIconTab(
+              titlee: 'Home',
+              icon: Icons.home,
+              tabb: 1,
+              indexx: currentIndex,
+            ),
           ),
           SizedBox(
             height: 5,
@@ -235,21 +239,21 @@ class _BottomNavBarState extends State<BottomNavBar> {
             height: 5,
           ),
           InkWell(
-              onTap: () {
-                // Navigator.push(
-                //   context,
-                //   MaterialPageRoute(builder: (context) => const mySubscription()),
-                // );
-                setState(() {
-                  currentIndex = 7;
-                });
-              },
-              child: DrawerIconTab(
-                titlee: 'My Cart',
-                icon: Icons.my_library_books_sharp,
-                tabb: 7,
-                indexx: currentIndex,
-              ),
+            onTap: () {
+              // Navigator.push(
+              //   context,
+              //   MaterialPageRoute(builder: (context) => const mySubscription()),
+              // );
+              setState(() {
+                currentIndex = 7;
+              });
+            },
+            child: DrawerIconTab(
+              titlee: 'My Cart',
+              icon: Icons.my_library_books_sharp,
+              tabb: 7,
+              indexx: currentIndex,
+            ),
           ),
           SizedBox(
             height: 5,
@@ -274,21 +278,21 @@ class _BottomNavBarState extends State<BottomNavBar> {
             height: 5,
           ),
           InkWell(
-              onTap: () {
-                // Navigator.push(
-                //   context,
-                //   MaterialPageRoute(builder: (context) => PrivacyPolicy()),
-                // );
-                setState(() {
-                  currentIndex = 9;
-                });
-              },
-              child: DrawerIconTab(
-                titlee: 'Notification',
-                icon: Icons.privacy_tip,
-                tabb: 9,
-                indexx: currentIndex,
-              ),
+            onTap: () {
+              // Navigator.push(
+              //   context,
+              //   MaterialPageRoute(builder: (context) => PrivacyPolicy()),
+              // );
+              setState(() {
+                currentIndex = 9;
+              });
+            },
+            child: DrawerIconTab(
+              titlee: 'Notification',
+              icon: Icons.privacy_tip,
+              tabb: 9,
+              indexx: currentIndex,
+            ),
           ),
           const SizedBox(
             height: 5,
@@ -380,8 +384,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(
-                      builder: (context) => const AboutUS()),
+                  MaterialPageRoute(builder: (context) => const AboutUS()),
                 );
                 setState(() {
                   currentIndex = 14;
@@ -409,12 +412,12 @@ class _BottomNavBarState extends State<BottomNavBar> {
                 tabb: 15,
                 indexx: currentIndex,
               )),
-            const SizedBox(
+          const SizedBox(
             height: 20,
-            ),
-          ]),
-        ),
-        bottomNavigationBar: FluidNavBar(
+          ),
+        ]),
+      ),
+      bottomNavigationBar: FluidNavBar(
         icons: [
           FluidNavBarIcon(
               icon: Icons.home,
@@ -471,18 +474,19 @@ class _BottomNavBarState extends State<BottomNavBar> {
           enabled: true,
           child: Stack(
             children: [
-              item, Container(
-                  width: MediaQuery.of(context).size.width * 0.25 - 25,
-                  margin: EdgeInsets.only(top: 40),
-                  child: Center(
-                      child: Text(
+              item,
+              Container(
+                width: MediaQuery.of(context).size.width * 0.25 - 25,
+                margin: EdgeInsets.only(top: 40),
+                child: Center(
+                  child: Text(
                     icon.extras!["label"],
                     style: const TextStyle(
                         color: Colors.white,
                         fontSize: 10,
                         fontWeight: FontWeight.bold),
-                     ),
                   ),
+                ),
               ),
             ],
           ),
@@ -491,7 +495,6 @@ class _BottomNavBarState extends State<BottomNavBar> {
     ));
   }
 
-
   Future<void> share() async {
     await FlutterShare.share(
         title: 'HoJayega',
@@ -499,7 +502,6 @@ class _BottomNavBarState extends State<BottomNavBar> {
         linkUrl: 'https://developmentalphawizz.com/dr_booking/',
         chooserTitle: 'HoJayega');
   }
-
 
   logout(context) async {
     return showDialog(
@@ -527,8 +529,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
                 },
               ),
               ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                    primary: colors.primary),
+                style: ElevatedButton.styleFrom(primary: colors.primary),
                 child: const Text("NO"),
                 onPressed: () {
                   Navigator.of(context).pop();
@@ -604,8 +605,8 @@ class _DrawerIconTabState extends State<DrawerIconTab> {
             width: 13,
           ),
           Container(
-            decoration: BoxDecoration(
-                color: Color(0xff112C48), shape: BoxShape.circle),
+            decoration:
+                BoxDecoration(color: Color(0xff112C48), shape: BoxShape.circle),
             height: 40,
             width: 40,
             child: Center(
@@ -625,8 +626,9 @@ class _DrawerIconTabState extends State<DrawerIconTab> {
                 fontWeight: widget.indexx == widget.tabb
                     ? FontWeight.bold
                     : FontWeight.normal,
-                color:
-                    widget.indexx == widget.tabb ? Colors.white : Color(0xff112C48)),
+                color: widget.indexx == widget.tabb
+                    ? Colors.white
+                    : Color(0xff112C48)),
           ),
         ],
       ),

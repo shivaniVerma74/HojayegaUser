@@ -69,8 +69,6 @@ extension colors on ColorScheme {
   static const Color grad1Color = Color(0xffB7281D);
   static const Color grad2Color = Color(0xffB7281D);
   static const Color lightWhite2 = Color(0xffEEF2F3);
-
-
   static const Color transparent = Color(0xFFFBFBFB);
   static const Color darkBlue = Color(0xffB7281D);
   static const Color lightBlue = Color(0xFFADD8E6);

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:ho_jayega_user_main/AuthView/signUpPage.dart';
 import 'package:ho_jayega_user_main/Helper/api.path.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../Screen/bottomScreen.dart';
 import 'CreateAccount.dart';
 import 'package:http/http.dart' as http;
@@ -22,6 +23,7 @@ class _LoginPageState extends State<LoginPage> {
   var password = TextEditingController();
   bool isChecked = false;
   bool isVisible = false;
+
   String? _validateEmail(value) {
     if (value == null || value.isEmpty) {
       return 'Please enter your email';
@@ -41,6 +43,7 @@ class _LoginPageState extends State<LoginPage> {
 
 
   userLogin()async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
     var headers = {
       'Cookie': 'ci_session=f26b98128123d8304685b8bd593560b8d95aef80'
     };
@@ -62,7 +65,9 @@ class _LoginPageState extends State<LoginPage> {
         user_name = finaResult['data']['username'];
         user_mobile = finaResult['data']['mobile'];
         user_email = finaResult['data']['email'];
+        await prefs.setString('user_id', finaResult['data']['id'].toString());
         print('____user data is___$user_id $user_email $user_mobile ${user_name}___');
+        setState(()  {});
         Fluttertoast.showToast(msg: '${finaResult['message']}');
         Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => BottomNavBar()));
       } else {

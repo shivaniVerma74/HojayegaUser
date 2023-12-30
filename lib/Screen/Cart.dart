@@ -18,6 +18,19 @@ class _CartState extends State<Cart> {
     'No',
   ];
 
+  int _counter = 1;
+
+  void _incrementCounter() {
+    setState(() {
+      _counter++;
+    });
+  }
+
+  void _descrementerCounter() {
+    setState(() {
+      _counter--;
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return  Scaffold(
@@ -26,12 +39,12 @@ class _CartState extends State<Cart> {
           centerTitle: true,
           backgroundColor: colors.primary,
           foregroundColor: Colors.white,//(0xff112C48),
-          title: Text('My Cart'),
-          shape: RoundedRectangleBorder(
+          title: const Text('My Cart'),
+          shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(
                 bottom: Radius.circular(20.0)
             ),
-          )
+          ),
       ),
       body: Column(
         children: [
@@ -102,9 +115,13 @@ class _CartState extends State<Cart> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children:  [
-                const Icon(Icons.remove, color: Colors.black, size: 30,),
-                const Text("1", style: TextStyle(fontSize: 20, fontWeight: FontWeight.w800),),
-                const Icon(Icons.add, color: Colors.black, size: 30,),
+                InkWell(
+                  onTap: _descrementerCounter,
+                    child: const Icon(Icons.remove, color: Colors.black, size: 30,)),
+                 Text("$_counter", style: TextStyle(fontSize: 20, fontWeight: FontWeight.w800),),
+                InkWell(
+                  onTap: _incrementCounter,
+                    child: const Icon(Icons.add, color: Colors.black, size: 30)),
                 Container(
                     height: 45,
                     width: 140,

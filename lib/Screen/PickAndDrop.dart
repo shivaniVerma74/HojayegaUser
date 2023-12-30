@@ -73,7 +73,7 @@ class _PickDropState extends State<PickDrop> {
                 child: Card(
                   child: Container(
                     height: 100,
-                    width: double.infinity,
+                    // width: double.infinity,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10),
                       color: Colors.white,
@@ -84,7 +84,7 @@ class _PickDropState extends State<PickDrop> {
                           padding: const EdgeInsets.only(left: 10),
                           child: _image != null
                               ? Image.file(_image!.absolute)
-                              : Icon(Icons.upload_file_outlined),
+                              : const Icon(Icons.upload_file_outlined),
                         ),
                         const Padding(
                           padding: EdgeInsets.only(left: 30),
@@ -109,7 +109,7 @@ class _PickDropState extends State<PickDrop> {
                     borderRadius: BorderRadius.circular(10),
                     color: Color(0xffEFEFEF),
                     border: Border.all(
-                      color: Color(0xff112C48),
+                      color: colors.primary,
                     )),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -135,7 +135,7 @@ class _PickDropState extends State<PickDrop> {
                               children: const [
                                 Icon(
                                   Icons.map,
-                                  color: Color(0xff3A9F3E),
+                                  color: colors.secondary,
                                 ),
                                 SizedBox(
                                   width: 10,
@@ -161,7 +161,7 @@ class _PickDropState extends State<PickDrop> {
                               children: const [
                                 Icon(
                                   Icons.person,
-                                  color: Color(0xff3A9F3E),
+                                  color: colors.secondary,
                                 ),
                                 SizedBox(
                                   width: 10,
@@ -187,7 +187,7 @@ class _PickDropState extends State<PickDrop> {
                               children: const [
                                 Icon(
                                   Icons.phone,
-                                  color: Color(0xff3A9F3E),
+                                  color: colors.secondary,
                                 ),
                                 SizedBox(
                                   width: 10,
@@ -212,7 +212,7 @@ class _PickDropState extends State<PickDrop> {
                               children: const [
                                 Icon(
                                   Icons.location_on,
-                                  color: Color(0xff3A9F3E),
+                                  color: colors.secondary,
                                 ),
                                 SizedBox(
                                   width: 10,
@@ -238,9 +238,9 @@ class _PickDropState extends State<PickDrop> {
                               children: [
                                 const Icon(
                                   Icons.location_on,
-                                  color: Color(0xff3A9F3E),
+                                  color: colors.secondary,
                                 ),
-                                SizedBox(
+                                const SizedBox(
                                   width: 10,
                                 ),
                                 DropdownButton<String>(
@@ -264,8 +264,9 @@ class _PickDropState extends State<PickDrop> {
                                 ),
                               ],
                             ),
-                          )),
-                    )
+                          ),
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -278,7 +279,7 @@ class _PickDropState extends State<PickDrop> {
                     borderRadius: BorderRadius.circular(10),
                     color: Color(0xffEFEFEF),
                     border: Border.all(
-                      color: Color(0xff112C48),
+                      color: colors.primary,
                     )),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -312,7 +313,7 @@ class _PickDropState extends State<PickDrop> {
                               children: const [
                                 Icon(
                                   Icons.map,
-                                  color: Color(0xff3A9F3E),
+                                  color: colors.secondary,
                                 ),
                                 SizedBox(
                                   width: 10,
@@ -338,7 +339,7 @@ class _PickDropState extends State<PickDrop> {
                               children: const [
                                 Icon(
                                   Icons.person,
-                                  color: Color(0xff3A9F3E),
+                                  color: colors.secondary,
                                 ),
                                 SizedBox(
                                   width: 10,
@@ -364,7 +365,7 @@ class _PickDropState extends State<PickDrop> {
                               children: const [
                                 Icon(
                                   Icons.phone,
-                                  color: Color(0xff3A9F3E),
+                                  color: colors.secondary,
                                 ),
                                 SizedBox(
                                   width: 10,
@@ -389,7 +390,7 @@ class _PickDropState extends State<PickDrop> {
                               children: const [
                                 Icon(
                                   Icons.location_on,
-                                  color: Color(0xff3A9F3E),
+                                  color: colors.secondary,
                                 ),
                                 SizedBox(
                                   width: 10,
@@ -415,7 +416,7 @@ class _PickDropState extends State<PickDrop> {
                               children: [
                                 const Icon(
                                   Icons.location_on,
-                                  color: Color(0xff3A9F3E),
+                                  color: colors.secondary,
                                 ),
                                 const SizedBox(
                                   width: 10,
@@ -531,7 +532,7 @@ class _PickDropState extends State<PickDrop> {
                                 });
                               },
                             ),
-                            Icon(Icons.bike_scooter, color: Colors.green)
+                            Icon(Icons.bike_scooter, color: colors.secondary,)
                             // Text("aa"),
                           ],
                         ),
