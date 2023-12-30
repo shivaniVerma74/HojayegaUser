@@ -29,17 +29,32 @@ class _BottomNavBarState extends State<BottomNavBar> {
   final GlobalKey<ScaffoldState> _key = GlobalKey(); // Create a key
   @override
   void initState() {
-    if (widget.dIndex != null) {
-      selectedIndex = widget.dIndex!;
-      _child = widget.dIndex == 1
-          ? Container()
-          : widget.dIndex == 3
-              ? Container()
-              : Container();
+
+    int? index=0;
+
+    if (index ==0) {
+
+      setState(() {
+        selectedIndex =0;
+      });
+      _child =  selectedIndex== 0
+          ? HomeScreen():
+      Container();
     } else {
       _child = Container();
     }
     super.initState();
+    // if (widget.dIndex != null) {
+    //   selectedIndex = widget.dIndex!;
+    //   _child = widget.dIndex == 1
+    //       ? Container()
+    //       : widget.dIndex == 3
+    //           ? Container()
+    //           : Container();
+    // } else {
+    //   _child = Container();
+    // }
+    // super.initState();
   }
 
   @override
@@ -49,7 +64,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
       key: _key,
       backgroundColor: colors.appbarColor,
       appBar: PreferredSize(
-          preferredSize: Size.fromHeight(selectedIndex == 4 ? 0 : 80),
+          preferredSize: Size.fromHeight(selectedIndex == 1||selectedIndex == 4 ? 0 : 80),
           child: selectedIndex == 0
               ? homeAppBar(
                   context,
@@ -58,19 +73,15 @@ class _BottomNavBarState extends State<BottomNavBar> {
                     _key.currentState!.openDrawer();
                   },
                 )
-              : selectedIndex == 0
-                  ? Container()
-                  : PreferredSize(
-                      preferredSize: Size.fromHeight(80),
-                      child: commonAppBar(context,
-                          text: selectedIndex == 0
-                              ? "Home"
-                              : selectedIndex == 3
-                                  ? "My Bookings"
-                                  : selectedIndex == 4
-                                      ? "Pick & Drop"
-                                      : "My Orders"),
-          ),
+              :
+          selectedIndex==1?SizedBox.shrink():
+
+          commonAppBar(context,
+              text: selectedIndex == 3
+                  ? "My Bookings"
+                  : selectedIndex == 4
+                  ? "Pick & Drop"
+                  : "My Orders"),
       ),
       body: _child,
       drawer: Drawer(
@@ -569,6 +580,8 @@ class _BottomNavBarState extends State<BottomNavBar> {
     });
   }
 }
+
+
 
 class DrawerIconTab extends StatefulWidget {
   final IconData? icon;

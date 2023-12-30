@@ -1,11 +1,14 @@
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:ho_jayega_user_main/Helper/appBar.dart';
 
 import '../Helper/color.dart';
+import '../Model/getprodutcatwise.dart';
 import 'Cart.dart';
 
 class ProductDetails extends StatefulWidget {
-  const ProductDetails({Key? key}) : super(key: key);
+  Product? productId;
+  ProductDetails({Key? key, this.productId}) : super(key: key);
 
   @override
   State<ProductDetails> createState() => _ProductDetailsState();
@@ -18,100 +21,225 @@ class _ProductDetailsState extends State<ProductDetails> {
       appBar: AppBar(
           centerTitle: true,
           backgroundColor: colors.primary,
-          foregroundColor: Colors.white,//(0xff112C48),
-          title: Text('Details'),
+          foregroundColor: Colors.white, //(0xff112C48),
+          title: Text('Product Details'),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.vertical(
-                bottom: Radius.circular(20.0)
-            ),
-          )
-      ),
-      body: Column(
-        children: [
-          const SizedBox(height: 20),
-          Align(
-            alignment: Alignment.center,
-            child: Image.asset("assets/images/Image 35.png", height: 200),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  "Cake",
-                  style: TextStyle(fontSize: 19, fontWeight: FontWeight.w800),
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                const Text(
-                  "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,",
-                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                Row(
-                  children: const [
-                    Text(
-                      "Unit:",
-                      style:
-                          TextStyle(fontSize: 17, fontWeight: FontWeight.w400),
+            borderRadius: BorderRadius.vertical(bottom: Radius.circular(20.0)),
+          )),
+      body: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          children: [
+
+            CarouselSlider(
+              options: CarouselOptions(
+                height: 180,
+                aspectRatio: 16 / 9,
+                viewportFraction: 1.0,
+                initialPage: 0,
+                enableInfiniteScroll: true,
+                reverse: false,
+                autoPlay: true,
+                autoPlayInterval: const Duration(seconds: 3),
+                autoPlayAnimationDuration: const Duration(milliseconds: 800),
+                autoPlayCurve: Curves.fastOutSlowIn,
+                enlargeCenterPage: false,
+                onPageChanged: (index, reason) {
+                  setState(() {
+                    currentIndex = index;
+                  });
+                },
+              ),
+              items: widget.productId?.productImage
+                  ?.map(
+                    (item) => Padding(
+                      padding: const EdgeInsets.only(left: 5, right: 5),
+                      child: Container(
+                        width: MediaQuery.of(context).size.width,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8),
+                            image: DecorationImage(
+                                image: NetworkImage(
+                                  "${item}",
+                                ),
+                                fit: BoxFit.fill)),
+                      ),
                     ),
-                    Text(
-                      "1Kg",
-                      style:
-                          TextStyle(fontSize: 17, fontWeight: FontWeight.w400),
-                    )
-                  ],
+                  )
+                  .toList(),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            Center(
+              child: SizedBox(
+                width: 100,
+                height: 6,
+                child: Center(
+                  child: ListView.separated(
+                    shrinkWrap: true,
+                    itemCount: widget.productId?.productImage?.length ?? 0,
+                    scrollDirection: Axis.horizontal,
+                    itemBuilder: (context, index) {
+                      return Container(
+                        height: 6,
+                        width: 6,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: index == currentIndex
+                              ? colors.secondary
+                              : const Color(0xffFEE9E9E9),
+                        ),
+                      );
+                    },
+                    separatorBuilder: (context, index) {
+                      return const SizedBox(
+                        width: 5,
+                      );
+                    },
+                  ),
                 ),
-                SizedBox(
-                  height: 10,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: const [
-                    Text(
-                      "900",
-                      style:
-                          TextStyle(fontSize: 17, fontWeight: FontWeight.w400),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                   Text(
+                    "${widget.productId?.productName}",
+                    style: TextStyle(fontSize: 19, fontWeight: FontWeight.w800),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                   Text(
+                    "${widget.productId?.productDescription}",style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Row(
+                    children:  [
+                      Text(
+                        "Unit: ",
+                        style:
+                            TextStyle(fontSize: 17, fontWeight: FontWeight.w400),
+                      ),
+                      Text(
+                        "${widget.productId?.unit??""}kg",
+                        style:
+                            TextStyle(fontSize: 17, fontWeight: FontWeight.w400),
+                      )
+                    ],
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Row(
+                    children:  [
+                      Text(
+                        "\u{20B9} ${widget.productId?.sellingPrice??""}",
+                        style:
+                            TextStyle(fontSize: 22, fontWeight: FontWeight.w400),
+                      ),
+                      Spacer(),
+                      Text(
+                        "${widget.productId?.proRatings??""}",
+                        style:
+                            TextStyle(fontSize: 13, fontWeight: FontWeight.w400),
+                      ),
+                      Icon(Icons.star,color: Colors.yellow,),
+                      Icon(Icons.star,color: Colors.yellow,),
+                      Icon(Icons.star,color: Colors.yellow,),
+                      Icon(Icons.star,color: Colors.yellow,),
+                      Icon(Icons.star,color: Colors.yellow,),
+                    ],
+                  ),
+                  Text("\u{20B9} ${widget.productId?.productPrice??""}", style: TextStyle(color: colors.primary,decoration: TextDecoration.lineThrough,fontSize:22 )),
+SizedBox(height: 20,),
+                  Container(height: 50,
+
+                  width: 150,
+                    decoration: BoxDecoration(borderRadius: BorderRadius.circular(8),
+
+                    border: Border.all(color: colors.secondary)
                     ),
-                    Text(
-                      "4.8 ********",
-                      style:
-                          TextStyle(fontSize: 17, fontWeight: FontWeight.w400),
-                    )
-                  ],
-                ),
-              ],
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+SizedBox(),
+                      InkWell(
+                          onTap: () {
+
+                            decrementfun();
+
+                          },
+
+                          child: Icon(Icons.remove)
+
+                      ),
+                      Text(increment.toString()),
+                      InkWell(
+
+                          onTap: () {
+
+                            incrementfun();
+                          },
+                          child: Icon(Icons.add)),
+                          SizedBox(),
+
+
+                        ]),
+                  )
+                ],
+              ),
             ),
-          ),
-          const SizedBox(
-            height: 90,
-          ),
-          InkWell(
-            onTap: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => const Cart()));
-            },
-            child: Container(
-              height: 50,
-              width: MediaQuery.of(context).size.width / 1.5,
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: colors.secondary),
-              child: const Center(
-                  child: Text(
-                "Send For Billing",
-                style: TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w500,
-                    color: colors.appbarColor),
-              )),
+            const SizedBox(
+              height: 90,
             ),
-          ),
-        ],
+            InkWell(
+              onTap: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => const Cart()));
+              },
+              child: Container(
+                height: 50,
+                width: MediaQuery.of(context).size.width / 1.5,
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: colors.secondary),
+                child: const Center(
+                    child: Text(
+                  "Send For Billing",
+                  style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w500,
+                      color: colors.appbarColor),
+                )),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
-}
+
+  int currentIndex = 0;
+  int increment=1;
+  void incrementfun(){
+    increment++;
+    setState(() {
+
+    });
+
+  }
+  void decrementfun(){
+    if(increment>1){
+    increment--;
+    setState(() {
+
+    });
+
+  }
+}}

@@ -13,6 +13,7 @@ import '../Model/GetShopsTypeModel.dart';
 import '../Model/SliderMOdel.dart';
 import '../Model/VendorServiceDataModel.dart';
 import '../Model/VendorShopDataModel.dart';
+import 'AllCategory.dart';
 import 'Services.dart';
 import 'TopServices.dart';
 
@@ -620,7 +621,9 @@ class _HomeBodyState extends State<HomeScreen> {
                 itemBuilder: (context, index) {
                   return InkWell(
                     onTap: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => TopService()));
+                      // Navigator.push(context, MaterialPageRoute(builder: (context) => TopService()));
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => AllCategory(ShopId:vendorshopdata?.user?[index].id,)));
+
                     },
                     child: Container(
                       decoration: BoxDecoration(
@@ -742,108 +745,118 @@ class _HomeBodyState extends State<HomeScreen> {
                   mainAxisSpacing: 10.0,
                 ),
                 itemBuilder: (context, index) {
-                  return Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Container(
-                      // padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          vendorshopdata?.user?[index].profileImage == null || vendorshopdata?.user?[index].profileImage == "" ?  Container(
-                              height: 130,
-                              width: double.infinity,
-                              child: ClipRRect(
-                                borderRadius: const BorderRadius.only(topLeft: Radius.circular(10),topRight: Radius.circular(10)),
-                                child: Image.asset("assets/images/placeholder.png", fit: BoxFit.fill),
-                              )
-                          ):
-                          Container(
-                              height:130 ,
-                              width: double.infinity,
-                              child: ClipRRect(
+                  return
+
+
+                    InkWell(
+                      onTap: () {
+
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => TopService()));
+
+                      },
+                      child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Container(
+                        // padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            vendorshopdata?.user?[index].profileImage == null || vendorshopdata?.user?[index].profileImage == "" ?  Container(
+                                height: 130,
+                                width: double.infinity,
+                                child: ClipRRect(
                                   borderRadius: const BorderRadius.only(topLeft: Radius.circular(10),topRight: Radius.circular(10)),
-                                  child: Image.network("${vendorshopdata?.user?[index].profileImage}", fit: BoxFit.fill,))),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 3,right: 3),
-                            child: Text(
-                              '${vendorshopdata?.user?[index].storeName}',
-                              style: TextStyle(
-                                  fontSize: 12,
-                                  color: Colors.black.withOpacity(0.8),
-                                  fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 2,
-                          ),
-                          Padding(
+                                  child: Image.asset("assets/images/placeholder.png", fit: BoxFit.fill),
+                                )
+                            ):
+                            Container(
+                                height:130 ,
+                                width: double.infinity,
+                                child: ClipRRect(
+                                    borderRadius: const BorderRadius.only(topLeft: Radius.circular(10),topRight: Radius.circular(10)),
+                                    child: Image.network("${vendorshopdata?.user?[index].profileImage}", fit: BoxFit.fill,))),
+                            Padding(
                               padding: const EdgeInsets.only(left: 3,right: 3),
-                              child:
-                              Row(
+                              child: Text(
+                                '${vendorshopdata?.user?[index].storeName}',
+                                style: TextStyle(
+                                    fontSize: 12,
+                                    color: Colors.black.withOpacity(0.8),
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 2,
+                            ),
+                            Padding(
+                                padding: const EdgeInsets.only(left: 3,right: 3),
+                                child:
+                                Row(
+                                  children: [
+                                    RatingBar.builder(
+                                      initialRating: vendorshopdata?.user?[index].revies == "" ? 0.0 : double.parse(vendorshopdata?.user?[index].revies.toString() ?? ""),
+                                      minRating: 0,
+                                      direction: Axis.horizontal,
+                                      allowHalfRating: true,
+                                      itemCount: 5,
+                                      itemSize: 15,
+                                      ignoreGestures: true,
+                                      unratedColor: Colors.grey,
+                                      itemBuilder: (context, _) => const Icon(
+                                          Icons.star,
+                                          color: Colors.orange),
+                                      onRatingUpdate: (rating) {
+                                        print(rating);
+                                      },
+                                    ),
+                                    Text(
+                                      double.parse(vendorshopdata?.user?[index].revies.toString() ?? '0.0').toStringAsFixed(1),
+                                      style: TextStyle(fontSize: 12),
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ],
+                                )
+                            ),
+                            const SizedBox(
+                              height: 2,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 3,right: 3),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  RatingBar.builder(
-                                    initialRating: vendorshopdata?.user?[index].revies == "" ? 0.0 : double.parse(vendorshopdata?.user?[index].revies.toString() ?? ""),
-                                    minRating: 0,
-                                    direction: Axis.horizontal,
-                                    allowHalfRating: true,
-                                    itemCount: 5,
-                                    itemSize: 15,
-                                    ignoreGestures: true,
-                                    unratedColor: Colors.grey,
-                                    itemBuilder: (context, _) => const Icon(
-                                        Icons.star,
-                                        color: Colors.orange),
-                                    onRatingUpdate: (rating) {
-                                      print(rating);
-                                    },
-                                  ),
                                   Text(
-                                    double.parse(vendorshopdata?.user?[index].revies.toString() ?? '0.0').toStringAsFixed(1),
-                                    style: TextStyle(fontSize: 12),
-                                    overflow: TextOverflow.ellipsis,
+                                    '5KM',
+                                    style: TextStyle(
+                                        fontSize: 14,
+                                        color: Colors.black.withOpacity(0.8),
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  vendorshopdata?.user?[index].status == "1" ?
+                                  const Text(
+                                    'Open',
+                                    style: TextStyle(
+                                        fontSize: 14,
+                                        color: Colors.green,
+                                        fontWeight: FontWeight.bold),
+                                  ): const Text(
+                                    'Close',
+                                    style: TextStyle(
+                                        fontSize: 14,
+                                        color: Colors.red,
+                                        fontWeight: FontWeight.bold),
                                   ),
                                 ],
-                              )
-                          ),
-                          const SizedBox(
-                            height: 2,
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 3,right: 3),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  '5KM',
-                                  style: TextStyle(
-                                      fontSize: 14,
-                                      color: Colors.black.withOpacity(0.8),
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                vendorshopdata?.user?[index].status == "1" ?
-                                const Text(
-                                  'Open',
-                                  style: TextStyle(
-                                      fontSize: 14,
-                                      color: Colors.green,
-                                      fontWeight: FontWeight.bold),
-                                ): const Text(
-                                  'Close',
-                                  style: TextStyle(
-                                      fontSize: 14,
-                                      color: Colors.red,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                              ],
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                  );
+                  ),
+                    );
                 },
               ),
             )

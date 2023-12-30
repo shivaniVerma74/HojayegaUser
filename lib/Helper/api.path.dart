@@ -24,6 +24,7 @@ class ApiServicves{
   static const String getCitys = baseUrl+'get_cities';
   static const String getCountrys = baseUrl+'get_countries';
   static const String getSettings = baseUrl+'general_setting';
+  static const String getProductCatwise = baseUrl+'get_all_products_by_vendor';
 }
 
 String? user_id;
