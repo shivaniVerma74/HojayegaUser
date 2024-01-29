@@ -10,6 +10,7 @@ import '../Helper/api.path.dart';
 import '../Helper/color.dart';
 import '../Model/GetCityModel.dart';
 import '../Model/GetStateMOdel.dart';
+import '../Model/getareaModel.dart';
 import '../Screen/bottomScreen.dart';
 
 class CreateAccount extends StatefulWidget {
@@ -63,8 +64,9 @@ class _CreatAState extends State<CreateAccount> {
   CityData? cityValue;
   CountryData? countryValue;
   StataData? stateValue;
-  String? stateName;
-  String? cityName;
+var countryId;
+var stateId;
+var cityId;
 
   bool showPassword = false;
   bool showPasswordNew = false;
@@ -95,7 +97,39 @@ class _CreatAState extends State<CreateAccount> {
       print(response.reasonPhrase);
     }
   }
+  List<AreaModelList> areaList=[];
+  var  areaid;
+  dynamic selectarea;
+  getarea(String? countryId) async {
+    print("state apiii isss");
+    var headers = {
+      'Cookie': 'ci_session=95bbd5f6f543e31f65185f824755bcb57842c775'
+    };
+    var request = http.MultipartRequest('POST', Uri.parse(ApiServicves.getregions));
+    request.fields.addAll({
+      'city_id': countryId.toString(),
+    });
 
+    request.headers.addAll(headers);
+    http.StreamedResponse response = await request.send();
+    print("===my technic=======${request.url}===============");
+    print("===my technic=======${request.fields}===============");
+    if (response.statusCode == 200) {
+      String responseData = await response.stream.bytesToString();
+      print("===my technic=======${responseData}===============");
+      var userData = json.decode(responseData);
+      if(userData['response_code']=="1") {
+        setState(() {
+          areaList = GetAreaModel
+              .fromJson(userData)
+              .data ?? [];
+        });
+      }
+    }
+    else {
+      print(response.reasonPhrase);
+    }
+  }
   getCity(String? sId) async{
     var headers = {
       'Cookie': 'ci_session=95bbd5f6f543e31f65185f824755bcb57842c775'
@@ -152,10 +186,11 @@ class _CreatAState extends State<CreateAccount> {
       'confirm_password': cPasswordEditingController.text,
       'mobile': mobileCtr.text,
       'address': addressCtr.text,
-      'country': countryValue.toString(),
-      'state': stateValue.toString(),
-      'city': cityValue.toString(),
-      'pincode': pincodeCtr.text
+      'country': countryId.toString(),
+      'state': stateId.toString(),
+      'city': cityId.toString(),
+      // 'pincode': pincodeCtr.text,
+      'area':areaid.toString(),
     });
     print("user register parameter ${request.fields}");
     request.headers.addAll(headers);
@@ -166,8 +201,9 @@ class _CreatAState extends State<CreateAccount> {
       print("responseee $finaResult");
       if (finaResult['error'] == false) {
         Fluttertoast.showToast(msg: '${finaResult['message']}');
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => BottomNavBar()));
-      } else {
+        Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(builder: (context) => LoginPage()),
+                (Route<dynamic> route) => false);      } else {
         Fluttertoast.showToast(msg: "${finaResult['message']}");
       }
     }
@@ -178,719 +214,893 @@ class _CreatAState extends State<CreateAccount> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SingleChildScrollView(
-        child: Container(
-          height: MediaQuery.of(context).size.height / 1.0,
+    return SafeArea(
+      child: Scaffold(
+        body:
+
+        Container(
+          height: MediaQuery.of(context).size.height,
           decoration: const BoxDecoration(
             image: DecorationImage(
-              image: AssetImage("assets/images/introimage.png"),
+              image: AssetImage("assets/images/otp verification – 3.png"),
               fit: BoxFit.cover,
             ),
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Padding(
-                padding: EdgeInsets.only(top: 50, left: 20),
-                child: Text(
-                  "Create Account",
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                        fontSize: 24,
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(height: 20,),
+                Row(
+                  children: [
+                    SizedBox(width: 20,),
+                    Text(
+                      "Create Account",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                            fontSize: 27,
+                        ),
                     ),
+                  ],
                 ),
-              ),
-              // const Padding(
-              //   padding: EdgeInsets.only(top: 10, left: 20, right: 10),
-              //   child: Text( "Please enter your valid mobile number to receive OTP for further registration process.",
-              //       style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 15),
-              //   ),
-              // ),
-              const SizedBox(height: 15),
-              // Center(
-              //     child: Image.asset("assets/images/SIGN UP.png", scale: 1.9)),
-              // const SizedBox(height: 10),
-              Center(
-                child: Card(
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                  elevation: 4,
-                  child: Container(
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(30),
-                        border: Border.all(color: Colors.black)),
-                    height: 640,
-                    width: MediaQuery.of(context).size.width / 1.1,
-                    child:
-                    Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(left: 10, right: 10, top: 10),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
+
+
+
+                Row(
+                  children: [
+                    SizedBox(width: 20,),
+
+                    Text( "Please enter required information to complete signup.",
+                        style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 12),maxLines: 2,
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 20),
+                Center(
+                    child: Image.asset("assets/images/create account.png", scale: 1.9)),
+                const SizedBox(height: 20),
+                Center(
+                  child: Card(
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                    elevation: 4,
+                    child: Container(
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(color: Colors.black,width: 2)),
+                      height: MediaQuery.of(context).size.height/1.7,
+                      width: MediaQuery.of(context).size.width/1.15,
+                      child:
+                      SingleChildScrollView(
+                        child: Form(
+                          key: _formKey,
+                          child: Column(
                             children: [
-                              Material(
-                                elevation: 4,
-                                borderRadius: BorderRadius.circular(10),
-                                child: Container(
-                                    width: 40,
-                                    height: 40,
-                                    child: Image.asset(
-                                      "assets/images/Name.png",
-                                      scale: 1.4,
-                                    ),
-                                ),
-                              ),
-                              const SizedBox(width: 18),
-                              Expanded(
-                                child: Container(
-                                  width: 80,
-                                  height: 45,
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(5),
-                                    boxShadow: const [
-                                      BoxShadow(
-                                        color: Colors.grey,
-                                        offset: Offset(1.0, 1.0),
-                                        blurRadius: 0.2,
-                                        spreadRadius: 0.5,
+                              Padding(
+                                padding: const EdgeInsets.only(left: 10, right: 10, top: 10,bottom: 10),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Material(
+                                      elevation: 4,
+                                      borderRadius: BorderRadius.circular(10),
+                                      child: Container(
+                                          width: 40,
+                                          height: 40,
+                                          child: Image.asset(
+                                            "assets/images/Name.png",
+                                            scale: 1.4,
+                                          ),
                                       ),
-                                    ],
-                                  ),
-                                  child: TextFormField(
-                                    maxLength: 10,
-                                    controller: nameEditingController,
-                                    keyboardType: TextInputType.text,
-                                    decoration: const InputDecoration(
-                                        counterText: "",
-                                        // suffixIcon: suffixIcons,
-                                        contentPadding: EdgeInsets.symmetric(
-                                            vertical: 5, horizontal: 5),
-                                        border: OutlineInputBorder(
-                                            borderSide: BorderSide.none),
-                                        hintText: "Name"),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 10, right: 10, top: 15),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Material(
-                                elevation: 4,
-                                borderRadius: BorderRadius.circular(10),
-                                child: Container(
-                                    width: 40,
-                                    height: 40,
-                                    child: Image.asset(
-                                      "assets/images/email id.png",
-                                      scale: 1.4,
                                     ),
-                                ),
-                              ),
-                              const SizedBox(width: 18),
-                              Expanded(
-                                child: Container(
-                                  width: 80,
-                                  height: 45,
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(5),
-                                    boxShadow: const [
-                                      BoxShadow(
-                                        color: Colors.grey,
-                                        offset: Offset(1.0, 1.0,),
-                                        blurRadius: 0.2,
-                                        spreadRadius: 0.5,
-                                      ),
-                                    ],
-                                  ),
-                                  child: TextFormField(
-                                    // maxLength: 10,
-                                    controller: emailEditingController,
-                                    keyboardType: TextInputType.text,
-                                    decoration: const InputDecoration(
-                                        counterText: "",
-                                        // suffixIcon: suffixIcons,
-                                        contentPadding: EdgeInsets.symmetric(
-                                            vertical: 5, horizontal: 5),
-                                        border: OutlineInputBorder(
-                                            borderSide: BorderSide.none),
-                                        hintText: "Email ID"),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 10, right: 10, top: 15),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Material(
-                                elevation: 4,
-                                borderRadius: BorderRadius.circular(10),
-                                child: Container(
-                                  width: 40,
-                                  height: 40,
-                                  child: Image.asset(
-                                    "assets/images/email id.png",
-                                    scale: 1.4,
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(width: 18),
-                              Expanded(
-                                child: Container(
-                                  width: 80,
-                                  height: 45,
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(5),
-                                    boxShadow: const [
-                                      BoxShadow(
-                                        color: Colors.grey,
-                                        offset: Offset(1.0, 1.0,),
-                                        blurRadius: 0.2,
-                                        spreadRadius: 0.5,
-                                      ),
-                                    ],
-                                  ),
-                                  child: TextFormField(
-                                    maxLength: 10,
-                                    controller: mobileCtr,
-                                    keyboardType: TextInputType.text,
-                                    decoration: const InputDecoration(
-                                        counterText: "",
-                                        // suffixIcon: suffixIcons,
-                                        contentPadding: EdgeInsets.symmetric(
-                                            vertical: 5, horizontal: 5),
-                                        border: OutlineInputBorder(
-                                            borderSide: BorderSide.none),
-                                        hintText: "Mobile"),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 10, right: 10, top: 15),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Material(
-                                elevation: 4,
-                                borderRadius: BorderRadius.circular(10),
-                                child: Container(
-                                    width: 40,
-                                    height: 40,
-                                    child: Image.asset(
-                                      "assets/images/Password.png",
-                                      scale: 1.4,
-                                    ),
-                                ),
-                              ),
-                              const SizedBox(width: 18),
-                              Expanded(
-                                child: Container(
-                                  width: 80,
-                                  height: 45,
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(5),
-                                    boxShadow: const [
-                                      BoxShadow(
-                                        color: Colors.grey,
-                                        offset: Offset(
-                                          1.0,
-                                          1.0,
+                                    const SizedBox(width: 18),
+                                    Expanded(
+                                      child: Container(
+                                        width: 80,
+                                        height: 45,
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius: BorderRadius.circular(5),
+                                          boxShadow: const [
+                                            BoxShadow(
+                                              color: Colors.grey,
+                                              offset: Offset(1.0, 1.0),
+                                              blurRadius: 0.2,
+                                              spreadRadius: 0.5,
+                                            ),
+                                          ],
                                         ),
-                                        blurRadius: 0.2,
-                                        spreadRadius: 0.5,
+                                        child: TextFormField(
+                                          maxLength: 10,
+                                          controller: nameEditingController,
+                                          keyboardType: TextInputType.text,
+                                          decoration: const InputDecoration(
+                                              counterText: "",
+                                              // suffixIcon: suffixIcons,
+                                              contentPadding: EdgeInsets.symmetric(
+                                                  vertical: 5, horizontal: 5),
+                                              border: OutlineInputBorder(
+                                                  borderSide: BorderSide.none),
+                                              hintText: "Name"),
+                                          validator: (value) {
+                                            if (value == null || value.isEmpty) {
+                                              return 'Please Enter Name';
+                                            }
+                                            return null;
+                                          },
+                                        ),
                                       ),
-                                    ],
-                                  ),
-                                  child: TextFormField(
-                                    obscureText: isVisible ? false : true,
-                                    maxLength: 10,
-                                    controller: passwordEditingController,
-                                    keyboardType: TextInputType.text,
-                                    decoration:  InputDecoration(
-                                        counterText: "",
-                                        suffixIcon: IconButton(
-                                          onPressed: () {
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 10, right: 10, top: 15),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Material(
+                                      elevation: 4,
+                                      borderRadius: BorderRadius.circular(10),
+                                      child: Container(
+                                          width: 40,
+                                          height: 40,
+                                          child: Image.asset(
+                                            "assets/images/email id.png",
+                                            scale: 1.4,
+                                          ),
+                                      ),
+                                    ),
+                                    const SizedBox(width: 18),
+                                    Expanded(
+                                      child: Container(
+                                        width: 80,
+                                        height: 45,
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius: BorderRadius.circular(5),
+                                          boxShadow: const [
+                                            BoxShadow(
+                                              color: Colors.grey,
+                                              offset: Offset(1.0, 1.0,),
+                                              blurRadius: 0.2,
+                                              spreadRadius: 0.5,
+                                            ),
+                                          ],
+                                        ),
+                                        child: TextFormField(
+                                          // maxLength: 10,
+                                          controller: emailEditingController,
+                                          keyboardType: TextInputType.text,
+                                          decoration: const InputDecoration(
+                                              counterText: "",
+                                              // suffixIcon: suffixIcons,
+                                              contentPadding: EdgeInsets.symmetric(
+                                                  vertical: 5, horizontal: 5),
+                                              border: OutlineInputBorder(
+                                                  borderSide: BorderSide.none),
+                                              hintText: "Email ID"),
+                                          validator: (value) {
+                                            if (value == null || value.isEmpty) {
+                                              return 'Please Enter Email ID';
+                                            } else if (!value.contains("@")||!value.contains(".com")) {
+                                              return 'Please Enter Vailed Email ID';
+                                            }
+                                            return null;
+                                          },
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 10, right: 10, top: 15),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Material(
+                                      elevation: 4,
+                                      borderRadius: BorderRadius.circular(10),
+                                      child: Container(
+                                        width: 40,
+                                        height: 40,
+                                        child: Image.asset(
+                                          "assets/images/email id.png",
+                                          scale: 1.4,
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(width: 18),
+                                    Expanded(
+                                      child: Container(
+                                        width: 80,
+                                        height: 45,
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius: BorderRadius.circular(5),
+                                          boxShadow: const [
+                                            BoxShadow(
+                                              color: Colors.grey,
+                                              offset: Offset(1.0, 1.0,),
+                                              blurRadius: 0.2,
+                                              spreadRadius: 0.5,
+                                            ),
+                                          ],
+                                        ),
+                                        child: TextFormField(
+                                          maxLength: 10,
+                                          controller: mobileCtr,
+                                          keyboardType: TextInputType.number,
+                                          decoration: const InputDecoration(
+                                              counterText: "",
+                                              // suffixIcon: suffixIcons,
+                                              contentPadding: EdgeInsets.symmetric(
+                                                  vertical: 5, horizontal: 5),
+                                              border: OutlineInputBorder(
+                                                  borderSide: BorderSide.none),
+                                              hintText: "Mobile"),
+
+                                          validator: (value) {
+                                            if (value == null || value.isEmpty) {
+                                              return 'Please Enter Mobile';
+                                            } else if (value.length<10) {
+                                              return 'Please Enter Vailed Mobile';
+                                            }
+                                            return null;
+                                          },
+
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 10, right: 10, top: 15),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Material(
+                                      elevation: 4,
+                                      borderRadius: BorderRadius.circular(10),
+                                      child: Container(
+                                          width: 40,
+                                          height: 40,
+                                          child: Image.asset(
+                                            "assets/images/Password.png",
+                                            scale: 1.4,
+                                          ),
+                                      ),
+                                    ),
+                                    const SizedBox(width: 18),
+                                    Expanded(
+                                      child: Container(
+                                        width: 80,
+                                        height: 45,
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius: BorderRadius.circular(5),
+                                          boxShadow: const [
+                                            BoxShadow(
+                                              color: Colors.grey,
+                                              offset: Offset(
+                                                1.0,
+                                                1.0,
+                                              ),
+                                              blurRadius: 0.2,
+                                              spreadRadius: 0.5,
+                                            ),
+                                          ],
+                                        ),
+                                        child: TextFormField(
+                                          obscureText: isVisible ? false : true,
+                                          maxLength: 10,
+                                          controller: passwordEditingController,
+                                          keyboardType: TextInputType.text,
+                                          decoration:  InputDecoration(
+                                              counterText: "",
+                                              suffixIcon: IconButton(
+                                                onPressed: () {
+                                                  setState(() {
+                                                    isVisible
+                                                        ? isVisible = false
+                                                        : isVisible = true;
+                                                  });
+                                                },
+                                                icon: Icon(
+                                                  isVisible ? Icons.remove_red_eye : Icons.visibility_off,
+                                                  color: Colors.green,
+                                                ),
+                                              ),
+                                              // suffixIcon: suffixIcons,
+                                              contentPadding: const EdgeInsets.symmetric(
+                                                  vertical: 5, horizontal: 5),
+                                              border: OutlineInputBorder(
+                                                  borderSide: BorderSide.none),
+                                              hintText: "Password"),
+
+                                          validator: (value) {
+                                            if (value == null || value.isEmpty) {
+                                              return 'Please Enter Password';
+                                            }
+                                            return null;
+                                          },
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                    left: 10, right: 10, top: 20),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Material(
+                                      elevation: 4,
+                                      borderRadius: BorderRadius.circular(10),
+                                      child: Container(
+                                          width: 40,
+                                          height: 40,
+                                          child: Image.asset(
+                                            "assets/images/Password.png",
+                                            scale: 1.4,
+                                          )),
+                                    ),
+                                    const SizedBox(width: 18),
+                                    Expanded(
+                                      child: Container(
+                                        width: 80,
+                                        height: 45,
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius: BorderRadius.circular(5),
+                                          boxShadow: const [
+                                            BoxShadow(
+                                              color: Colors.grey,
+                                              offset: Offset(
+                                                1.0,
+                                                1.0,
+                                              ),
+                                              blurRadius: 0.2,
+                                              spreadRadius: 0.5,
+                                            ),
+                                          ],
+                                        ),
+                                        child: TextFormField(
+                                          obscureText: isVisible2 ? false: true,
+                                          maxLength: 10,
+                                          controller: cPasswordEditingController,
+                                          keyboardType: TextInputType.text,
+                                          decoration:  InputDecoration(
+                                              counterText: "",
+                                              suffixIcon: IconButton(
+                                                onPressed: () {
+                                               setState(() {
+                                                isVisible2
+                                                    ? isVisible2 = false
+                                                    : isVisible2 = true;
+                                                  });
+                                                 },
+                                                icon: Icon(
+                                                 isVisible2
+                                                  ? Icons.remove_red_eye
+                                                  : Icons.visibility_off,
+                                                color: Colors.green,
+                                                 ),
+                                                ),
+                                              // suffixIcon: suffixIcons,
+                                               contentPadding: const EdgeInsets.symmetric(
+                                                  vertical: 5, horizontal: 5),
+                                               border: const OutlineInputBorder(
+                                                  borderSide: BorderSide.none),
+                                              hintText: "Confirm Password"),
+
+                                          validator: (value) {
+                                            if (value == null || value.isEmpty) {
+                                              return 'Please Enter Confirm Password';
+                                            }
+                                            return null;
+                                          },
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 10, right: 10, top: 15),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Material(
+                                      elevation: 4,
+                                      borderRadius: BorderRadius.circular(10),
+                                      child: Container(
+                                        width: 40,
+                                        height: 40,
+                                        child: Image.asset(
+                                          "assets/images/Address.png",
+                                          scale: 1.4,
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(width: 18),
+                                    Expanded(
+                                      child: Container(
+                                        width: 80,
+                                        height: 45,
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius: BorderRadius.circular(5),
+                                          boxShadow: const [
+                                            BoxShadow(
+                                              color: Colors.grey,
+                                              offset: Offset(1.0, 1.0,),
+                                              blurRadius: 0.2,
+                                              spreadRadius: 0.5,
+                                            ),
+                                          ],
+                                        ),
+                                        child: TextFormField(
+                                          maxLength: 10,
+                                          controller: addressCtr,
+                                          keyboardType: TextInputType.text,
+                                          decoration: const InputDecoration(
+                                              counterText: "",
+                                              // suffixIcon: suffixIcons,
+                                              contentPadding: EdgeInsets.symmetric(
+                                                  vertical: 5, horizontal: 5),
+                                              border: OutlineInputBorder(
+                                                  borderSide: BorderSide.none),
+                                              hintText: "Address"),
+                                          validator: (value){
+                                            if (value == null || value.isEmpty) {
+                                              return 'Please Enter Address';
+                                            }
+                                            return null;
+                                          },
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+
+                              Padding(
+                                padding: const EdgeInsets.only(left: 10, right: 10, top: 15),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Material(
+                                      elevation: 4,
+                                      borderRadius: BorderRadius.circular(10),
+                                      child: Container(
+                                          width: 40,
+                                          height: 40,
+                                          child: Image.asset(
+                                            "assets/images/Region.png",
+                                            scale: 1.4,
+                                          ),
+                                      ),
+                                    ),
+                                    const SizedBox(width: 18),
+                                    Expanded(
+                                      child: Container(
+                                        width: 80,
+                                        height: 45,
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius: BorderRadius.circular(5),
+                                          boxShadow: const [
+                                            BoxShadow(
+                                              color: Colors.grey,
+                                              offset: Offset(
+                                                1.0,
+                                                1.0,
+                                              ),
+                                              blurRadius: 0.2,
+                                              spreadRadius: 0.5,
+                                            ),
+                                          ],
+                                        ),
+                                        child: DropdownButton(
+                                          isExpanded: true,
+                                          value: countryValue,
+                                          hint: const Text('Country'),
+                                          // Down Arrow Icon
+                                          icon: const Icon(Icons.keyboard_arrow_down),
+                                          // Array list of items
+                                          items: countryList.map((items) {
+                                            return
+                                              DropdownMenuItem(
+                                                value: items,
+                                                child: Container(
+                                                    child: Text(items.name.toString())),
+                                              );
+                                          }).toList(),
+                                          // After selecting the desired option,it will
+                                          // change button value to selected value
+                                          onChanged: (CountryData? value) {
                                             setState(() {
-                                              isVisible
-                                                  ? isVisible = false
-                                                  : isVisible = true;
+                                              stateValue=null;
+                                              countryValue = value!;
+                                              countryId=value.id.toString();
+                                              print("===my technic=======${countryId}===============");
+                                              getstate("${value.id.toString()}");
+
                                             });
                                           },
-                                          icon: Icon(
-                                            isVisible ? Icons.remove_red_eye : Icons.visibility_off,
+                                          underline: Container(),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 10, right: 10, top: 10),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Material(
+                                      elevation: 4,
+                                      borderRadius: BorderRadius.circular(10),
+                                      child: Container(
+                                          width: 40,
+                                          height: 40,
+                                          child: Image.asset(
+                                            "assets/images/State.png",
+                                            scale: 1.4,
+                                          )),
+                                      ),
+                                    const SizedBox(width: 18),
+                                    Expanded(
+                                      child: Container(
+                                        width: 80,
+                                        height: 45,
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius: BorderRadius.circular(5),
+                                          boxShadow: const [
+                                            BoxShadow(
+                                              color: Colors.grey,
+                                              offset: Offset(
+                                                1.0,
+                                                1.0,
+                                              ),
+                                              blurRadius: 0.2,
+                                              spreadRadius: 0.5,
+                                            ),
+                                          ],
+                                        ),
+                                        child:
+
+                                        DropdownButton(
+                                          isExpanded: true,
+                                          value: stateValue,
+                                          hint: const Text('State'),
+                                          // Down Arrow Icon
+                                          icon: const Icon(Icons.keyboard_arrow_down),
+                                          // Array list of items
+                                          items: stateList.map((items) {
+                                            return
+                                              DropdownMenuItem(
+                                                value: items,
+                                                child: Container(
+                                                    child: Text(items.name.toString())),
+                                              );
+                                          }).toList(),
+                                          onChanged: (StataData? value) {
+                                            setState(() {
+                                              cityValue=null;
+                                              stateValue = value!;
+                                              stateId=value.id.toString();
+                                              print("===my technic=======${stateId}===============");
+                                              getCity("${value.id.toString()}");
+                                            });
+                                          },
+                                          underline: Container(),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+
+
+                              Padding(
+                                padding: const EdgeInsets.only(left: 10, right: 10, top: 10),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Material(
+                                      elevation: 4,
+                                      borderRadius: BorderRadius.circular(10),
+                                      child: Container(
+                                          width: 40,
+                                          height: 40,
+                                          child: Image.asset(
+                                            "assets/images/City.png",
+                                            scale: 1.4,
+                                          )),
+                                    ),
+                                    const SizedBox(width: 18),
+                                    Expanded(
+                                      child: Container(
+                                        width: 80,
+                                        height: 45,
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius: BorderRadius.circular(5),
+                                          boxShadow: const [
+                                            BoxShadow(
+                                              color: Colors.grey,
+                                              offset: Offset(
+                                                1.0,
+                                                1.0,
+                                              ),
+                                              blurRadius: 0.2,
+                                              spreadRadius: 0.5,
+                                            ),
+                                          ],
+                                        ),
+                                        child:
+
+
+                                        DropdownButton(
+                                          isExpanded: true,
+                                          value: cityValue,
+                                          hint: const Text('City'),
+                                          // Down Arrow Icon
+                                          icon: const Icon(Icons.keyboard_arrow_down),
+                                          // Array list of items
+                                          items: cityList.map((items) {
+                                            return DropdownMenuItem(value: items, child: Container(child: Text(items.name.toString())),
+                                              );
+                                          }).toList(),
+                                          // After selecting the desired option,it will
+                                          // change button value to selected value
+                                          onChanged: (CityData? value) {
+                                            setState(() {
+                                              selectarea=null;
+                                              cityValue = value!;
+                                              cityId=value.id.toString();
+                                              getarea('${value.id.toString()}');
+print("===my technic=======${cityId}===============");
+                                            });
+                                          },
+                                          underline: Container(),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+
+
+                              Padding(
+                                padding: const EdgeInsets.only(left: 10, right: 10, top: 10),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Material(
+                                      elevation: 4,
+                                      borderRadius: BorderRadius.circular(10),
+                                      child: Container(
+                                          width: 40,
+                                          height: 40,
+                                          child: Image.asset(
+                                            "assets/images/City.png",
+                                            scale: 1.4,
+                                          )),
+                                    ),
+                                    const SizedBox(width: 18),
+                                    Expanded(
+                                      child: Container(
+                                        width: 80,
+                                        height: 45,
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius: BorderRadius.circular(5),
+                                          boxShadow: const [
+                                            BoxShadow(
+                                              color: Colors.grey,
+                                              offset: Offset(
+                                                1.0,
+                                                1.0,
+                                              ),
+                                              blurRadius: 0.2,
+                                              spreadRadius: 0.5,
+                                            ),
+                                          ],
+                                        ),
+                                        child:
+
+
+                                        DropdownButton(
+                                          isExpanded: true,
+                                          value: selectarea,
+                                          hint: const Text('Area'),
+                                          // Down Arrow Icon
+                                          icon: const Icon(Icons.keyboard_arrow_down),
+                                          // Array list of items
+                                          items: areaList.map((items) {
+                                            return DropdownMenuItem(value: items, child: Container(child: Text(items.name.toString())),
+                                            );
+                                          }).toList(),
+                                          // After selecting the desired option,it will
+                                          // change button value to selected value
+                                          onChanged: (dynamic value) {
+                                            setState(() {
+                                              selectarea = value!;
+                                              areaid=value.id.toString();
+                                              print("===my technic=======${areaid}===============");
+                                            });
+                                          },
+                                          underline: Container(),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+
+                              // Padding(
+                              //   padding: const EdgeInsets.only(left: 10, right: 10, top: 10),
+                              //   child: Row(
+                              //     mainAxisAlignment: MainAxisAlignment.center,
+                              //     children: [
+                              //       Material(
+                              //         elevation: 4,
+                              //         borderRadius: BorderRadius.circular(10),
+                              //         child: Container(
+                              //           width: 40,
+                              //           height: 40,
+                              //           child: Image.asset(
+                              //             "assets/images/pin code.png",
+                              //             scale: 1.4,
+                              //           ),
+                              //         ),
+                              //       ),
+                              //       const SizedBox(width: 18),
+                              //       Expanded(
+                              //         child: Container(
+                              //           width: 80,
+                              //           height: 45,
+                              //           decoration: BoxDecoration(
+                              //             color: Colors.white,
+                              //             borderRadius: BorderRadius.circular(5),
+                              //             boxShadow: const [
+                              //               BoxShadow(
+                              //                 color: Colors.grey,
+                              //                 offset: Offset(1.0, 1.0,),
+                              //                 blurRadius: 0.2,
+                              //                 spreadRadius: 0.5,
+                              //               ),
+                              //             ],
+                              //           ),
+                              //           child: TextFormField(
+                              //             maxLength: 6,
+                              //             controller: pincodeCtr,
+                              //             keyboardType: TextInputType.number,
+                              //             decoration: const InputDecoration(
+                              //                 counterText: "",
+                              //                 // suffixIcon: suffixIcons,
+                              //                 contentPadding: EdgeInsets.symmetric(
+                              //                     vertical: 5, horizontal: 5),
+                              //                 border: OutlineInputBorder(
+                              //                     borderSide: BorderSide.none),
+                              //                 hintText: "Pincode"),
+                              //             validator: (value){
+                              //               if (value == null || value.isEmpty) {
+                              //                 return 'Please Enter Pincode';
+                              //               }
+                              //               return null;
+                              //             },
+                              //           ),
+                              //         ),
+                              //       ),
+                              //     ],
+                              //   ),
+                              // ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Checkbox(
+                                          value: isChecked,
+                                          activeColor: Colors.green,
+                                          side: const BorderSide(
                                             color: Colors.green,
                                           ),
-                                        ),
-                                        // suffixIcon: suffixIcons,
-                                        contentPadding: const EdgeInsets.symmetric(
-                                            vertical: 5, horizontal: 5),
-                                        border: OutlineInputBorder(
-                                            borderSide: BorderSide.none),
-                                        hintText: "Password"),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(
-                              left: 10, right: 10, top: 20),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Material(
-                                elevation: 4,
-                                borderRadius: BorderRadius.circular(10),
-                                child: Container(
-                                    width: 40,
-                                    height: 40,
-                                    child: Image.asset(
-                                      "assets/images/Password.png",
-                                      scale: 1.4,
-                                    )),
-                              ),
-                              const SizedBox(width: 18),
-                              Expanded(
-                                child: Container(
-                                  width: 80,
-                                  height: 45,
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(5),
-                                    boxShadow: const [
-                                      BoxShadow(
-                                        color: Colors.grey,
-                                        offset: Offset(
-                                          1.0,
-                                          1.0,
-                                        ),
-                                        blurRadius: 0.2,
-                                        spreadRadius: 0.5,
-                                      ),
-                                    ],
-                                  ),
-                                  child: TextFormField(
-                                    obscureText: isVisible2 ? false: true,
-                                    maxLength: 10,
-                                    controller: cPasswordEditingController,
-                                    keyboardType: TextInputType.text,
-                                    decoration:  InputDecoration(
-                                        counterText: "",
-                                        suffixIcon: IconButton(
-                                          onPressed: () {
-                                         setState(() {
-                                          isVisible2
-                                              ? isVisible2 = false
-                                              : isVisible2 = true;
+                                          onChanged: (val) {
+                                            setState(() {
+                                              isChecked = val!;
                                             });
-                                           },
-                                          icon: Icon(
-                                           isVisible2
-                                            ? Icons.remove_red_eye
-                                            : Icons.visibility_off,
-                                          color: Colors.green,
-                                           ),
-                                          ),
-                                        // suffixIcon: suffixIcons,
-                                         contentPadding: const EdgeInsets.symmetric(
-                                            vertical: 5, horizontal: 5),
-                                         border: const OutlineInputBorder(
-                                            borderSide: BorderSide.none),
-                                        hintText: "Confirm Password"),
+                                          }),
+                                       Row(
+                                         children: [
+
+
+                                           Text('I agree to all ',style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black, fontSize: 10),),
+                                           Text('terms & condition',style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blue, fontSize: 10),),
+                                           Text(' and ',style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black, fontSize: 10)),
+                                           Text('privacy policy',style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blue, fontSize: 10)),
+
+                                         ],
+                                       ),
+                                    ],
                                   ),
-                                ),
+                                ],
                               ),
-                            ],
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 10, right: 10, top: 15),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Material(
-                                elevation: 4,
-                                borderRadius: BorderRadius.circular(10),
+
+
+
+                              const SizedBox(height: 10),
+                              InkWell(
+                                onTap: () {
+                                 if (_formKey.currentState!.validate()){
+
+if(countryValue==null){
+
+  Fluttertoast.showToast(msg: "Please Select Country");
+}else if(stateValue==null){
+  Fluttertoast.showToast(msg: "Please Select State");
+
+
+
+}else if(cityValue==null){
+  Fluttertoast.showToast(msg: "Please Select City");
+
+
+
+}else if(stateValue==null){
+  Fluttertoast.showToast(msg: "Please Select State");
+
+
+
+}
+else if(isChecked==false){
+  Fluttertoast.showToast(msg: "Please Select Check Box");
+
+
+
+}
+
+else{
+
+  userRegister();
+
+}
+
+
+
+                                  }
+
+
+                                },
                                 child: Container(
-                                  width: 40,
+                                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(4),color: colors.secondary),
                                   height: 40,
-                                  child: Image.asset(
-                                    "assets/images/Address.png",
-                                    scale: 1.4,
-                                  ),
+                                  width: MediaQuery.of(context).size.width / 1.5,
+                                  child: Center(child: Text("Submit", style: TextStyle(color: Colors.white, fontSize: 18)),),
+
                                 ),
                               ),
-                              const SizedBox(width: 18),
-                              Expanded(
-                                child: Container(
-                                  width: 80,
-                                  height: 45,
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(5),
-                                    boxShadow: const [
-                                      BoxShadow(
-                                        color: Colors.grey,
-                                        offset: Offset(1.0, 1.0,),
-                                        blurRadius: 0.2,
-                                        spreadRadius: 0.5,
-                                      ),
-                                    ],
-                                  ),
-                                  child: TextFormField(
-                                    maxLength: 10,
-                                    controller: addressCtr,
-                                    keyboardType: TextInputType.text,
-                                    decoration: const InputDecoration(
-                                        counterText: "",
-                                        // suffixIcon: suffixIcons,
-                                        contentPadding: EdgeInsets.symmetric(
-                                            vertical: 5, horizontal: 5),
-                                        border: OutlineInputBorder(
-                                            borderSide: BorderSide.none),
-                                        hintText: "Address"),
-                                  ),
-                                ),
-                              ),
+                              const SizedBox(height: 10),
                             ],
                           ),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 10, right: 10, top: 15),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Material(
-                                elevation: 4,
-                                borderRadius: BorderRadius.circular(10),
-                                child: Container(
-                                    width: 40,
-                                    height: 40,
-                                    child: Image.asset(
-                                      "assets/images/Region.png",
-                                      scale: 1.4,
-                                    ),
-                                ),
-                              ),
-                              const SizedBox(width: 18),
-                              Expanded(
-                                child: Container(
-                                  width: 80,
-                                  height: 45,
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(5),
-                                    boxShadow: const [
-                                      BoxShadow(
-                                        color: Colors.grey,
-                                        offset: Offset(
-                                          1.0,
-                                          1.0,
-                                        ),
-                                        blurRadius: 0.2,
-                                        spreadRadius: 0.5,
-                                      ),
-                                    ],
-                                  ),
-                                  child: DropdownButton(
-                                    isExpanded: true,
-                                    value: countryValue,
-                                    hint: const Text('Country'),
-                                    // Down Arrow Icon
-                                    icon: const Icon(Icons.keyboard_arrow_down),
-                                    // Array list of items
-                                    items: countryList.map((items) {
-                                      return
-                                        DropdownMenuItem(
-                                          value: items,
-                                          child: Container(
-                                              child: Text(items.name.toString())),
-                                        );
-                                    }).toList(),
-                                    // After selecting the desired option,it will
-                                    // change button value to selected value
-                                    onChanged: (CountryData? value) {
-                                      setState(() {
-                                        countryValue = value!;
-                                        getstate("${countryValue!.id}");
-                                        // ("${stateValue!.id}");
-                                        // stateName = stateValue!.name;
-                                        // print("name herererb $stateName");
-                                      });
-                                    },
-                                    underline: Container(),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 10, right: 10, top: 10),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Material(
-                                elevation: 4,
-                                borderRadius: BorderRadius.circular(10),
-                                child: Container(
-                                    width: 40,
-                                    height: 40,
-                                    child: Image.asset(
-                                      "assets/images/State.png",
-                                      scale: 1.4,
-                                    )),
-                              ),
-                              const SizedBox(width: 18),
-                              Expanded(
-                                child: Container(
-                                  width: 80,
-                                  height: 45,
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(5),
-                                    boxShadow: const [
-                                      BoxShadow(
-                                        color: Colors.grey,
-                                        offset: Offset(
-                                          1.0,
-                                          1.0,
-                                        ),
-                                        blurRadius: 0.2,
-                                        spreadRadius: 0.5,
-                                      ),
-                                    ],
-                                  ),
-                                  child: DropdownButton(
-                                    isExpanded: true,
-                                    value: stateValue,
-                                    hint: const Text('State'),
-                                    // Down Arrow Icon
-                                    icon: const Icon(Icons.keyboard_arrow_down),
-                                    // Array list of items
-                                    items: stateList.map((items) {
-                                      return
-                                        DropdownMenuItem(
-                                          value: items,
-                                          child: Container(
-                                              child: Text(items.name.toString())),
-                                        );
-                                    }).toList(),
-                                    onChanged: (StataData? value) {
-                                      setState(() {
-                                        stateValue = value!;
-                                        getCity("${stateValue!.id}");
-                                        stateName = stateValue!.name;
-                                        print("name herererb $stateName");
-                                      });
-                                    },
-                                    underline: Container(),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 10, right: 10, top: 10),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Material(
-                                elevation: 4,
-                                borderRadius: BorderRadius.circular(10),
-                                child: Container(
-                                    width: 40,
-                                    height: 40,
-                                    child: Image.asset(
-                                      "assets/images/City.png",
-                                      scale: 1.4,
-                                    )),
-                              ),
-                              const SizedBox(width: 18),
-                              Expanded(
-                                child: Container(
-                                  width: 80,
-                                  height: 45,
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(5),
-                                    boxShadow: const [
-                                      BoxShadow(
-                                        color: Colors.grey,
-                                        offset: Offset(
-                                          1.0,
-                                          1.0,
-                                        ),
-                                        blurRadius: 0.2,
-                                        spreadRadius: 0.5,
-                                      ),
-                                    ],
-                                  ),
-                                  child: DropdownButton(
-                                    isExpanded: true,
-                                    value: cityValue,
-                                    hint: const Text('City'),
-                                    // Down Arrow Icon
-                                    icon: const Icon(Icons.keyboard_arrow_down),
-                                    // Array list of items
-                                    items: cityList.map((items) {
-                                      return DropdownMenuItem(value: items, child: Container(child: Text(items.name.toString())),
-                                        );
-                                    }).toList(),
-                                    // After selecting the desired option,it will
-                                    // change button value to selected value
-                                    onChanged: (CityData? value) {
-                                      setState(() {
-                                        cityValue = value!;
-                                        // getCity("${stateValue!.id}");
-                                        // stateName = stateValue!.name;
-                                        // print("name herererb $stateName");
-                                      });
-                                    },
-                                    underline: Container(),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 10, right: 10, top: 10),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Material(
-                                elevation: 4,
-                                borderRadius: BorderRadius.circular(10),
-                                child: Container(
-                                  width: 40,
-                                  height: 40,
-                                  child: Image.asset(
-                                    "assets/images/pin code.png",
-                                    scale: 1.4,
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(width: 18),
-                              Expanded(
-                                child: Container(
-                                  width: 80,
-                                  height: 45,
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(5),
-                                    boxShadow: const [
-                                      BoxShadow(
-                                        color: Colors.grey,
-                                        offset: Offset(1.0, 1.0,),
-                                        blurRadius: 0.2,
-                                        spreadRadius: 0.5,
-                                      ),
-                                    ],
-                                  ),
-                                  child: TextFormField(
-                                    maxLength: 10,
-                                    controller: pincodeCtr,
-                                    keyboardType: TextInputType.text,
-                                    decoration: const InputDecoration(
-                                        counterText: "",
-                                        // suffixIcon: suffixIcons,
-                                        contentPadding: EdgeInsets.symmetric(
-                                            vertical: 5, horizontal: 5),
-                                        border: OutlineInputBorder(
-                                            borderSide: BorderSide.none),
-                                        hintText: "Pincode"),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        // Row(
-                        //   children: [
-                        //     Checkbox(
-                        //         value: isChecked,
-                        //         activeColor: Colors.green,
-                        //         shape: RoundedRectangleBorder(
-                        //             borderRadius: BorderRadius.circular(4)),
-                        //         onChanged: (val) {
-                        //           setState(() {
-                        //             isChecked = val!;
-                        //           });
-                        //         }),
-                        //     const Text(
-                        //       'I agree to all',
-                        //       style: TextStyle(fontSize: 8),
-                        //     ),
-                        //     TextButton(
-                        //         onPressed: () {},
-                        //         child: const Text(
-                        //           'terms & condition',
-                        //           style: TextStyle(
-                        //               fontSize: 12,
-                        //               fontWeight: FontWeight.w500),
-                        //         )),
-                        //     const Text('and', style: TextStyle(fontSize: 12)),
-                        //     TextButton(
-                        //         onPressed: () {},
-                        //         child: const Text(
-                        //           'privacy policy',
-                        //           style: TextStyle(
-                        //             fontSize: 12,
-                        //             fontWeight: FontWeight.w500,
-                        //           ),
-                        //         ),
-                        //     ),
-                        //   ],
-                        // ),
-                        const SizedBox(height: 10),
-                        Container(
-                          height: 33,
-                          width: MediaQuery.of(context).size.width / 1.5,
-                          child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              primary: colors.secondary, // Background color
-                              onPrimary: Colors.amber, // Text Color (Foreground color)
-                            ),
-                            child: const Text("Submit", style: TextStyle(color: Colors.white, fontSize: 18)),
-                            onPressed: () {
-                              userRegister();
-                              // if(emailCtr.text.isEmpty){
-                              //   Fluttertoast.showToast(msg: "Please Fill Field.");
-                              // } else {
-                              //   sendOtp();
-                              //   //Navigator.push(context, MaterialPageRoute(builder: (context)=>HomeScreen()));
-                              // }
-                              // Navigator.push(context, MaterialPageRoute(builder: (context) => VerifyScreen()));
-                            },
-                          ),
-                        ),
-                        const SizedBox(height: 10),
-                      ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

@@ -167,7 +167,9 @@ class UserData {
       dynamic gender, 
       String? cashCollection, 
       String? commisionAmountType, 
-      num? revies,}){
+      num? revies,
+    String ?km,
+  }){
     _id = id;
     _email = email;
     _mobile = mobile;
@@ -222,6 +224,7 @@ class UserData {
     _cashCollection = cashCollection;
     _commisionAmountType = commisionAmountType;
     _revies = revies;
+    _km=km;
 }
 
   UserData.fromJson(dynamic json) {
@@ -279,6 +282,8 @@ class UserData {
     _cashCollection = json['cash_collection'];
     _commisionAmountType = json['commision_amount_type'];
     _revies = json['revies'];
+    _km = json['km']??"";
+
   }
   String? _id;
   String? _email;
@@ -334,6 +339,7 @@ class UserData {
   String? _cashCollection;
   String? _commisionAmountType;
   num? _revies;
+  String? _km;
   UserData copyWith({  String? id,
   String? email,
   String? mobile,
@@ -388,6 +394,8 @@ class UserData {
   String? cashCollection,
   String? commisionAmountType,
   num? revies,
+    String ?km,
+
 }) => UserData(  id: id ?? _id,
   email: email ?? _email,
   mobile: mobile ?? _mobile,
@@ -442,6 +450,7 @@ class UserData {
   cashCollection: cashCollection ?? _cashCollection,
   commisionAmountType: commisionAmountType ?? _commisionAmountType,
   revies: revies ?? _revies,
+  km: km ?? _km,
 );
   String? get id => _id;
   String? get email => _email;
@@ -497,6 +506,7 @@ class UserData {
   String? get cashCollection => _cashCollection;
   String? get commisionAmountType => _commisionAmountType;
   num? get revies => _revies;
+  String? get km => _km;
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
@@ -554,6 +564,7 @@ class UserData {
     map['cash_collection'] = _cashCollection;
     map['commision_amount_type'] = _commisionAmountType;
     map['revies'] = _revies;
+    map['km'] = _km;
     return map;
   }
 

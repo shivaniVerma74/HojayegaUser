@@ -295,9 +295,10 @@ class FifthScreen extends StatelessWidget {
           child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
               child: GestureDetector(
-                onTap: () => Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => const LoginPage())),
-                child: Container(
+                onTap: () =>   Navigator.of(context).pushAndRemoveUntil(
+    MaterialPageRoute(builder: (context) => LoginPage()),
+    (Route<dynamic> route) => false),
+    child: Container(
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(4),

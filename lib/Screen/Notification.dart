@@ -1,147 +1,208 @@
+
 import 'package:flutter/material.dart';
 
-class notificationPage extends StatefulWidget {
-  const notificationPage({Key? key}) : super(key: key);
+import 'package:http/http.dart' as http;
+import '../Helper/appBar.dart';
+import '../Helper/color.dart';
+
+class NotificationScreen extends StatefulWidget {
+  const NotificationScreen({Key? key}) : super(key: key);
   @override
-  State<notificationPage> createState() => _notificationPageState();
+  State<NotificationScreen> createState() => _NotificationScreenState();
 }
-class _notificationPageState extends State<notificationPage> {
-  List<String> listDetails = [
-    "Vikas agrawal",
-    "Bob John",
-    "Niraj Vyas",
-  ];
+
+class _NotificationScreenState extends State<NotificationScreen> {
+
+  @override
+  initState() {
+    super.initState();
+    // getData();
+
+  }
+
+  // String? vendorId;
+  // getData() async {
+  //   final SharedPreferences preferences = await SharedPreferences.getInstance();
+  //   vendorId = preferences.getString('vendorId');
+  //   return  getNotification();
+  // }
+
+  // NotificationModel? getNotiList;
+  // getNotification() async {
+  //   var headers = {
+  //     'Cookie': 'ci_session=1826473be67eeb9329a8e5393f7907573d116ca1'
+  //   };
+  //   var request = http.MultipartRequest('POST', Uri.parse(ApiServicves.notifications));
+  //   request.fields.addAll({
+  //     'user_id': vendorId.toString()
+  //   });
+  //   request.headers.addAll(headers);
+  //   http.StreamedResponse response = await request.send();
+  //   if (response.statusCode == 200) {
+  //     var finalResponse = await response.stream.bytesToString();
+  //     final finalResult = NotificationModel.fromJson(json.decode(finalResponse));
+  //     print("child category responsee $finalResult");
+  //     setState(() {
+  //       getNotiList = finalResult;
+  //       setState(() {});
+  //     });
+  //   } else {
+  //     print(response.reasonPhrase);
+  //   }
+  // }
+
+  // notificationClear() async{
+  //   var headers = {
+  //     'Cookie': 'ci_session=1826473be67eeb9329a8e5393f7907573d116ca1'
+  //   };
+  //   var request = http.MultipartRequest('POST', Uri.parse(ApiServicves.clearNotification));
+  //   request.fields.addAll({
+  //     'user_id': vendorId.toString()
+  //   });
+  //   request.headers.addAll(headers);
+  //   http.StreamedResponse response = await request.send();
+  //   if (response.statusCode == 200) {
+  //     print(await response.stream.bytesToString());
+  //     Navigator.pop(context);
+  //   }
+  //   else {
+  //     print(response.reasonPhrase);
+  //   }
+  // }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child:Scaffold(
-        // key: _key,
-          appBar: AppBar(
-            backgroundColor:Color(0xff112C48),
-            title: const Text(
-              "Notification",
-              style: TextStyle(color: Colors.white),
-            ),
-
-            centerTitle: true,
-            toolbarHeight: 70,
-            elevation: 6,
-
-          ),
-          body: Container(
-              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-              child: ListView(
-                  children: [
-                    Container(
-                        height: 40,
-                        decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(4),
-                            border: Border.all(color: Colors.black.withOpacity(0.3))),
-                        child: const TextField(
-                          maxLines: 1,
-                          decoration: InputDecoration(
-                            prefixIcon: Icon(Icons.search),
-                            hintText: "Search",
-                            border: InputBorder.none,
-                          ),
-                        )),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Container(
-                      padding: EdgeInsets.symmetric(horizontal: 20),
-                      child: ListView(physics: BouncingScrollPhysics(), children: [
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Container(
-                            alignment:Alignment.centerLeft,child:Text('Today')),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Container(
-                            alignment: Alignment.centerRight, child: Text('Clear All')),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        ListView.separated(
-                          physics: NeverScrollableScrollPhysics(),
-                          shrinkWrap: true,
-                          itemCount: listDetails.length,
-                          itemBuilder: (context, index) {
-                            return listTileWidget(index: index);
-                          },
-                          separatorBuilder: (context, index) {
-                            return SizedBox(
-                              height: 10,
-                            );
-                          },
-                        ),
-                        SizedBox(
-                          height: 20,
-                        ),
-                      ]
-                      ),
-
-                    )
-                  ]
-              )
-          )
-      ),
-    );
-  }
-
-  Widget listTileWidget({required int index}) {
-    return Container(
-      decoration: BoxDecoration(
-          color: Colors.white, borderRadius: BorderRadius.circular(15)),
-      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-      width: MediaQuery.of(context).size.width,
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            padding: EdgeInsets.only(top: 5),
-            child: CircleAvatar(
-              radius: 16,
-              backgroundImage: AssetImage('assets/images/notification image.png'),
+      child: Scaffold(
+          backgroundColor: colors.appbarColor,
+          appBar:    PreferredSize(
+            preferredSize: Size.fromHeight(80),
+            child: commonAppBar(context,
+                text:
+                "Notification"
             ),
           ),
-          Container(
-            padding: EdgeInsets.only(left: 10),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  listDetails[index],
-                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
-                ),
+          body: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.only(top: 5, left: 25, right: 25, bottom: 20),
+              child: Column(children: [
                 SizedBox(
-                  height: 2,
+                  height: 10,
                 ),
-                Container(
-                  width: MediaQuery.of(context).size.width * 0.7,
-                  child: Text(
-                    'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos',
-                    style: TextStyle(
-                      fontSize: 10,
+                Row(
+                  children:  [
+                    const Text(
+                      'Today',
+                      style: TextStyle(
+                          fontSize: 17,
+                          color: colors.blackTemp,
+                          fontWeight: FontWeight.w600),
                     ),
+                    Spacer(),
+                    InkWell(
+                      onTap: () {
+                        // notificationClear();
+                      },
+                      child: const Text(
+                        'Clear All',
+                        style: TextStyle(
+                            fontSize: 17,
+                            color: colors.blackTemp,
+                            fontWeight: FontWeight.w600),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                // getNotiList?.responseCode == "0"
+                //     ? Container(
+                //   height: MediaQuery.of(context).size.height / 1.6,
+                //   width: MediaQuery.of(context).size.width,
+                //   child: const Center(
+                //     child: Text(
+                //       'Notification Not Found',
+                //       style: TextStyle(
+                //           fontSize: 15,
+                //           fontWeight: FontWeight.bold),
+                //     ),
+                //   ),
+                // ):
+                Padding(
+                  padding: const EdgeInsets.only(top: 20),
+                  child: ListView.builder(
+                    itemCount:10,
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    itemBuilder: (context, index) {
+                      return Padding(
+                        padding:
+                        const EdgeInsets.only(bottom: 8),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius:
+                            BorderRadius.circular(13), color: Colors.white,
+                            border: Border.all(color: colors.primary, width: 1),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(10),
+                            child: Column(
+                              children: [
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                Row(
+                                  children: [
+                                    SizedBox(
+                                      width: 12,
+                                    ),
+                                    Text(
+                                      "${index + 1}.  This is good msg",
+                                      // "${getNotiList?.notifications?[index].dateSent.month ?? ""}-${getNotiList[index].dateSent.year ?? ""}",
+                                      style: TextStyle(
+                                          fontWeight:
+                                          FontWeight.bold,
+                                          color: colors
+                                              .blackTemp,
+                                          fontSize: 13),
+                                    ),
+                                  ],
+                                ),
+                                ListTile(
+                                  title: Text(
+                                    "Hii This Is Notidfication",
+                                    style: const TextStyle(
+                                        fontWeight:
+                                        FontWeight.bold,
+                                        color: colors
+                                            .blackTemp,
+                                        fontSize: 13),
+                                  ),
+                                  subtitle: Text(
+                                    "Hii this is msg",
+                                    style: TextStyle(
+                                        color: colors.black54,
+                                        fontSize: 10),
+                                  ),
+                                  // trailing: CachedNetworkImage(
+                                  //   imageUrl: "${getNotiList?.notifications?[index].}",
+                                  //   errorWidget: (context, url, error) => Image.asset('assets/images/splash.png'),
+                                  // ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      );
+                    },
                   ),
                 ),
-                SizedBox(
-                  height: 2,
-                ),
-                Text(
-                  'Just Now',
-                  style: TextStyle(fontSize: 10, color: Colors.grey),
-                ),
-              ],
+
+
+              ]),
             ),
-          )
-        ],
-      ),
+          )),
     );
   }
 }
-

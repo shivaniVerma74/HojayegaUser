@@ -30,9 +30,9 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   _navigateToHome() {
-    Future.delayed(const Duration(milliseconds: 35),() {
+    Future.delayed(const Duration(seconds: 4),() {
       if (finalOtp == null || finalOtp ==  '') {
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> const LoginPage()));
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> const IntroScreen()));
       } else {
         Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>  BottomNavBar()));
       }

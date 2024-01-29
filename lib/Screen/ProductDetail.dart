@@ -1,14 +1,22 @@
+import 'dart:convert';
+
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:ho_jayega_user_main/Helper/appBar.dart';
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
+import '../Helper/api.path.dart';
 import '../Helper/color.dart';
 import '../Model/getprodutcatwise.dart';
 import 'Cart.dart';
+import 'bottomScreen.dart';
 
 class ProductDetails extends StatefulWidget {
   Product? productId;
-  ProductDetails({Key? key, this.productId}) : super(key: key);
+  String? vendorId;
+  ProductDetails({Key? key, this.productId,this.vendorId}) : super(key: key);
 
   @override
   State<ProductDetails> createState() => _ProductDetailsState();
@@ -200,8 +208,9 @@ SizedBox(),
             ),
             InkWell(
               onTap: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => const Cart()));
+                addTocart();
+                // Navigator.push(context,
+                //     MaterialPageRoute(builder: (context) => const Cart()));
               },
               child: Container(
                 height: 50,
@@ -235,6 +244,7 @@ SizedBox(),
 
   }
   void decrementfun(){
+
     if(increment>1){
     increment--;
     setState(() {
@@ -242,4 +252,59 @@ SizedBox(),
     });
 
   }
-}}
+
+
+}
+
+@override
+  void initState() {
+    // TODO: implement initState
+
+  print("===my technic=======${widget.productId?.productId}===============");
+  }
+Future<void> addTocart(
+
+    ) async {
+
+
+  final SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+  String? user_id = sharedPreferences.getString('user_id');
+  var headers = {
+    'Cookie': 'ci_session=d09fc39a8b8a97b07417a28e972b458e44a87757'
+  };
+  var request = http.MultipartRequest('POST', Uri.parse('${ApiServicves.baseUrl}add_to_cart'));
+
+  request.fields.addAll({
+    'user_id': "${user_id.toString()}",
+    'product_id': '${widget.productId?.productId}',
+    'quantity': "${increment.toString()}",
+    'vendor_id': '${widget.vendorId.toString()}'
+  });
+
+  request.headers.addAll(headers);
+
+  http.StreamedResponse response = await request.send();
+  print("===my technic=======${request.fields}===============");
+  print("===my technic=======${request.url}===============");
+  if (response.statusCode == 200) {
+   var result=await response.stream.bytesToString();
+   var finalresult=jsonDecode(result);
+
+
+   if(finalresult['response_code']=="1"){
+
+    Fluttertoast.showToast(msg: "${finalresult['message']}");
+
+     Navigator.pushReplacement(context,
+         MaterialPageRoute(builder: (context) =>  BottomNavBar()));
+   }
+  }
+  else {
+  print(response.reasonPhrase);
+  }
+
+
+
+}
+
+}

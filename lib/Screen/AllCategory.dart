@@ -3,10 +3,12 @@ import 'dart:convert';
 import 'package:carousel_slider/carousel_options.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:ho_jayega_user_main/Helper/api.path.dart';
 import 'package:ho_jayega_user_main/Screen/MyCart.dart';
 import 'package:ho_jayega_user_main/Screen/ProductDetail.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../Helper/appBar.dart';
 import '../Helper/color.dart';
@@ -15,6 +17,7 @@ import '../Model/ChildCategoryModel.dart';
 import '../Model/SubCategoryModel.dart';
 import '../Model/getprodutcatwise.dart';
 import 'Cart.dart';
+import 'bottomScreen.dart';
 
 class AllCategory extends StatefulWidget {
   String ?ShopId;
@@ -31,8 +34,8 @@ class _AllCategoryState extends State<AllCategory> {
   void initState() {
     super.initState();
     getShopCategory();
-    getSubCat();
-    getChildCat();
+    // getSubCat();
+    // getChildCat();
   }
   CategoryModel? categoryModel;
   List<CategoryData> categoryList1 = [];
@@ -40,7 +43,12 @@ class _AllCategoryState extends State<AllCategory> {
   List <String> categoryNameList = [];
 
   String? Selectcat ="0";
+
+  bool isLoading=false;
   getShopCategory() async {
+    setState(() {
+      isLoading=true;
+    });
     var headers = {
       'Cookie': 'ci_session=70c618f5670ba3cd3a735fde130cab16e002a8af'
     };
@@ -52,18 +60,34 @@ class _AllCategoryState extends State<AllCategory> {
     if (response.statusCode == 200) {
       var result = await response.stream.bytesToString();
       print("this is a response===========> $result");
-      categoryList1 = CategoryModel.fromJson(json.decode(result)).data??[];
-      print("this is category slider===========> $categoryList1");
-      setState(() {
-        for(int i=0;i<categoryList1.length;i++){
-          categoryImageList.add(categoryList1[i].image ?? '');
-          categoryNameList.add(categoryList1[i].cName ?? '');
-          print("imageg ${categoryList1[i].image}");
-          setState(() {
+var finalresult=jsonDecode(result);
+if(finalresult['response_code']=="1") {
+  categoryList1 = CategoryModel
+      .fromJson(json.decode(result))
+      .data ?? [];
+  print("this is category slider===========> $categoryList1");
+  setState(() {
+    for (int i = 0; i < categoryList1.length; i++) {
+      categoryImageList.add(categoryList1[i].image ?? '');
+      categoryNameList.add(categoryList1[i].cName ?? '');
+     setState(() {
 
-          });
-        }
-      });
+     });
+    }
+  });
+  Selectcat=categoryList1[0].id;
+  getSubCat();
+  setState(() {
+    isLoading=false;
+  });
+}
+
+else{
+  setState(() {
+    isLoading=false;
+  });
+print("===my technic=======cat not found==============");
+}
     } else {
       print(response.reasonPhrase);
     }
@@ -78,21 +102,34 @@ String ?subcatid="0";
     request.fields.addAll({
       'cat_id': "${Selectcat.toString()}"
     });
-    print("seb category parameteer ${request.fields}");
     request.headers.addAll(headers);
     http.StreamedResponse response = await request.send();
     print("===my technic=======${request.fields}===============");
     print("===my technic=======${request.url}===============");
     if (response.statusCode == 200) {
-      var finalResponse = await response.stream.bytesToString();
-      final finalResult = SubCategoryModel.fromJson(json.decode(finalResponse));
-      print("sub category responsee $finalResult");
-      setState(() {
-        subCatData = finalResult;
-        setState(() {
 
+      var finalResponse = await response.stream.bytesToString();
+print("===my technic=======${finalResponse}===============");
+      var dinalresult=jsonDecode(finalResponse);
+      if(dinalresult['response_code']=="1"){
+
+          subCatData = SubCategoryModel.fromJson(dinalresult);
+
+        subcatid=subCatData?.data?[0].id;
+        getChildCat();
+setState(() {
+
+});
+      }else{
+        setState(() {
+          subCatData=null;
+          subcatid=null;
+
+          getChildCat();
         });
-      });
+        print("===my technic=======vsub cat not found===============");
+
+      }
     } else {
       print(response.reasonPhrase);
     }
@@ -114,21 +151,36 @@ String ?chidcatId="0";
     http.StreamedResponse response = await request.send();
     if (response.statusCode == 200) {
       var finalResponse = await response.stream.bytesToString();
-      final finalResult = ChildCategoryModel.fromJson(json.decode(finalResponse));
-      print("child category responsee $finalResult");
-      setState(() {
-        childCategoryModel = finalResult;
+      var finalresult=jsonDecode(finalResponse);
+      if(finalresult['response_code']=="1") {
+        childCategoryModel = ChildCategoryModel.fromJson(finalresult);
+        chidcatId=childCategoryModel?.data?[0].id;
+        getProduct();
         setState(() {
 
         });
-      });
+      }else{
+
+        setState(() {
+
+          childCategoryModel=null;
+          chidcatId=null;
+          getProduct();
+        });
+
+      }
     } else {
       print(response.reasonPhrase);
     }
   }
   GerProductcatWise?gerProductcatWise;
   List<Product> productList=[];
+
+  bool isLoading2=false;
   getProduct() async{
+    setState(() {
+     isLoading2=true;
+    });
     var headers = {
       'Cookie': 'ci_session=e456fb4275aab002e5eb6c860cc3811ebb3a9fa7'
     };
@@ -146,11 +198,20 @@ String ?chidcatId="0";
     http.StreamedResponse response = await request.send();
     if (response.statusCode == 200) {
       var finalResponse = await response.stream.bytesToString();
-     productList = GerProductcatWise.fromJson(json.decode(finalResponse)).products??[];
-      setState(() {
-
-      });
-
+      var finalresult=jsonDecode(finalResponse);
+      if(finalresult['status']=="1") {
+        productList = GerProductcatWise
+            .fromJson(json.decode(finalResponse))
+            .products ?? [];
+        setState(() {
+          isLoading2=false;
+        });
+      }else{
+        setState(() {
+          isLoading2=false;
+        });
+        productList.clear();
+      }
     } else {
       print(response.reasonPhrase);
     }
@@ -166,12 +227,15 @@ appBar:    PreferredSize(
   preferredSize: Size.fromHeight(80),
   child: commonAppBar(context,
         text:
-        "My Cart"
+        "Products"
             ),
 ),
 
         backgroundColor: colors.appbarColor,
-        body: SingleChildScrollView(
+        body:
+
+        !isLoading?
+        SingleChildScrollView(
           child: Column(
             children: [
               const SizedBox(height: 20),
@@ -297,7 +361,7 @@ appBar:    PreferredSize(
                             ),
                           ),
 
-                          Text('${categoryNameList[index]}',style: TextStyle(fontSize: 14,color: colors.text1),maxLines: 1,overflow: TextOverflow.ellipsis,)
+                          Text('${categoryNameList[index]}',style: TextStyle(fontSize: 13,color: colors.text1,fontWeight: FontWeight.bold),maxLines: 1,overflow: TextOverflow.ellipsis,)
                         ],
                       ),
                     );
@@ -353,7 +417,7 @@ appBar:    PreferredSize(
                     padding: EdgeInsets.only(left: 5),
                     child: Text(
                       'Sub Category',
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                      style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
                     ),
                   ),
                 ],
@@ -495,7 +559,7 @@ appBar:    PreferredSize(
                                         padding: const EdgeInsets.all(5),
                                         child: const Text(
                                           'Child category',
-                                          style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold,color: colors.text1),
+                                          style: TextStyle(fontSize: 17,fontWeight: FontWeight.bold,color: colors.text1),
                                         ),
                                       ),
                                     ],
@@ -561,15 +625,18 @@ appBar:    PreferredSize(
                                           ),
                                             );
                                         }):
-                                        Center(child: Text('Data Not Found'),)
+                                        Center(child: Text('Data Not Found'),),
+
+
+
                                   ),
                                   SingleChildScrollView(
                                     child: Container(
                                       margin: EdgeInsets.only(left: 5, right: 5),
-                                      height: 210,
-                                      width: 280,
+                                      height: MediaQuery.of(context).size.height/3.6,
+                                      width: 230,
                                       child:
-
+!isLoading2?
                                       productList.isNotEmpty?
 
                                       GridView.builder(
@@ -578,7 +645,7 @@ appBar:    PreferredSize(
                                                 crossAxisCount: 2,
                                                 crossAxisSpacing: 10,
                                                 mainAxisSpacing: 10,
-                                                mainAxisExtent: 170,
+                                                mainAxisExtent:    220,
                                             ),
                                         itemCount: productList.length,
                                         itemBuilder: (context, index) {
@@ -588,7 +655,7 @@ appBar:    PreferredSize(
                                             InkWell(
                                               onTap: () {
 
-                                                Navigator.push(context, MaterialPageRoute(builder: (context) => ProductDetails(productId: productList[index],)));
+                                                // Navigator.push(context, MaterialPageRoute(builder: (context) => ProductDetails(productId: productList[index],vendorId: widget.ShopId.toString(),)));
 
                                               },
                                               child: Container(
@@ -601,44 +668,51 @@ appBar:    PreferredSize(
                                                   children: [
 
 
-                                                    Padding(
-                                                      padding: const EdgeInsets.only(top: 5),
-                                                      child: CarouselSlider(
-                                                        options: CarouselOptions(
-                                                          height: 50,
-                                                          aspectRatio: 16 / 9,
-                                                          viewportFraction: 1.0,
-                                                          initialPage: 0,
-                                                          enableInfiniteScroll: true,
-                                                          reverse: false,
-                                                          autoPlay: true,
-                                                          autoPlayInterval: const Duration(seconds: 3),
-                                                          autoPlayAnimationDuration: const Duration(milliseconds: 800),
-                                                          autoPlayCurve: Curves.fastOutSlowIn,
-                                                          enlargeCenterPage: false,
-                                                          onPageChanged: (index, reason) {
-                                                            setState(() {
-                                                              currentIndex = index;
-                                                            });
-                                                          },
-                                                        ),
-                                                        items: productList[index].productImage
-                                                            ?.map(
-                                                              (item) => Padding(
-                                                            padding: const EdgeInsets.only(left: 5, right: 5),
-                                                            child: Container(
-                                                              width: MediaQuery.of(context).size.width,
-                                                              decoration: BoxDecoration(
-                                                                  borderRadius: BorderRadius.circular(8),
-                                                                  image: DecorationImage(
-                                                                      image: NetworkImage(
-                                                                        "${item}",
-                                                                      ),
-                                                                      fit: BoxFit.fill)),
-                                                            ),
+                                                    InkWell(
+                                                      onTap: () {
+
+                                                        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => ProductDetails(productId: productList[index],vendorId: widget.ShopId.toString(),)));
+
+                                                      },
+                                                      child: Padding(
+                                                        padding: const EdgeInsets.only(top: 5),
+                                                        child: CarouselSlider(
+                                                          options: CarouselOptions(
+                                                            height: 50,
+                                                            aspectRatio: 16 / 9,
+                                                            viewportFraction: 1.0,
+                                                            initialPage: 0,
+                                                            enableInfiniteScroll: true,
+                                                            reverse: false,
+                                                            autoPlay: true,
+                                                            autoPlayInterval: const Duration(seconds: 3),
+                                                            autoPlayAnimationDuration: const Duration(milliseconds: 800),
+                                                            autoPlayCurve: Curves.fastOutSlowIn,
+                                                            enlargeCenterPage: false,
+                                                            onPageChanged: (index, reason) {
+                                                              setState(() {
+                                                                currentIndex = index;
+                                                              });
+                                                            },
                                                           ),
-                                                        )
-                                                            .toList(),
+                                                          items: productList[index].productImage
+                                                              ?.map(
+                                                                (item) => Padding(
+                                                              padding: const EdgeInsets.only(left: 5, right: 5),
+                                                              child: Container(
+                                                                width: MediaQuery.of(context).size.width,
+                                                                decoration: BoxDecoration(
+                                                                    borderRadius: BorderRadius.circular(8),
+                                                                    image: DecorationImage(
+                                                                        image: NetworkImage(
+                                                                          "${item}",
+                                                                        ),
+                                                                        fit: BoxFit.fill)),
+                                                              ),
+                                                            ),
+                                                          )
+                                                              .toList(),
+                                                        ),
                                                       ),
                                                     ),
                                                     const SizedBox(
@@ -693,20 +767,97 @@ appBar:    PreferredSize(
                                                             Row(
                                                               children: [
                                                                 Text("\u{20B9} ${productList[index].productPrice}", style: TextStyle(color: colors.primary,decoration: TextDecoration.lineThrough,fontSize: 16)),
-                                                             Spacer(),   Container(alignment: Alignment.bottomRight,
-                                                                  height: 20,
-                                                                  width: 50,
-                                                                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(2),color: colors.secondary),
-                                                                  child:Center(
-                                                                    child: const Text(
-                                                                      'Add',
-                                                                      style: TextStyle(color: Colors.white),
+                                                             Spacer(),
+
+                                                                sddtocart==productList[index].productId?SizedBox.shrink():
+                                                                InkWell(
+                                                                  onTap: () {
+
+                                                                    setState(() {
+                                                                      increment=1;
+                                                                      sddtocart=productList[index].productId;
+                                                                    });
+
+                                                                  },
+                                                               child: Container(alignment: Alignment.bottomRight,
+                                                                    height: 20,
+                                                                    width: 50,
+                                                                    decoration: BoxDecoration(borderRadius: BorderRadius.circular(2),color: colors.secondary),
+                                                                    child:Center(
+                                                                      child: const Text(
+                                                                        'Add',
+                                                                        style: TextStyle(color: Colors.white),
+                                                                      ),
                                                                     ),
                                                                   ),
-                                                                ), ],
+                                                             ), ],
 
 
                                                             ),
+                                                           sddtocart==productList[index].productId?
+Column(children: [
+  SizedBox(height: 10,),
+
+
+  Container(
+    height: 20,
+
+    decoration: BoxDecoration(borderRadius: BorderRadius.circular(2),color: colors.secondary),
+    child:Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          SizedBox(),
+          InkWell(
+              onTap: () {
+
+                decrementfun();
+
+              },
+
+              child: Icon(Icons.remove,color: colors.whiteTemp,)
+
+          ),
+          Text("${increment.toString()}",style: TextStyle(color: colors.whiteTemp),),
+          InkWell(
+
+              onTap: () {
+
+                incrementfun();
+              },
+              child: Icon(Icons.add,color: colors.whiteTemp,)),
+          SizedBox(),
+
+
+        ]),
+  ),
+  SizedBox(height: 10,),
+
+
+  InkWell(
+    onTap: () {
+      addTocart(productList[index].productId.toString());
+    },
+    child: Container(
+      height: 20,
+
+      decoration: BoxDecoration(borderRadius: BorderRadius.circular(2),color: colors.secondary),
+      child:Center(
+        child: const Text(
+          'Add To Cart',
+          style: TextStyle(color: Colors.white),
+        ),
+      ),
+    ),
+  ),
+
+
+],):SizedBox.shrink(),
+
+
+
+
+
+
                                                          ],
                                                        ),
                                                      ),
@@ -719,7 +870,14 @@ appBar:    PreferredSize(
                                         },
                                       ):
 
-                                          Center(child: Text('Product Not Found'),),
+                                          Center(child: Text('Product Not Found'),):
+
+
+Container(height: MediaQuery.of(context).size.height/5,
+
+
+  child: Center(child: CircularProgressIndicator(color: colors.primary,),),
+),
                                     ),
                                   ),
                                   const SizedBox(
@@ -755,7 +913,15 @@ appBar:    PreferredSize(
               ),
             ],
           ),
-        ),
+        ):
+
+
+            Container(height: MediaQuery.of(context).size.height,
+
+            width: MediaQuery.of(context).size.width,
+              child: Center(child: CircularProgressIndicator(color: colors.primary,),),
+            ),
+
       ),
     );
   }
@@ -771,4 +937,80 @@ appBar:    PreferredSize(
           style: TextStyle(color: Colors.white),
         ),
       );
+
+
+  int increment=1;
+  var sddtocart;
+  void incrementfun(){
+    increment++;
+    setState(() {
+
+    });
+
+  }
+  void decrementfun(){
+
+    if(increment>1){
+      increment--;
+      setState(() {
+
+      });
+
+    }
+
+
+  }
+  Future<void> addTocart(
+
+      String productIddd
+
+      ) async {
+
+
+    final SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    String? user_id = sharedPreferences.getString('user_id');
+    var headers = {
+      'Cookie': 'ci_session=d09fc39a8b8a97b07417a28e972b458e44a87757'
+    };
+    var request = http.MultipartRequest('POST', Uri.parse('${ApiServicves.baseUrl}add_to_cart'));
+
+    request.fields.addAll({
+      'user_id': "${user_id.toString()}",
+      'product_id': '${productIddd.toString()}',
+      'quantity': "${increment.toString()}",
+      'vendor_id': '${widget.ShopId.toString()}'
+    });
+
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+    print("===my technic=======${request.fields}===============");
+    print("===my technic=======${request.url}===============");
+    if (response.statusCode == 200) {
+      var result=await response.stream.bytesToString();
+      print("===my technic=======${result}===============");
+
+      var finalresult=jsonDecode(result);
+
+
+      if(finalresult['response_code']=="1"){
+
+        Fluttertoast.showToast(msg: "${finalresult['message']}");
+
+        Navigator.pushReplacement(context,
+            MaterialPageRoute(builder: (context) =>  BottomNavBar()));
+      }
+      else{
+
+        Fluttertoast.showToast(msg: "${finalresult['message']}");
+      }
+    }
+    else {
+      print(response.reasonPhrase);
+    }
+
+
+
+  }
+
 }

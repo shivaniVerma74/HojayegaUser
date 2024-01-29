@@ -29,23 +29,23 @@ class _MyProfileState extends State<MyProfile> {
     // TODO: implement initState
     super.initState();
     getData();
-    getProfile();
-    getCountry();
-    nameEditingController.text = getProfileModel?.data?.username ?? "";
-    emailEditingController.text = getProfileModel?.data?.email ?? "";
-    mobileCtr.text = getProfileModel?.data?.email ?? "";
-    pincodeCtr.text = getProfileModel?.data?.countrycode ?? "";
-    addressCtr.text = getProfileModel?.data?.address ?? "";
-  }
 
+    getCountry();
+
+  }
+bool isLoading=false;
   getData() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     user_id = preferences.getString('user_id');
     print("user id in profileee $user_id");
+    getProfile();
   }
 
   GetProfileModel? getProfileModel;
   getProfile() async {
+    setState(() {
+      isLoading=true;
+    });
     var headers = {
       'Cookie': 'ci_session=b5446517c990dbe1fff8ddd07a4397adf7b075bf'
     };
@@ -56,13 +56,25 @@ class _MyProfileState extends State<MyProfile> {
    print("user id in profile screen ${request.fields}");
     request.headers.addAll(headers);
     http.StreamedResponse response = await request.send();
+    print("===my technic=======${request.fields}===============");
+    print("===my technic=======${request.url}===============");
     if (response.statusCode == 200) {
       var finalResponse = await response.stream.bytesToString();
-      final finalResult = GetProfileModel.fromJson(json.decode(finalResponse));
-      print("profile responseee $finalResult");
-      setState(() {
-        getProfileModel = finalResult;
-      });
+      var result=jsonDecode(finalResponse);
+
+      if(result['error']==false) {
+        setState(() {
+          getProfileModel = GetProfileModel.fromJson(result);
+
+
+          nameEditingController.text = getProfileModel?.data?.username ?? "";
+          emailEditingController.text = getProfileModel?.data?.email ?? "";
+          mobileCtr.text = getProfileModel?.data?.mobile ?? "";
+          addressCtr.text = getProfileModel?.data?.address ?? "";
+          // pincodeCtr.text=getProfileModel?.data?.??"";
+          isLoading=false;
+        });
+      }
     } else {
       print(response.reasonPhrase);
     }
@@ -111,11 +123,12 @@ class _MyProfileState extends State<MyProfile> {
   List<CityData> cityList = [];
   List<CountryData> countryList = [];
   List<StataData> stateList = [];
-  CityData? cityValue;
-  CountryData? countryValue;
-  StataData? stateValue;
-  String? stateName;
-  String? cityName;
+  dynamic cityValue;
+  dynamic countryValue;
+  dynamic stateValue;
+  var countryId;
+  var stateId;
+  var cityId;
 
   bool showPassword = false;
   bool showPasswordNew = false;
@@ -203,7 +216,10 @@ class _MyProfileState extends State<MyProfile> {
           style: TextStyle(fontWeight: FontWeight.w600, color: colors.whiteTemp)),
           centerTitle: true,
          ),
-        body: SingleChildScrollView(
+        body:
+
+        !isLoading?
+        SingleChildScrollView(
           child: Column(
             children: [
               SizedBox(height: 10),
@@ -292,7 +308,7 @@ class _MyProfileState extends State<MyProfile> {
                                         // suffixIcon: suffixIcons,
                                         contentPadding: EdgeInsets.symmetric(vertical: 5, horizontal: 5),
                                         border: OutlineInputBorder(borderSide: BorderSide.none),
-                                        hintText: "${getProfileModel?.data?.username}"
+                                        hintText: ""
                                     ),
                                   ),
                                 ),
@@ -345,7 +361,7 @@ class _MyProfileState extends State<MyProfile> {
                                             vertical: 5, horizontal: 5),
                                         border: OutlineInputBorder(
                                             borderSide: BorderSide.none),
-                                        hintText: "${getProfileModel?.data?.email}"),
+                                        hintText: ""),
                                   ),
                                 ),
                               ),
@@ -397,7 +413,7 @@ class _MyProfileState extends State<MyProfile> {
                                             vertical: 5, horizontal: 5),
                                         border: OutlineInputBorder(
                                             borderSide: BorderSide.none),
-                                        hintText: "${getProfileModel?.data?.mobile}"),
+                                        hintText: ""),
                                   ),
                                 ),
                               ),
@@ -449,13 +465,14 @@ class _MyProfileState extends State<MyProfile> {
                                             vertical: 5, horizontal: 5),
                                         border: OutlineInputBorder(
                                             borderSide: BorderSide.none),
-                                        hintText: "${getProfileModel?.data?.address}"),
+                                        hintText: ""),
                                   ),
                                 ),
                               ),
                             ],
                           ),
                         ),
+
                         Padding(
                           padding: const EdgeInsets.only(left: 10, right: 10, top: 15),
                           child: Row(
@@ -496,7 +513,7 @@ class _MyProfileState extends State<MyProfile> {
                                   child: DropdownButton(
                                     isExpanded: true,
                                     value: countryValue,
-                                    hint:  Text('${getProfileModel?.data?.country}'),
+                                    hint: const Text('Country'),
                                     // Down Arrow Icon
                                     icon: const Icon(Icons.keyboard_arrow_down),
                                     // Array list of items
@@ -508,10 +525,16 @@ class _MyProfileState extends State<MyProfile> {
                                               child: Text(items.name.toString())),
                                         );
                                     }).toList(),
-                                    onChanged: (CountryData? value) {
+                                    // After selecting the desired option,it will
+                                    // change button value to selected value
+                                    onChanged: (dynamic value) {
                                       setState(() {
-                                        countryValue = value!;
-                                        getstate("${countryValue!.id}");
+                                         stateValue=null;
+                                        countryValue = value;
+                                        countryId=value.id.toString();
+                                        print("===my technic=======${countryId}===============");
+                                        getstate("${value.id.toString()}");
+
                                       });
                                     },
                                     underline: Container(),
@@ -560,7 +583,7 @@ class _MyProfileState extends State<MyProfile> {
                                   child: DropdownButton(
                                     isExpanded: true,
                                     value: stateValue,
-                                    hint: Text('${getProfileModel?.data?.state}'),
+                                    hint: const Text('State'),
                                     // Down Arrow Icon
                                     icon: const Icon(Icons.keyboard_arrow_down),
                                     // Array list of items
@@ -572,12 +595,13 @@ class _MyProfileState extends State<MyProfile> {
                                               child: Text(items.name.toString())),
                                         );
                                     }).toList(),
-                                    onChanged: (StataData? value) {
+                                    onChanged: (dynamic value) {
                                       setState(() {
-                                        stateValue = value!;
-                                        getCity("${stateValue!.id}");
-                                        stateName = stateValue!.name;
-                                        print("name herererb $stateName");
+                                        cityValue=null;
+                                        stateValue = value;
+                                        stateId=value.id.toString();
+                                        print("===my technic=======${stateId}===============");
+                                        getCity("${value.id.toString()}");
                                       });
                                     },
                                     underline: Container(),
@@ -614,7 +638,10 @@ class _MyProfileState extends State<MyProfile> {
                                     boxShadow: const [
                                       BoxShadow(
                                         color: Colors.grey,
-                                        offset: Offset(1.0, 1.0),
+                                        offset: Offset(
+                                          1.0,
+                                          1.0,
+                                        ),
                                         blurRadius: 0.2,
                                         spreadRadius: 0.5,
                                       ),
@@ -623,7 +650,7 @@ class _MyProfileState extends State<MyProfile> {
                                   child: DropdownButton(
                                     isExpanded: true,
                                     value: cityValue,
-                                    hint:  Text('${getProfileModel?.data?.city}'),
+                                    hint: const Text('City'),
                                     // Down Arrow Icon
                                     icon: const Icon(Icons.keyboard_arrow_down),
                                     // Array list of items
@@ -631,9 +658,13 @@ class _MyProfileState extends State<MyProfile> {
                                       return DropdownMenuItem(value: items, child: Container(child: Text(items.name.toString())),
                                       );
                                     }).toList(),
-                                    onChanged: (CityData? value) {
+                                    // After selecting the desired option,it will
+                                    // change button value to selected value
+                                    onChanged: (dynamic value) {
                                       setState(() {
-                                        cityValue = value!;
+                                        cityValue = value;
+                                        cityId=value.id.toString();
+                                        print("===my technic=======${cityId}===============");
                                       });
                                     },
                                     underline: Container(),
@@ -643,58 +674,64 @@ class _MyProfileState extends State<MyProfile> {
                             ],
                           ),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 10, right: 10, top: 10),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Material(
-                                elevation: 4,
-                                borderRadius: BorderRadius.circular(10),
-                                child: Container(
-                                  width: 40,
-                                  height: 40,
-                                  child: Image.asset(
-                                    "assets/images/pin code.png",
-                                    scale: 1.4,
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(width: 18),
-                              Expanded(
-                                child: Container(
-                                  width: 80,
-                                  height: 45,
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(5),
-                                    boxShadow: const [
-                                      BoxShadow(
-                                        color: Colors.grey,
-                                        offset: Offset(1.0, 1.0,),
-                                        blurRadius: 0.2,
-                                        spreadRadius: 0.5,
-                                      ),
-                                    ],
-                                  ),
-                                  child: TextFormField(
-                                    maxLength: 10,
-                                    controller: pincodeCtr,
-                                    keyboardType: TextInputType.text,
-                                    decoration:  InputDecoration(
-                                        counterText: "",
-                                        // suffixIcon: suffixIcons,
-                                        contentPadding: const EdgeInsets.symmetric(
-                                            vertical: 5, horizontal: 5),
-                                        border: const OutlineInputBorder(
-                                            borderSide: BorderSide.none),
-                                        hintText: "${getProfileModel?.data?.countrycode}"),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
+                        // Padding(
+                        //   padding: const EdgeInsets.only(left: 10, right: 10, top: 10),
+                        //   child: Row(
+                        //     mainAxisAlignment: MainAxisAlignment.center,
+                        //     children: [
+                        //       Material(
+                        //         elevation: 4,
+                        //         borderRadius: BorderRadius.circular(10),
+                        //         child: Container(
+                        //           width: 40,
+                        //           height: 40,
+                        //           child: Image.asset(
+                        //             "assets/images/pin code.png",
+                        //             scale: 1.4,
+                        //           ),
+                        //         ),
+                        //       ),
+                        //       const SizedBox(width: 18),
+                        //       Expanded(
+                        //         child: Container(
+                        //           width: 80,
+                        //           height: 45,
+                        //           decoration: BoxDecoration(
+                        //             color: Colors.white,
+                        //             borderRadius: BorderRadius.circular(5),
+                        //             boxShadow: const [
+                        //               BoxShadow(
+                        //                 color: Colors.grey,
+                        //                 offset: Offset(1.0, 1.0,),
+                        //                 blurRadius: 0.2,
+                        //                 spreadRadius: 0.5,
+                        //               ),
+                        //             ],
+                        //           ),
+                        //           child: TextFormField(
+                        //             maxLength: 6,
+                        //             controller: pincodeCtr,
+                        //             keyboardType: TextInputType.number,
+                        //             decoration: const InputDecoration(
+                        //                 counterText: "",
+                        //                 // suffixIcon: suffixIcons,
+                        //                 contentPadding: EdgeInsets.symmetric(
+                        //                     vertical: 5, horizontal: 5),
+                        //                 border: OutlineInputBorder(
+                        //                     borderSide: BorderSide.none),
+                        //                 hintText: "Pincode"),
+                        //             validator: (value){
+                        //               if (value == null || value.isEmpty) {
+                        //                 return 'Please Enter Pincode';
+                        //               }
+                        //               return null;
+                        //             },
+                        //           ),
+                        //         ),
+                        //       ),
+                        //     ],
+                        //   ),
+                        // ),
                         const SizedBox(height: 40),
                         Container(
                           height: 45,
@@ -718,7 +755,13 @@ class _MyProfileState extends State<MyProfile> {
               )
             ],
           ),
-        ),
+        ):
+
+
+            Container(height: MediaQuery.of(context).size.height,
+            width: MediaQuery.of(context).size.width,
+              child: Center(child: CircularProgressIndicator(color: colors.primary,),),
+            )
     );
   }
 

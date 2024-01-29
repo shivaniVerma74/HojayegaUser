@@ -26,9 +26,7 @@ class _LoginPageState extends State<LoginPage> {
 
   String? _validateEmail(value) {
     if (value == null || value.isEmpty) {
-      return 'Please enter your email';
-    } else if (!isValidEmail(value)) {
-      return 'Please enter a valid email address';
+      return 'Please Enter Your Email/Phone Number';
     }
     return null;
   }
@@ -66,6 +64,7 @@ class _LoginPageState extends State<LoginPage> {
         user_mobile = finaResult['data']['mobile'];
         user_email = finaResult['data']['email'];
         await prefs.setString('user_id', finaResult['data']['id'].toString());
+        await prefs.setString('mobile', user_mobile.toString());
         print('____user data is___$user_id $user_email $user_mobile ${user_name}___');
         setState(()  {});
         Fluttertoast.showToast(msg: '${finaResult['message']}');
@@ -160,10 +159,12 @@ class _LoginPageState extends State<LoginPage> {
                                   color: Colors.grey.shade200,
                                   elevation: 5,
                                   child: TextFormField(
+                                    maxLength: 40,
                                     controller: email,
                                     validator: _validateEmail,
                                     // keyboardType: TextInputType.phone,
                                     decoration: InputDecoration(
+                                      counterText: "",
                                       hintText: "Email/Phone Number",
                                       isDense: true,
                                       filled: true,
@@ -213,9 +214,9 @@ class _LoginPageState extends State<LoginPage> {
                                     controller: password,
                                     validator: (value) {
                                       if (value!.isEmpty) {
-                                        return 'enter password';
+                                        return 'Please Enter password';
                                       } else if (value.length < 6) {
-                                        return 'At least 6 char required';
+                                        return 'At Least Six Character Required';
                                       }
                                       return null;
                                     },
@@ -280,7 +281,8 @@ class _LoginPageState extends State<LoginPage> {
                             ),
                             TextButton(
                                 onPressed: () {
-                                  // Navigator.push(context, MaterialPageRoute(builder: (context)=>const Forget()));
+
+                                  Navigator.push(context, MaterialPageRoute(builder: (context)=> SignUp(forget: true,)));
                                 },
                                 child: const Text(
                                   'Forgot Password?',
@@ -300,7 +302,13 @@ class _LoginPageState extends State<LoginPage> {
                           child: ElevatedButton(
                             onPressed: () {
                               if (_formKey.currentState!.validate()) {
-                                userLogin();
+                                if(isChecked==false){
+                                  Fluttertoast.showToast(msg: "Plaese Select Check Box");
+                                }else{
+
+                                  userLogin();
+                                }
+
                                 // Navigator.push(context, MaterialPageRoute(builder:(context)=> BottomNavBar()));
                               }
                             },
@@ -361,27 +369,33 @@ class _LoginPageState extends State<LoginPage> {
                 const SizedBox(
                   height: 8,
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text(
-                      "Don't have an account ?",
-                      style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
-                    ),
-                    TextButton(
-                        onPressed: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => const SignUp()));
-                        },
-                        child: const Text('Sign Up',
-                            style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.green))),
-                  ],
+                InkWell(
+                  onTap: () {
+
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>SignUp()));
+                  },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text(
+                        "Don't have an account ?",
+                        style:
+                            TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+                      ),
+                      TextButton(
+                          onPressed: () {
+
+                          },
+                          child: const Text('Sign Up',
+                              style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.green))),
+                    ],
+                  ),
                 ),
               ],
             ),

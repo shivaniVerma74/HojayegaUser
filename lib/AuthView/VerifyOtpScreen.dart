@@ -1,16 +1,20 @@
 
 
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:pinput/pinput.dart';
 
 import '../Screen/bottomScreen.dart';
 import '../Screen/homePage.dart';
 import 'CreateAccount.dart';
+import 'forgetpassword.dart';
 
 class VerifyOtp extends StatefulWidget {
+  bool ?forget;
   final OTP;
-  const VerifyOtp({super.key, this.OTP});
 
+   VerifyOtp({super.key, this.OTP,this.forget,this.userid});
+String ?userid;
   @override
   State<VerifyOtp> createState() => _OtpState();
 }
@@ -18,7 +22,7 @@ class _OtpState extends State<VerifyOtp> {
   final _formKey = GlobalKey<FormState>();
 
   var pin = TextEditingController();
-
+var otp;
   @override
   Widget build(BuildContext context) {
     final defaultPinTheme = PinTheme(
@@ -110,7 +114,13 @@ class _OtpState extends State<VerifyOtp> {
                               focusedPinTheme: focusedPinTheme,
                               submittedPinTheme: submittedPinTheme,
                               validator: (s) {
-                                return s == '${widget.OTP}' ? null : 'Pin is incorrect';
+                                setState(() {
+                                  otp=s.toString();
+                                });
+                                return  otp== null ? 'Please Fill OTP Fields':
+
+                                otp!= '${widget.OTP}'?'Please Enter Correct OTP':null;
+
                               },
                               pinputAutovalidateMode: PinputAutovalidateMode.onSubmit,
                               showCursor: true,
@@ -128,7 +138,17 @@ class _OtpState extends State<VerifyOtp> {
                         child: ElevatedButton(
                           onPressed: () {
                             if (_formKey.currentState!.validate()) {
-                              Navigator.push(context, MaterialPageRoute(builder:(context)=> const CreateAccount()));
+if(widget.forget==true){
+  Navigator.push(context, MaterialPageRoute(builder:(context)=>  ForgetPassword(userId: widget.userid.toString(),)));
+
+
+}else{
+  Navigator.push(context, MaterialPageRoute(builder:(context)=> const CreateAccount()));
+
+
+}
+
+
                             }
                           },
                           style: ElevatedButton.styleFrom(backgroundColor: Colors.green),

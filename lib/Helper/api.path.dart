@@ -25,6 +25,24 @@ class ApiServicves{
   static const String getCountrys = baseUrl+'get_countries';
   static const String getSettings = baseUrl+'general_setting';
   static const String getProductCatwise = baseUrl+'get_all_products_by_vendor';
+  static const String addTocart = baseUrl+'add_to_cart';
+  static const String sendOtpforgetpassword = baseUrl+'forgot_pass_user';
+  static const String resetpassword = baseUrl+'reset_password';
+  static const String getOfferBanner = baseUrl+'ad_offer_banner';
+  static const String getAddress = baseUrl+'get_address';
+  static const String addAddress = baseUrl+'add_address';
+  static const String deleteAddress = baseUrl+'delete_address';
+  static const String updateAddress = baseUrl+'update_address';
+  static const String placeOrder = baseUrl+'place_order';
+  static const String getTimeSlot = baseUrl+'get_time_slot';
+  static const String getregions = baseUrl+'get_regions';
+  static const String getOrder = baseUrl+'get_users_orders';
+  static const String cancleOrder = baseUrl+'cancel_order';
+
+  //services Api
+  static const String getServicesCat = baseUrl+'get_service_category';
+  static const String gerServicesofServices = baseUrl+'type_shops';
+
 }
 
 String? user_id;

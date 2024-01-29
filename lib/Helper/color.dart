@@ -40,6 +40,7 @@ extension colors on ColorScheme {
   static const Color primary =Color(0xff112C48);
   static const Color secondary = Color(0xff3A9F3E);
   static const Color appbarColor = Color(0xFFE2EBFE);
+  static const Color backColor = Color(0xFFE2EBFE);
   static const Color text = Color(0xFF100F0F);
   static const Color text1 = Color(0xFF403F3F);
 
