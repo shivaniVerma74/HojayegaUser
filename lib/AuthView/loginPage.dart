@@ -9,7 +9,6 @@ import '../Screen/bottomScreen.dart';
 import 'CreateAccount.dart';
 import 'package:http/http.dart' as http;
 
-
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
 
@@ -35,22 +34,18 @@ class _LoginPageState extends State<LoginPage> {
     // Simple email validation using a regular expression
     // You can customize the regular expression based on your requirements
     final emailRegex =
-    RegExp(r'^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
+        RegExp(r'^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
     return emailRegex.hasMatch(email);
   }
 
-
-  userLogin()async {
+  userLogin() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var headers = {
       'Cookie': 'ci_session=f26b98128123d8304685b8bd593560b8d95aef80'
     };
     var request = http.MultipartRequest('POST', Uri.parse(ApiServicves.login));
-    request.fields.addAll({
-      'email': email.text,
-      'password': password.text,
-      'device_token': ''
-    });
+    request.fields.addAll(
+        {'email': email.text, 'password': password.text, 'device_token': ''});
 
     request.headers.addAll(headers);
     http.StreamedResponse response = await request.send();
@@ -65,15 +60,16 @@ class _LoginPageState extends State<LoginPage> {
         user_email = finaResult['data']['email'];
         await prefs.setString('user_id', finaResult['data']['id'].toString());
         await prefs.setString('mobile', user_mobile.toString());
-        print('____user data is___$user_id $user_email $user_mobile ${user_name}___');
-        setState(()  {});
+        print(
+            '____user data is___$user_id $user_email $user_mobile ${user_name}___');
+        setState(() {});
         Fluttertoast.showToast(msg: '${finaResult['message']}');
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => BottomNavBar()));
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => BottomNavBar()));
       } else {
         Fluttertoast.showToast(msg: "${finaResult['message']}");
       }
-    }
-    else {
+    } else {
       print(response.reasonPhrase);
     }
   }
@@ -112,13 +108,13 @@ class _LoginPageState extends State<LoginPage> {
                     color: Colors.white),
               )),
           Positioned(
-              top: 100,
-              left: 50,
-              right: 50,
-              child: Image.asset(
-                "assets/images/LOGIN.png",
-                scale: 2,
-              ),
+            top: 100,
+            left: 50,
+            right: 50,
+            child: Image.asset(
+              "assets/images/LOGIN.png",
+              scale: 2,
+            ),
           ),
           Positioned(
             top: 320,
@@ -208,8 +204,7 @@ class _LoginPageState extends State<LoginPage> {
                                 child: Card(
                                   color: Colors.grey.shade200,
                                   elevation: 5,
-                                  child:
-                                  TextFormField(
+                                  child: TextFormField(
                                     obscureText: isVisible ? false : true,
                                     controller: password,
                                     validator: (value) {
@@ -236,7 +231,6 @@ class _LoginPageState extends State<LoginPage> {
                                           });
                                         },
                                         icon: Icon(
-
                                           isVisible
                                               ? Icons.remove_red_eye
                                               : Icons.visibility_off,
@@ -281,8 +275,12 @@ class _LoginPageState extends State<LoginPage> {
                             ),
                             TextButton(
                                 onPressed: () {
-
-                                  Navigator.push(context, MaterialPageRoute(builder: (context)=> SignUp(forget: true,)));
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => SignUp(
+                                                forget: true,
+                                              )));
                                 },
                                 child: const Text(
                                   'Forgot Password?',
@@ -302,10 +300,10 @@ class _LoginPageState extends State<LoginPage> {
                           child: ElevatedButton(
                             onPressed: () {
                               if (_formKey.currentState!.validate()) {
-                                if(isChecked==false){
-                                  Fluttertoast.showToast(msg: "Plaese Select Check Box");
-                                }else{
-
+                                if (isChecked == false) {
+                                  Fluttertoast.showToast(
+                                      msg: "Plaese Select Check Box");
+                                } else {
                                   userLogin();
                                 }
 
@@ -369,33 +367,26 @@ class _LoginPageState extends State<LoginPage> {
                 const SizedBox(
                   height: 8,
                 ),
-                InkWell(
-                  onTap: () {
-
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) =>SignUp()));
-                  },
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Text(
-                        "Don't have an account ?",
-                        style:
-                            TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
-                      ),
-                      TextButton(
-                          onPressed: () {
-
-                          },
-                          child: const Text('Sign Up',
-                              style: TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.green))),
-                    ],
-                  ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text(
+                      "Don't have an account ?",
+                      style:
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+                    ),
+                    TextButton(
+                        onPressed: () {
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => SignUp()));
+                        },
+                        child: const Text('Sign Up',
+                            style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.green),
+                        ),
+                    ),
+                  ],
                 ),
               ],
             ),

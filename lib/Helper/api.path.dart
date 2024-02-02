@@ -38,6 +38,8 @@ class ApiServicves{
   static const String getregions = baseUrl+'get_regions';
   static const String getOrder = baseUrl+'get_users_orders';
   static const String cancleOrder = baseUrl+'cancel_order';
+  static const String vendorCharges = baseUrl+'vendor_charges';
+  static const String clickUser = baseUrl+'click_user';
 
   //services Api
   static const String getServicesCat = baseUrl+'get_service_category';
