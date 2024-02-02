@@ -6,7 +6,7 @@ class GetCartListModel {
   String cartTotal;
   String totalItems;
   String status;
-
+  Vendor? vendor;
   GetCartListModel({
     required this.responseCode,
     required this.message,
@@ -14,6 +14,7 @@ class GetCartListModel {
     required this.cartTotal,
     required this.totalItems,
     required this.status,
+    required this.vendor,
   });
 
   factory GetCartListModel.fromJson(Map<String, dynamic> json) => GetCartListModel(
@@ -23,6 +24,7 @@ class GetCartListModel {
     cartTotal: json["cart_total"],
     totalItems: json["total_items"],
     status: json["status"],
+    vendor: json["vendor"] == null ? null : Vendor.fromJson(json["vendor"]),
   );
 
   Map<String, dynamic> toJson() => {
@@ -74,3 +76,22 @@ class CarLlist {
     "price": price,
   };
 }
+
+class Vendor {
+    Vendor({
+        required this.lat,
+        required this.lang,
+    });
+
+    final String? lat;
+    final String? lang;
+
+    factory Vendor.fromJson(Map<String, dynamic> json){ 
+        return Vendor(
+            lat: json["lat"],
+            lang: json["lang"],
+        );
+    }
+
+}
+
