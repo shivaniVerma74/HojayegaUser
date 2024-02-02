@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -1362,25 +1363,30 @@ class _CartState extends State<Cart> {
 
   Future<void> placeorder() async {
     try {
-      String product_id = '';
+      final SharedPreferences sharedPreferences =
+          await SharedPreferences.getInstance();
+      String? userId = sharedPreferences.getString('user_id');
+      String? mobileNo = sharedPreferences.getString('mobile');
+      var product_id = [];
+      var qty = [];
+      print("vendor: ${cartListModel!.cart.first.vendorId.toString()}");
+
       getCatList.forEach((element) {
-        product_id += "${element.productId},";
+        product_id.add(element.productId.toString());
+        qty.add(element.quantity.toString());
         print('Naman ${product_id}');
       });
+
       var headers = {
         'Cookie': 'ci_session=03ee76b67ba18209673407bdac6cd1c4d79c67fc'
       };
-      var request = http.MultipartRequest(
-          'POST',
-          Uri.parse(
-              'https://developmentalphawizz.com/hojayega/api/place_order'));
-      request.fields.addAll({
-        'product_id': product_id,
-        'qty': getCatList.length.toString(),
-        'user_id': '511',
+      var body = {
+        'product_id': product_id.join(','),
+        'qty': qty.join(','),
+        'user_id': userId.toString(),
         'total': cartListModel!.cartTotal.toString(),
-        'mobile_no': '3333333333',
-        'address_id': '1',
+        'mobile_no': mobileNo.toString(),
+        'address_id': addressids.toString(),
         'vendor_id': cartListModel!.cart.first.vendorId.toString(),
         'time': 'From ${selectTimeslot.fromTime} To ${selectTimeslot.toTime}',
         'vehicle_type':
@@ -1389,18 +1395,21 @@ class _CartState extends State<Cart> {
         'orders_type': 'One Way',
         'payment_method': 'COD',
         'delivery_charge': DeliveryCharge.toString(),
-      });
+        'product_type':
+            (productitem.indexOf(selectproducts.toString()) + 1).toString()
+      };
+      log(body.toString());
+      var request = await http.post(
+          Uri.parse(
+              'https://developmentalphawizz.com/hojayega/api/place_order'),
+          body: body,
+          headers: headers);
 
-      request.headers.addAll(headers);
+      log(request.body);
 
-      http.StreamedResponse response = await request.send();
-
-      if (response.statusCode == 200) {
-        print(await response.stream.bytesToString());
-      } else {
-        print(response.reasonPhrase);
-      }
-    } catch (e) {
+      var json = jsonDecode(request.body);
+    } catch (e, stackTrace) {
+      print(stackTrace);
       throw Exception(e);
     }
   }

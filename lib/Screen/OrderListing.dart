@@ -134,13 +134,7 @@ class _OrderListingState extends State<OrderListing> {
                                               Text("₹ ${orderList[i].total.toString()}/-", style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16)),
                                             ],
                                           ),
-
-
-
                                           orderList[i].orderStatus=="0"?SizedBox.shrink():
-
-
-
                                           orderList[i].orderStatus=="4" ?    Container(
                                             height: 30,
                                             width: MediaQuery.of(context).size.width,
