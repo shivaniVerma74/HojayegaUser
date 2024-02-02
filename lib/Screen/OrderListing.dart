@@ -134,24 +134,15 @@ class _OrderListingState extends State<OrderListing> {
                                               Text("₹ ${orderList[i].total.toString()}/-", style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16)),
                                             ],
                                           ),
-
-
-
                                           orderList[i].orderStatus=="0"?SizedBox.shrink():
-
-
-
                                           orderList[i].orderStatus=="4" ?    Container(
                                             height: 30,
                                             width: MediaQuery.of(context).size.width,
                                             decoration: BoxDecoration(borderRadius: BorderRadius.circular(5), color: Colors.red),
                                             child: Center(child: Text("Canceled", style: TextStyle(fontSize: 14, color: colors.whiteTemp, fontWeight: FontWeight.w600),)),
                                           ):
-
                                           Row(
-
                                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-
                                             children: [
                                               InkWell(
                                                 onTap: () {
