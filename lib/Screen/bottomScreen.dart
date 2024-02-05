@@ -36,17 +36,13 @@ class _BottomNavBarState extends State<BottomNavBar> {
   final GlobalKey<ScaffoldState> _key = GlobalKey(); // Create a key
   @override
   void initState() {
+    int? index = 0;
 
-    int? index=0;
-
-    if (index ==0) {
-
+    if (index == 0) {
       setState(() {
-        selectedIndex =0;
+        selectedIndex = 0;
       });
-      _child =  selectedIndex== 0
-          ? HomeScreen():
-      Container();
+      _child = selectedIndex == 0 ? HomeScreen() : Container();
     } else {
       _child = Container();
     }
@@ -67,69 +63,60 @@ class _BottomNavBarState extends State<BottomNavBar> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-        child:
-
-
-        WillPopScope(
-
-          onWillPop: () async {
-            showDialog(
-                context: context,
-                barrierDismissible: false,
-                builder: (BuildContext context) {
-                  return AlertDialog(
-                    title: Text("Confirm Exit"),
-                    content: Text("Are you sure you want to exit?"),
-                    actions: <Widget>[
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(primary: colors.primary),
-                        child: Text("YES"),
-                        onPressed: () {
-                          SystemNavigator.pop();
-                        },
-                      ),
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(primary: colors.primary),
-                        child: Text("NO"),
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                      )
-                    ],
-                  );
-                });
-            return true;
-          },
-          child: Scaffold(
-      key: _key,
-      backgroundColor: colors.appbarColor,
-      appBar: PreferredSize(
-            preferredSize: Size.fromHeight(selectedIndex == 1||selectedIndex == 4 ? 0 : 80),
-            child: selectedIndex == 0
-                ? homeAppBar(
-                    context,
-                    text: "Home",
-                    ontap: () {
-                      _key.currentState!.openDrawer();
+        child: WillPopScope(
+      onWillPop: () async {
+        showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text("Confirm Exit"),
+                content: Text("Are you sure you want to exit?"),
+                actions: <Widget>[
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(primary: colors.primary),
+                    child: Text("YES"),
+                    onPressed: () {
+                      SystemNavigator.pop();
+                    },
+                  ),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(primary: colors.primary),
+                    child: Text("NO"),
+                    onPressed: () {
+                      Navigator.of(context).pop();
                     },
                   )
-                :
-            selectedIndex==1?SizedBox.shrink():
-
-            commonAppBar(context,
-                text: selectedIndex == 3
-                    ? "My Bookings"
-                    : selectedIndex == 4
-                    ? "Pick & Drop"
-                    : "My Orders"),
-      ),
-      body:
-
-
-
-
-      _child,
-      drawer: Drawer(
+                ],
+              );
+            });
+        return true;
+      },
+      child: Scaffold(
+        key: _key,
+        backgroundColor: colors.appbarColor,
+        appBar: PreferredSize(
+          preferredSize: Size.fromHeight(
+              selectedIndex == 1 || selectedIndex == 4 ? 0 : 80),
+          child: selectedIndex == 0
+              ? homeAppBar(
+                  context,
+                  text: "Home",
+                  ontap: () {
+                    _key.currentState!.openDrawer();
+                  },
+                )
+              : selectedIndex == 1
+                  ? SizedBox.shrink()
+                  : commonAppBar(context,
+                      text: selectedIndex == 3
+                          ? "My Bookings"
+                          : selectedIndex == 4
+                              ? "Pick & Drop"
+                              : "My Orders"),
+        ),
+        body: _child,
+        drawer: Drawer(
           child: ListView(children: [
             DrawerHeader(
               decoration: const BoxDecoration(
@@ -166,11 +153,13 @@ class _BottomNavBarState extends State<BottomNavBar> {
                       user_name == null || user_name == ""
                           ? const Text(
                               'Demo',
-                              style: TextStyle(fontSize: 16, color: Colors.white),
+                              style:
+                                  TextStyle(fontSize: 16, color: Colors.white),
                             )
                           : Text(
                               '$user_name',
-                              style: TextStyle(fontSize: 16, color: Colors.white),
+                              style:
+                                  TextStyle(fontSize: 16, color: Colors.white),
                             ),
                     ],
                   )
@@ -179,7 +168,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
             ),
             InkWell(
               onTap: () {
-              Navigator.pop(context);
+                Navigator.pop(context);
                 setState(() {
                   currentIndex = 1;
                 });
@@ -449,7 +438,6 @@ class _BottomNavBarState extends State<BottomNavBar> {
                   tabb: 14,
                   indexx: currentIndex,
                 )),
-
             const SizedBox(
               height: 5,
             ),
@@ -458,7 +446,11 @@ class _BottomNavBarState extends State<BottomNavBar> {
                   setState(() {
                     currentIndex = 15;
                   });
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => PrivacyPolicy(),));
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => PrivacyPolicyScreen(),
+                      ));
                 },
                 child: DrawerIconTab(
                   titlee: 'Privecy Policy',
@@ -474,8 +466,11 @@ class _BottomNavBarState extends State<BottomNavBar> {
                   setState(() {
                     currentIndex = 16;
                   });
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => termsAndCondition(),));
-
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => termsAndCondition(),
+                      ));
                 },
                 child: DrawerIconTab(
                   titlee: 'Terms & Conditions',
@@ -483,7 +478,6 @@ class _BottomNavBarState extends State<BottomNavBar> {
                   tabb: 16,
                   indexx: currentIndex,
                 )),
-
             const SizedBox(
               height: 5,
             ),
@@ -493,8 +487,11 @@ class _BottomNavBarState extends State<BottomNavBar> {
                     currentIndex = 17;
                   });
 
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => FaqScreen(),));
-
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => FaqPage(),
+                      ));
                 },
                 child: DrawerIconTab(
                   titlee: 'Faq',
@@ -522,8 +519,8 @@ class _BottomNavBarState extends State<BottomNavBar> {
               height: 20,
             ),
           ]),
-      ),
-      bottomNavigationBar: FluidNavBar(
+        ),
+        bottomNavigationBar: FluidNavBar(
           icons: [
             FluidNavBarIcon(
                 icon: Icons.home,
@@ -597,9 +594,9 @@ class _BottomNavBarState extends State<BottomNavBar> {
               ],
             ),
           ),
+        ),
       ),
-    ),
-        ));
+    ));
   }
 
   Future<void> share() async {
@@ -644,12 +641,12 @@ class _BottomNavBarState extends State<BottomNavBar> {
           );
         });
   }
+
   Future<void> removeSession() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.remove("user_id");
-
-
   }
+
   void _handleNavigationChange(int index) {
     setState(() {
       selectedIndex = index;
@@ -664,8 +661,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
           _child = MyOrders();
           break;
         case 3:
-          _child =
-               MyBooking();
+          _child = MyBooking();
           // OrderListing();
           break;
         case 4:
@@ -681,8 +677,6 @@ class _BottomNavBarState extends State<BottomNavBar> {
     });
   }
 }
-
-
 
 class DrawerIconTab extends StatefulWidget {
   final IconData? icon;
@@ -748,7 +742,6 @@ class _DrawerIconTabState extends State<DrawerIconTab> {
       ),
     );
   }
-
 }
 
 // class DrawerImageTab extends StatefulWidget {

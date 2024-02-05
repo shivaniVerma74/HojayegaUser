@@ -32,8 +32,8 @@ class _AllCategoryState extends State<AllCategory> {
   void initState() {
     super.initState();
     getShopCategory();
-    // getSubCat();
-    // getChildCat();
+    getSubCat();
+    getChildCat();
   }
 
   CategoryModel? categoryModel;
@@ -178,7 +178,7 @@ class _AllCategoryState extends State<AllCategory> {
     });
     request.headers.addAll(headers);
     print("===my technic=======${request.fields}===============");
-    print("===my technic=======${request.url}===============");
+    print("===my technic=======${request.url}==========Navigatorinit=====");
     http.StreamedResponse response = await request.send();
     if (response.statusCode == 200) {
       var finalResponse = await response.stream.bytesToString();
@@ -563,15 +563,14 @@ class _AllCategoryState extends State<AllCategory> {
                               child: Column(
                                 children: [
                                   Container(
-                                    height: size.height * 0.57,
+                                    // height: size.height * 0.57,
                                     width: size.width * 0.7,
-                                    // color: Colors.orange,
                                     child: Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
-                                        Row(
-                                          children: const [
+                                        const Row(
+                                          children: [
                                             Padding(
                                               padding: EdgeInsets.all(5),
                                               child: Text(
