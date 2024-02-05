@@ -184,7 +184,9 @@ class _AllCategoryState extends State<AllCategory> {
       var finalResponse = await response.stream.bytesToString();
       var finalresult = jsonDecode(finalResponse);
       if (finalresult['status'] == "1") {
-        productList = GerProductcatWise.fromJson(json.decode(finalResponse)).products ?? [];
+        productList =
+            GerProductcatWise.fromJson(json.decode(finalResponse)).products ??
+                [];
         setState(() {
           isLoading2 = false;
         });
@@ -316,8 +318,7 @@ class _AllCategoryState extends State<AllCategory> {
                                                 ),
                                                 child: const Center(
                                                   child: Padding(
-                                                    padding:
-                                                        EdgeInsets.all(2),
+                                                    padding: EdgeInsets.all(2),
                                                     child: Icon(
                                                       Icons.check,
                                                       color: Colors.white,
@@ -326,7 +327,8 @@ class _AllCategoryState extends State<AllCategory> {
                                                   ),
                                                 ),
                                               ),
-                                            ): SizedBox.shrink(),
+                                            )
+                                          : SizedBox.shrink(),
                                     ],
                                   ),
                                 ),
@@ -430,46 +432,78 @@ class _AllCategoryState extends State<AllCategory> {
                                                       const EdgeInsets.all(10),
                                                   child: Column(
                                                     children: [
-                                                      subCatData?.data?[index].image == null || subCatData?.data?[index].image == ""
+                                                      subCatData?.data?[index]
+                                                                      .image ==
+                                                                  null ||
+                                                              subCatData
+                                                                      ?.data?[
+                                                                          index]
+                                                                      .image ==
+                                                                  ""
                                                           ? Container(
-                                                              decoration: BoxDecoration(
-                                                                borderRadius: BorderRadius.circular(10),
-                                                                color: Colors.white,
+                                                              decoration:
+                                                                  BoxDecoration(
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            10),
+                                                                color: Colors
+                                                                    .white,
                                                               ),
-                                                              child: Image.asset(
+                                                              child:
+                                                                  Image.asset(
                                                                 "assets/images/placeholder.png",
-                                                                fit: BoxFit.cover,
+                                                                fit: BoxFit
+                                                                    .cover,
                                                               ),
                                                             )
                                                           : Stack(
                                                               children: [
                                                                 Container(
-                                                                    height: 60,
-                                                                    width: 80,
-                                                                    decoration: BoxDecoration(
-                                                                      borderRadius: BorderRadius.circular(10),
-                                                                      color: Colors.white,
-                                                                      image: DecorationImage(
-                                                                        image: NetworkImage('${subCatData?.data?[index].image}'),
-                                                                        fit: BoxFit.fill,
-                                                                      ),
+                                                                  height: 60,
+                                                                  width: 80,
+                                                                  decoration:
+                                                                      BoxDecoration(
+                                                                    borderRadius:
+                                                                        BorderRadius.circular(
+                                                                            10),
+                                                                    color: Colors
+                                                                        .white,
+                                                                    image:
+                                                                        DecorationImage(
+                                                                      image: NetworkImage(
+                                                                          '${subCatData?.data?[index].image}'),
+                                                                      fit: BoxFit
+                                                                          .fill,
                                                                     ),
+                                                                  ),
                                                                 ),
-                                                                subcatid == subCatData?.data?[index].id
+                                                                subcatid ==
+                                                                        subCatData
+                                                                            ?.data?[
+                                                                                index]
+                                                                            .id
                                                                     ? Positioned(
                                                                         top: 6,
                                                                         left: 6,
                                                                         child:
                                                                             Container(
                                                                           //width: MediaQuery.of(context).size.width,
-                                                                          width: 20,
-                                                                          height: 20,
-                                                                          decoration: const BoxDecoration(
-                                                                            shape: BoxShape.circle,
-                                                                            color: Colors.green,
+                                                                          width:
+                                                                              20,
+                                                                          height:
+                                                                              20,
+                                                                          decoration:
+                                                                              const BoxDecoration(
+                                                                            shape:
+                                                                                BoxShape.circle,
+                                                                            color:
+                                                                                Colors.green,
                                                                           ),
-                                                                          child: const Center(
-                                                                            child: Padding(
+                                                                          child:
+                                                                              const Center(
+                                                                            child:
+                                                                                Padding(
                                                                               padding: EdgeInsets.all(2),
                                                                               child: Icon(
                                                                                 Icons.check,
@@ -479,12 +513,17 @@ class _AllCategoryState extends State<AllCategory> {
                                                                             ),
                                                                           ),
                                                                         ),
-                                                                      ): const SizedBox.shrink(),
+                                                                      )
+                                                                    : const SizedBox
+                                                                        .shrink(),
                                                               ],
                                                             ),
-                                                      Text("${subCatData?.data?[index].cName}",
+                                                      Text(
+                                                        "${subCatData?.data?[index].cName}",
                                                         style: const TextStyle(
-                                                            fontWeight: FontWeight.w500),
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .w500),
                                                       ),
                                                     ],
                                                   ),
@@ -492,25 +531,29 @@ class _AllCategoryState extends State<AllCategory> {
                                               );
                                             })
                                         : Container(
-                                            height: MediaQuery.of(context).size.height / 2.5,
-                                            child: const Center(child: Text("Data Not Found"))),
+                                            height: MediaQuery.of(context)
+                                                    .size
+                                                    .height /
+                                                2.5,
+                                            child: const Center(
+                                                child: Text("Data Not Found"))),
                                   ),
                                   Container(
                                     width: 100,
                                     decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(5)),
                                     child: ElevatedButton(
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor: const Color(0XFF112c48),
-                                          // shape: RoundedRectangleBorder(),
-                                        ),
-                                        onPressed: () {},
-                                        child: const Text(
-                                          'More',
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 20),
-                                        ),
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor:
+                                            const Color(0XFF112c48),
+                                        // shape: RoundedRectangleBorder(),
+                                      ),
+                                      onPressed: () {},
+                                      child: const Text(
+                                        'More',
+                                        style: TextStyle(
+                                            color: Colors.white, fontSize: 20),
+                                      ),
                                     ),
                                   ),
                                 ],
@@ -543,33 +586,53 @@ class _AllCategoryState extends State<AllCategory> {
                                         ),
                                         Container(
                                           height: 50,
-                                          child: childCategoryModel?.data?.isNotEmpty ?? false
+                                          child: childCategoryModel
+                                                      ?.data?.isNotEmpty ??
+                                                  false
                                               ? ListView.builder(
                                                   shrinkWrap: true,
                                                   scrollDirection:
                                                       Axis.horizontal,
-                                                  itemCount: childCategoryModel?.data?.length ?? 0,
-                                                  itemBuilder: (context, index) {
+                                                  itemCount: childCategoryModel
+                                                          ?.data?.length ??
+                                                      0,
+                                                  itemBuilder:
+                                                      (context, index) {
                                                     return InkWell(
                                                       onTap: () {
                                                         setState(() {
-                                                          chidcatId = childCategoryModel?.data?[index].id;
+                                                          chidcatId =
+                                                              childCategoryModel
+                                                                  ?.data?[index]
+                                                                  .id;
                                                         });
                                                         getProduct();
                                                       },
                                                       child: Padding(
-                                                        padding: const EdgeInsets.all(5.0),
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .all(5.0),
                                                         child: Column(
                                                           children: [
                                                             Container(
                                                               height: 30,
                                                               width: 90,
-                                                              decoration: BoxDecoration(
-                                                                borderRadius: BorderRadius.circular(5),
+                                                              decoration:
+                                                                  BoxDecoration(
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            5),
                                                                 border: Border.all(
-                                                                    color: chidcatId == childCategoryModel?.data?[index].id
-                                                                        ? colors.secondary
-                                                                        : Colors.black,
+                                                                    color: chidcatId ==
+                                                                            childCategoryModel
+                                                                                ?.data?[
+                                                                                    index]
+                                                                                .id
+                                                                        ? colors
+                                                                            .secondary
+                                                                        : Colors
+                                                                            .black,
                                                                     width: 3),
                                                                 color: const Color(
                                                                     0XFF112c48),
@@ -611,7 +674,7 @@ class _AllCategoryState extends State<AllCategory> {
                                                           crossAxisCount: 2,
                                                           crossAxisSpacing: 10,
                                                           mainAxisSpacing: 10,
-                                                          mainAxisExtent: 220,
+                                                          mainAxisExtent: 260,
                                                         ),
                                                         itemCount:
                                                             productList.length,
@@ -624,7 +687,7 @@ class _AllCategoryState extends State<AllCategory> {
                                                             child: Container(
                                                               margin:
                                                                   const EdgeInsets
-                                                                          .only(
+                                                                      .only(
                                                                       top: 0),
                                                               decoration: BoxDecoration(
                                                                   borderRadius:
@@ -651,7 +714,7 @@ class _AllCategoryState extends State<AllCategory> {
                                                                     child:
                                                                         Padding(
                                                                       padding: const EdgeInsets
-                                                                              .only(
+                                                                          .only(
                                                                           top:
                                                                               5),
                                                                       child:
@@ -754,7 +817,8 @@ class _AllCategoryState extends State<AllCategory> {
                                                                   Padding(
                                                                     padding:
                                                                         const EdgeInsets
-                                                                            .all(5),
+                                                                            .all(
+                                                                            5),
                                                                     child:
                                                                         Column(
                                                                       crossAxisAlignment:

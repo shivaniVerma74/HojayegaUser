@@ -1,7 +1,10 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:ho_jayega_user_main/Model/VendorChargeModel.dart';
+import 'package:ho_jayega_user_main/Model/timeSlotCharge.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import '../AuthView/loginPage.dart';
@@ -91,6 +94,7 @@ class _CartState extends State<Cart> {
                             } else {
                               placeproduct();
                             }
+                            placeorder();
                           },
                           child: Padding(
                             padding: const EdgeInsets.only(left: 20, top: 10),
@@ -382,9 +386,15 @@ class _CartState extends State<Cart> {
                                             InkWell(
                                                 onTap: () {
                                                   _descrementerCounter(
-                                                      getCatList[index].quantity ?? "",
-                                                      getCatList[index].vendorId ?? "",
-                                                      getCatList[index].productId ?? "");
+                                                      getCatList[index]
+                                                              .quantity ??
+                                                          "",
+                                                      getCatList[index]
+                                                              .vendorId ??
+                                                          "",
+                                                      getCatList[index]
+                                                              .productId ??
+                                                          "");
                                                 },
                                                 child: const Icon(
                                                   Icons.remove,
@@ -400,15 +410,25 @@ class _CartState extends State<Cart> {
                                             InkWell(
                                                 onTap: () {
                                                   _incrementCounter(
-                                                      getCatList[index].quantity ?? "",
-                                                      getCatList[index].vendorId ?? "",
-                                                      getCatList[index].productId ?? "");
+                                                      getCatList[index]
+                                                              .quantity ??
+                                                          "",
+                                                      getCatList[index]
+                                                              .vendorId ??
+                                                          "",
+                                                      getCatList[index]
+                                                              .productId ??
+                                                          "");
                                                 },
                                                 child: const Icon(Icons.add,
                                                     color: Colors.black,
                                                     size: 30)),
                                             InkWell(
-                                              onTap: () {deletePopop(getCatList[index].cartId ??"");},
+                                              onTap: () {
+                                                deletePopop(
+                                                    getCatList[index].cartId ??
+                                                        "");
+                                              },
                                               child: Container(
                                                 height: 45,
                                                 width: 140,
@@ -483,6 +503,8 @@ class _CartState extends State<Cart> {
                                       "From ${newValue.fromTime.toString()} To ${newValue.toTime.toString()}";
                                   print(
                                       "===my technic=======$timefrom===============");
+                                  postTimeSlot(
+                                      newValue.fromTime, newValue.toTime);
                                 });
                               },
                               items: timeSlot.map((dynamic orderitem) {
@@ -518,7 +540,7 @@ class _CartState extends State<Cart> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: const [
-                              Text("Order Type",
+                              Text("Product Type",
                                   style: TextStyle(
                                       fontSize: 17,
                                       fontWeight: FontWeight.bold)),
@@ -564,6 +586,68 @@ class _CartState extends State<Cart> {
                               }).toList(),
                               decoration: const InputDecoration(
                                 border: InputBorder.none,
+                                hintText: 'Select Product Type',
+                                hintStyle: TextStyle(color: Colors.white),
+                                filled: true,
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(
+                              left: 15, right: 15, top: 15, bottom: 15),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: const [
+                              Text("Order Type",
+                                  style: TextStyle(
+                                      fontSize: 17,
+                                      fontWeight: FontWeight.bold)),
+                              Text("",
+                                  style: TextStyle(
+                                      fontSize: 1, fontWeight: FontWeight.w400))
+                            ],
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 5,
+                        ),
+                        Container(
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color: colors.primary),
+                          width: MediaQuery.of(context).size.width / 1.1,
+                          child: Card(
+                            color: colors.primary,
+                            elevation: 2,
+                            child: DropdownButtonFormField<String>(
+                              value: selectproducts,
+                              icon: const Icon(
+                                Icons.keyboard_arrow_down_sharp,
+                                color: colors.whiteTemp,
+                              ),
+                              onChanged: (String? newValue) {
+                                setState(() {
+                                  selectproducts = newValue!;
+                                  print(
+                                      "===my technic=======$selectOrders===============");
+                                });
+                              },
+                              items: productitem.map((String orderitem) {
+                                return DropdownMenuItem(
+                                  value: orderitem,
+                                  child: Text(
+                                    orderitem.toString(),
+                                    style: const TextStyle(
+                                        color: colors.secondary),
+                                  ),
+                                );
+                              }).toList(),
+                              decoration: const InputDecoration(
+                                border: InputBorder.none,
                                 hintText: 'Select Order Type',
                                 hintStyle: TextStyle(color: Colors.white),
                                 filled: true,
@@ -571,37 +655,6 @@ class _CartState extends State<Cart> {
                             ),
                           ),
                         ),
-                        //
-                        // Container(
-                        //   decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: colors.primary),
-                        //   width: MediaQuery.of(context).size.width/1.1,
-                        //   child: Card(
-                        //     color: colors.primary,
-                        //     elevation: 2,
-                        //     child: DropdownButtonFormField<String>(
-                        //       value: selectwhehicle,
-                        //       icon: const Icon(Icons.keyboard_arrow_down_sharp, color: colors.whiteTemp,),
-                        //       onChanged: (String? newValue) {
-                        //         setState(() {
-                        //           selectwhehicle = newValue!;
-                        //           print("===my technic=======${selectwhehicle}===============");
-                        //         });
-                        //       },
-                        //       items: whehicleitem.map((String orderitem) {
-                        //         return DropdownMenuItem(
-                        //           value: orderitem,
-                        //           child: Text(orderitem.toString(), style: TextStyle(color: colors.secondary),),
-                        //         );
-                        //       }).toList(),
-                        //       decoration: const InputDecoration(
-                        //         border: InputBorder.none,
-                        //         hintText: 'Vehicle Type',
-                        //         hintStyle: TextStyle(color: Colors.white),
-                        //         filled: true,
-                        //       ),
-                        //     ),
-                        //   ),
-                        // ),
                         const SizedBox(
                           height: 10,
                         ),
@@ -621,237 +674,309 @@ class _CartState extends State<Cart> {
                             ],
                           ),
                         ),
-
-                        SizedBox(
-                          height: 20,
+                        const SizedBox(
+                          height: 5,
                         ),
-
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            InkWell(
-                              onTap: () {
+                        Container(
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color: colors.primary),
+                          width: MediaQuery.of(context).size.width / 1.1,
+                          child: Card(
+                            color: colors.primary,
+                            elevation: 2,
+                            child: DropdownButtonFormField<String>(
+                              value: selectedVehicle,
+                              icon: const Icon(
+                                Icons.keyboard_arrow_down_sharp,
+                                color: colors.whiteTemp,
+                              ),
+                              onChanged: (String? newValue) {
                                 setState(() {
-                                  selectBike = 1;
+                                  selectedVehicle = newValue!;
+                                  print(
+                                      "===my technic=======${selectedVehicle}===============");
+                                  getDeliveryCharges(
+                                      vType: selectedVehicle.toString());
                                 });
                               },
-                              child: Row(
-                                children: [
-                                  Container(
-                                    height: 20,
-                                    width: 20,
-                                    decoration: BoxDecoration(
-                                        border:
-                                            Border.all(color: colors.primary)),
-                                    child: Center(
-                                        child: selectBike == 1
-                                            ? const Icon(
-                                                Icons.check,
-                                                color: colors.primary,
-                                                size: 15,
-                                              )
-                                            : SizedBox.shrink()),
+                              items: vehicleItem.map((String orderitem) {
+                                return DropdownMenuItem(
+                                  value: orderitem,
+                                  child: Text(
+                                    orderitem.toString(),
+                                    style: TextStyle(color: colors.secondary),
                                   ),
-                                  const SizedBox(
-                                    width: 10,
-                                  ),
-                                  Container(
-                                    height: 30,
-                                    width: 30,
-                                    decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(3),
-                                        image: const DecorationImage(
-                                            image: AssetImage(
-                                                "assets/images/cycling.png"),
-                                            fit: BoxFit.fill)),
-                                  )
-                                ],
+                                );
+                              }).toList(),
+                              decoration: const InputDecoration(
+                                border: InputBorder.none,
+                                hintText: 'Select Vehicle Type',
+                                hintStyle: TextStyle(color: Colors.white),
+                                filled: true,
                               ),
                             ),
-                            InkWell(
-                              onTap: () {
-                                setState(() {
-                                  selectBike = 2;
-                                });
-                              },
-                              child: Row(
-                                children: [
-                                  Container(
-                                    height: 20,
-                                    width: 20,
-                                    decoration: BoxDecoration(
-                                        border:
-                                            Border.all(color: colors.primary)),
-                                    child: Center(
-                                        child: selectBike == 2
-                                            ? const Icon(
-                                                Icons.check,
-                                                color: colors.primary,
-                                                size: 15,
-                                              )
-                                            : SizedBox.shrink()),
-                                  ),
-                                  const SizedBox(
-                                    width: 10,
-                                  ),
-                                  Container(
-                                    height: 30,
-                                    width: 30,
-                                    decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(3),
-                                        image: const DecorationImage(
-                                            image: AssetImage(
-                                                "assets/images/bike.png"),
-                                            fit: BoxFit.fill)),
-                                  )
-                                ],
-                              ),
-                            ),
-                          ],
+                          ),
                         ),
-
                         const SizedBox(
                           height: 10,
                         ),
-
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            InkWell(
-                              onTap: () {
-                                setState(() {
-                                  selectBike = 3;
-                                });
-                              },
-                              child: Row(
-                                children: [
-                                  Container(
-                                    height: 20,
-                                    width: 20,
-                                    decoration: BoxDecoration(
-                                        border:
-                                            Border.all(color: colors.primary)),
-                                    child: Center(
-                                        child: selectBike == 3
-                                            ? const Icon(
-                                                Icons.check,
-                                                color: colors.primary,
-                                                size: 15,
-                                              )
-                                            : const SizedBox.shrink()),
-                                  ),
-                                  const SizedBox(
-                                    width: 10,
-                                  ),
-                                  Container(
-                                    height: 30,
-                                    width: 30,
-                                    decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(3),
-                                        image: const DecorationImage(
-                                            image: AssetImage(
-                                                "assets/images/AUTO - Copy.png"),
-                                            fit: BoxFit.fill)),
-                                  )
-                                ],
-                              ),
-                            ),
-                            InkWell(
-                              onTap: () {
-                                setState(() {
-                                  selectBike = 4;
-                                });
-                              },
-                              child: Row(
-                                children: [
-                                  Container(
-                                    height: 20,
-                                    width: 20,
-                                    decoration: BoxDecoration(
-                                        border:
-                                            Border.all(color: colors.primary)),
-                                    child: Center(
-                                        child: selectBike == 4
-                                            ? const Icon(
-                                                Icons.check,
-                                                color: colors.primary,
-                                                size: 15,
-                                              )
-                                            : SizedBox.shrink()),
-                                  ),
-                                  const SizedBox(
-                                    width: 10,
-                                  ),
-                                  Container(
-                                    height: 30,
-                                    width: 30,
-                                    decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(3),
-                                        image: const DecorationImage(
-                                            image: AssetImage(
-                                                "assets/images/TRUCK - Copy.png"),
-                                            fit: BoxFit.fill)),
-                                  )
-                                ],
-                              ),
-                            ),
-                          ],
+                        Text(
+                          "Delivery Charges  : $DeliveryCharge",
+                          style: TextStyle(
+                            fontSize: 18,
+                          ),
                         ),
-
-                        selectBike == 2
-                            ? Column(
-                                children: [
-                                  const SizedBox(
-                                    height: 20,
-                                  ),
-                                  Container(
-                                    decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(10),
-                                        color: colors.primary),
-                                    width:
-                                        MediaQuery.of(context).size.width / 1.1,
-                                    child: Card(
-                                      color: colors.primary,
-                                      elevation: 2,
-                                      child: DropdownButtonFormField<String>(
-                                        value: selectBikeType,
-                                        icon: const Icon(
-                                          Icons.keyboard_arrow_down_sharp,
-                                          color: colors.whiteTemp,
-                                        ),
-                                        onChanged: (String? newValue) {
-                                          setState(() {
-                                            selectBikeType = newValue!;
-                                            print(
-                                                "===my technic=======$selectBikeType===============");
-                                          });
-                                        },
-                                        items: bikeType.map((String orderitem) {
-                                          return DropdownMenuItem(
-                                            value: orderitem,
-                                            child: Text(
-                                              orderitem.toString(),
-                                              style: const TextStyle(
-                                                  color: colors.secondary),
-                                            ),
-                                          );
-                                        }).toList(),
-                                        decoration: const InputDecoration(
-                                          border: InputBorder.none,
-                                          hintText: 'Select Bike Type',
-                                          hintStyle:
-                                              TextStyle(color: Colors.white),
-                                          filled: true,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              )
-                            : SizedBox.shrink(),
                         const SizedBox(
-                          height: 20,
+                          height: 10,
                         ),
+                        // Padding(
+                        //   padding: const EdgeInsets.only(
+                        //       left: 15, right: 15, top: 15, bottom: 15),
+                        //   child: Row(
+                        //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        //     children: const [
+                        //       Text("Vehicle Type",
+                        //           style: TextStyle(
+                        //               fontSize: 17,
+                        //               fontWeight: FontWeight.bold)),
+                        //       Text("",
+                        //           style: TextStyle(
+                        //               fontSize: 1, fontWeight: FontWeight.w400))
+                        //     ],
+                        //   ),
+                        // ),
+
+                        // SizedBox(
+                        //   height: 20,
+                        // ),
+
+                        // Row(
+                        //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        //   children: [
+                        //     InkWell(
+                        //       onTap: () {
+                        //         setState(() {
+                        //           selectBike = 1;
+                        //         });
+                        //       },
+                        //       child: Row(
+                        //         children: [
+                        //           Container(
+                        //             height: 20,
+                        //             width: 20,
+                        //             decoration: BoxDecoration(
+                        //                 border:
+                        //                     Border.all(color: colors.primary)),
+                        //             child: Center(
+                        //                 child: selectBike == 1
+                        //                     ? const Icon(
+                        //                         Icons.check,
+                        //                         color: colors.primary,
+                        //                         size: 15,
+                        //                       )
+                        //                     : SizedBox.shrink()),
+                        //           ),
+                        //           const SizedBox(
+                        //             width: 10,
+                        //           ),
+                        //           Container(
+                        //             height: 30,
+                        //             width: 30,
+                        //             decoration: BoxDecoration(
+                        //                 borderRadius: BorderRadius.circular(3),
+                        //                 image: const DecorationImage(
+                        //                     image: AssetImage(
+                        //                         "assets/images/cycling.png"),
+                        //                     fit: BoxFit.fill)),
+                        //           )
+                        //         ],
+                        //       ),
+                        //     ),
+                        //     InkWell(
+                        //       onTap: () {
+                        //         setState(() {
+                        //           selectBike = 2;
+                        //         });
+                        //       },
+                        //       child: Row(
+                        //         children: [
+                        //           Container(
+                        //             height: 20,
+                        //             width: 20,
+                        //             decoration: BoxDecoration(
+                        //                 border:
+                        //                     Border.all(color: colors.primary)),
+                        //             child: Center(
+                        //                 child: selectBike == 2
+                        //                     ? const Icon(
+                        //                         Icons.check,
+                        //                         color: colors.primary,
+                        //                         size: 15,
+                        //                       )
+                        //                     : SizedBox.shrink()),
+                        //           ),
+                        //           const SizedBox(
+                        //             width: 10,
+                        //           ),
+                        //           Container(
+                        //             height: 30,
+                        //             width: 30,
+                        //             decoration: BoxDecoration(
+                        //                 borderRadius: BorderRadius.circular(3),
+                        //                 image: const DecorationImage(
+                        //                     image: AssetImage(
+                        //                         "assets/images/bike.png"),
+                        //                     fit: BoxFit.fill)),
+                        //           )
+                        //         ],
+                        //       ),
+                        //     ),
+                        //   ],
+                        // ),
+
+                        // const SizedBox(
+                        //   height: 10,
+                        // ),
+
+                        // Row(
+                        //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        //   children: [
+                        //     InkWell(
+                        //       onTap: () {
+                        //         setState(() {
+                        //           selectBike = 3;
+                        //         });
+                        //       },
+                        //       child: Row(
+                        //         children: [
+                        //           Container(
+                        //             height: 20,
+                        //             width: 20,
+                        //             decoration: BoxDecoration(
+                        //                 border:
+                        //                     Border.all(color: colors.primary)),
+                        //             child: Center(
+                        //                 child: selectBike == 3
+                        //                     ? const Icon(
+                        //                         Icons.check,
+                        //                         color: colors.primary,
+                        //                         size: 15,
+                        //                       )
+                        //                     : const SizedBox.shrink()),
+                        //           ),
+                        //           const SizedBox(
+                        //             width: 10,
+                        //           ),
+                        //           Container(
+                        //             height: 30,
+                        //             width: 30,
+                        //             decoration: BoxDecoration(
+                        //                 borderRadius: BorderRadius.circular(3),
+                        //                 image: const DecorationImage(
+                        //                     image: AssetImage(
+                        //                         "assets/images/AUTO - Copy.png"),
+                        //                     fit: BoxFit.fill)),
+                        //           )
+                        //         ],
+                        //       ),
+                        //     ),
+                        //     InkWell(
+                        //       onTap: () {
+                        //         setState(() {
+                        //           selectBike = 4;
+                        //         });
+                        //       },
+                        //       child: Row(
+                        //         children: [
+                        //           Container(
+                        //             height: 20,
+                        //             width: 20,
+                        //             decoration: BoxDecoration(
+                        //                 border:
+                        //                     Border.all(color: colors.primary)),
+                        //             child: Center(
+                        //                 child: selectBike == 4
+                        //                     ? const Icon(
+                        //                         Icons.check,
+                        //                         color: colors.primary,
+                        //                         size: 15,
+                        //                       )
+                        //                     : SizedBox.shrink()),
+                        //           ),
+                        //           const SizedBox(
+                        //             width: 10,
+                        //           ),
+                        //           Container(
+                        //             height: 30,
+                        //             width: 30,
+                        //             decoration: BoxDecoration(
+                        //                 borderRadius: BorderRadius.circular(3),
+                        //                 image: const DecorationImage(
+                        //                     image: AssetImage(
+                        //                         "assets/images/TRUCK - Copy.png"),
+                        //                     fit: BoxFit.fill)),
+                        //           )
+                        //         ],
+                        //       ),
+                        //     ),
+                        //   ],
+                        // ),
+
+                        // selectBike == 2
+                        //     ? Column(
+                        //         children: [
+                        //           const SizedBox(
+                        //             height: 20,
+                        //           ),
+                        //           Container(
+                        //             decoration: BoxDecoration(
+                        //                 borderRadius: BorderRadius.circular(10),
+                        //                 color: colors.primary),
+                        //             width:
+                        //                 MediaQuery.of(context).size.width / 1.1,
+                        //             child: Card(
+                        //               color: colors.primary,
+                        //               elevation: 2,
+                        //               child: DropdownButtonFormField<String>(
+                        //                 value: selectBikeType,
+                        //                 icon: const Icon(
+                        //                   Icons.keyboard_arrow_down_sharp,
+                        //                   color: colors.whiteTemp,
+                        //                 ),
+                        //                 onChanged: (String? newValue) {
+                        //                   setState(() {
+                        //                     selectBikeType = newValue!;
+                        //                     print(
+                        //                         "===my technic=======$selectBikeType===============");
+                        //                   });
+                        //                 },
+                        //                 items: bikeType.map((String orderitem) {
+                        //                   return DropdownMenuItem(
+                        //                     value: orderitem,
+                        //                     child: Text(
+                        //                       orderitem.toString(),
+                        //                       style: const TextStyle(
+                        //                           color: colors.secondary),
+                        //                     ),
+                        //                   );
+                        //                 }).toList(),
+                        //                 decoration: const InputDecoration(
+                        //                   border: InputBorder.none,
+                        //                   hintText: 'Select Bike Type',
+                        //                   hintStyle:
+                        //                       TextStyle(color: Colors.white),
+                        //                   filled: true,
+                        //                 ),
+                        //               ),
+                        //             ),
+                        //           ),
+                        //         ],
+                        //       )
+                        //     : SizedBox.shrink(),
+                        // const SizedBox(
+                        //   height: 20,
+                        // ),
                       ],
                     );
                   },
@@ -874,6 +999,8 @@ class _CartState extends State<Cart> {
   void initState() {
     // TODO: implement initState
     super.initState();
+
+    getVendorCharge();
     getCrt();
     getAddress();
     getTimeSlot();
@@ -917,8 +1044,6 @@ class _CartState extends State<Cart> {
         cartListModel = GetCartListModel.fromJson(finalresult);
         getCatList = GetCartListModel.fromJson(finalresult).cart ?? [];
         for (int i = 0; i < getCatList.length; i++) {
-          vendoriddd = getCatList[0].vendorId.toString();
-          productqtyy.add(getCatList[i].quantity.toString());
           productidss.add(getCatList[i].productId.toString());
           productsQty = productqtyy.join(" ,");
           roductsIds = productidss.join(" ,");
@@ -1120,15 +1245,22 @@ class _CartState extends State<Cart> {
   List<String> productqtyy = [];
   List<String> productidss = [];
   String? selectOrders;
+  String? selectproducts;
+  String? selectedVehicle;
+  var productitem = ['Urgent', 'Cake', 'Schedule'];
   var orderitem = [
-    'Urgent',
     'Food',
     'Non-Food',
-    'Cake',
     'Fragile',
     'Flexible',
   ];
-
+  var vehicleItem = [
+    'Bike',
+    'Electric',
+    'Car',
+    'Taxi',
+    'Truck',
+  ];
   var selectBikeType;
   var bikeType = [
     'Electric',
@@ -1136,7 +1268,6 @@ class _CartState extends State<Cart> {
   ];
 
   String? selectwhehicle;
-  var whehicleitem = ['Cycle', 'Bike', 'E-Rickshaw', 'Truck'];
 
   dynamic selectTimeslot;
   var timefrom;
@@ -1145,8 +1276,7 @@ class _CartState extends State<Cart> {
     var headers = {
       'Cookie': 'ci_session=c4664ff6d31ce6221e37b407dfcd60d4e14b6df3'
     };
-    var request =
-        http.Request('POST', Uri.parse(ApiServicves.getTimeSlot));
+    var request = http.Request('POST', Uri.parse(ApiServicves.getTimeSlot));
 
     request.headers.addAll(headers);
 
@@ -1163,6 +1293,195 @@ class _CartState extends State<Cart> {
       }
     } else {
       print(response.reasonPhrase);
+    }
+  }
+
+  double DeliveryCharge = 0.0;
+  TimeSlotCharge? timeSlotCharge;
+  Future<void> postTimeSlot(String From, String To) async {
+    try {
+      var headers = {
+        'Cookie': 'ci_session=3dd81342c44673bc84efdf68651659a03a3dd551'
+      };
+      print("Api calling");
+
+      var url = Uri.parse(
+          'https://developmentalphawizz.com/hojayega/api/get_delivery_chargess');
+      http.Response request = await http.post(url,
+          body: {
+            'type': 'time',
+            'start_time': From,
+            'end_time': To,
+          },
+          headers: headers);
+      var json = jsonDecode(request.body);
+      if (request.statusCode == 200) {
+        timeSlotCharge = TimeSlotCharge.fromJson(json);
+        print(timeSlotCharge!.data?.price);
+        setState(() {
+          DeliveryCharge = double.parse(timeSlotCharge!.data!.price.toString());
+          print(DeliveryCharge);
+        });
+      }
+    } catch (e, stackTrace) {
+      print(stackTrace.toString());
+      throw Exception(e);
+    }
+  }
+
+  VendorChargeModel? vendorChargeModel;
+  clickUsers(String? id) async {
+    final SharedPreferences sharedPreferences =
+        await SharedPreferences.getInstance();
+    String? user_id = sharedPreferences.getString('user_id');
+    setState(() {
+      isLoading = true;
+    });
+    var headers = {
+      'Cookie': 'ci_session=2f65386943e965abd9230c50aac897e712cc922d'
+    };
+    var request =
+        http.MultipartRequest('POST', Uri.parse(ApiServicves.clickUser));
+    request.fields.addAll({
+      'user_id': user_id.toString(),
+      'amount': vendorCharge!.data.first.userSendBilling.toString(),
+      'vendor_id': id.toString(),
+      'type': 'Per Click User'
+    });
+    print("click user para ${request.fields}");
+    request.headers.addAll(headers);
+    http.StreamedResponse response = await request.send();
+    if (response.statusCode == 200) {
+      print(await response.stream.bytesToString());
+      setState(() {
+        isLoading = false;
+      });
+    } else {
+      print(response.reasonPhrase);
+    }
+  }
+
+  Future<void> placeorder() async {
+    try {
+      final SharedPreferences sharedPreferences =
+          await SharedPreferences.getInstance();
+      String? userId = sharedPreferences.getString('user_id');
+      String? mobileNo = sharedPreferences.getString('mobile');
+      var product_id = [];
+      var qty = [];
+      print("vendor: ${cartListModel!.cart.first.vendorId.toString()}");
+
+      getCatList.forEach((element) {
+        product_id.add(element.productId.toString());
+        qty.add(element.quantity.toString());
+        print('Naman ${product_id}');
+      });
+
+      var headers = {
+        'Cookie': 'ci_session=03ee76b67ba18209673407bdac6cd1c4d79c67fc'
+      };
+      var body = {
+        'product_id': product_id.join(','),
+        'qty': qty.join(','),
+        'user_id': userId.toString(),
+        'total': cartListModel!.cartTotal.toString(),
+        'mobile_no': mobileNo.toString(),
+        'address_id': addressids.toString(),
+        'vendor_id': cartListModel!.cart.first.vendorId.toString(),
+        'time': 'From ${selectTimeslot.fromTime} To ${selectTimeslot.toTime}',
+        'vehicle_type':
+            (vehicleItem.indexOf(selectedVehicle.toString()) + 1).toString(),
+        'order_type': selectOrders.toString(),
+        'orders_type': 'One Way',
+        'payment_method': 'COD',
+        'delivery_charge': DeliveryCharge.toString(),
+        'product_type':
+            (productitem.indexOf(selectproducts.toString()) + 1).toString()
+      };
+      log(body.toString());
+      var request = await http.post(
+          Uri.parse(
+              'https://developmentalphawizz.com/hojayega/api/place_order'),
+          body: body,
+          headers: headers);
+
+      log(request.body);
+
+      var json = jsonDecode(request.body);
+    } catch (e, stackTrace) {
+      print(stackTrace);
+      throw Exception(e);
+    }
+  }
+
+  VendorChargeModel? vendorCharge;
+  Future<void> getVendorCharge() async {
+    try {
+      var headers = {
+        'Cookie': 'ci_session=b38b8356d54b7f4ba9b420c6fbd32ad1158f61bf'
+      };
+      var request = http.MultipartRequest(
+          'POST',
+          Uri.parse(
+              'https://developmentalphawizz.com/hojayega/api/vendor_charges'));
+      request.fields.addAll({'vendor_id': '172'});
+
+      request.headers.addAll(headers);
+
+      http.StreamedResponse response = await request.send();
+      var json = jsonDecode(await response.stream.bytesToString());
+      if (response.statusCode == 200) {
+        print(json);
+        vendorCharge = VendorChargeModel.fromJson(json);
+        print("here");
+        print(vendorCharge!.data.first.perClickUser);
+      } else {
+        print(response.reasonPhrase);
+      }
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
+
+  Future<void> getDeliveryCharges({required String vType}) async {
+    try {
+      if (selectaddress == null) {
+        setState(() {
+          selectedVehicle = null;
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text("Please select address first")));
+      } else {
+        var headers = {
+          'Cookie': 'ci_session=d1ee7a5c526c3bed48a3c246259b0c817b70d2f5'
+        };
+        var request = http.MultipartRequest(
+            'POST',
+            Uri.parse(
+                'https://developmentalphawizz.com/hojayega/api/get_delivery_charge_distacee'));
+        request.fields.addAll({
+          'res_lat': cartListModel!.vendor!.lang.toString(),
+          'res_lang': cartListModel!.vendor!.lat.toString(),
+          'latitude': selectaddress.lat.toString(),
+          'longitude': selectaddress.lng.toString(),
+          'vehicle_type': (vehicleItem.indexOf(vType) + 1).toString()
+        });
+        print(request.fields);
+        request.headers.addAll(headers);
+
+        http.StreamedResponse response = await request.send();
+        var json = jsonDecode(await response.stream.bytesToString());
+        if (response.statusCode == 200) {
+          print(json);
+          setState(() {
+            DeliveryCharge += double.parse(json['data'].toString());
+          });
+        } else {
+          print(response.reasonPhrase);
+        }
+      }
+    } catch (e) {
+      throw Exception(e);
     }
   }
 

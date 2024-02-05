@@ -138,7 +138,9 @@ class _HomeBodyState extends State<HomeScreen> {
         http.MultipartRequest('POST', Uri.parse(ApiServicves.clickUser));
     request.fields.addAll({
       'user_id': user_id.toString(),
-      'amount': selected  == 0 ? vendorChargeModel?.data.first.perClickUser ?? "" : vendorChargeModel?.data.first.perClickUserService ?? "" ,
+      'amount': selected == 0
+          ? vendorChargeModel?.data.first.perClickUser ?? ""
+          : vendorChargeModel?.data.first.perClickUserService ?? "",
       'vendor_id': id.toString(),
       'type': 'Per Click User'
     });
@@ -165,24 +167,29 @@ class _HomeBodyState extends State<HomeScreen> {
 
   VendorShopDataModel? vendorshopdata;
   getShops() async {
-    var headers = {
-      'Cookie': 'ci_session=69e89a4ee64270f8f78288d7b1e45b775bee424f'
-    };
-    var request =
-        http.MultipartRequest('POST', Uri.parse(ApiServicves.getVendors));
-    request.fields.addAll({'type': selected == 0 ? "1" : "2"});
-    print("get vendors parameteer ${request.fields}");
-    request.headers.addAll(headers);
-    http.StreamedResponse response = await request.send();
-    if (response.statusCode == 200) {
-      var result = await response.stream.bytesToString();
-      final finalResult = VendorShopDataModel.fromJson(json.decode(result));
-      print("this is a vendor shop response===========> $finalResult");
-      setState(() {
-        vendorshopdata = finalResult;
-      });
-    } else {
-      print(response.reasonPhrase);
+    try {
+      var headers = {
+        'Cookie': 'ci_session=69e89a4ee64270f8f78288d7b1e45b775bee424f'
+      };
+      var request =
+          http.MultipartRequest('POST', Uri.parse(ApiServicves.getVendors));
+      request.fields.addAll({'type': selected == 0 ? "1" : "2"});
+      print("get vendors parameteer ${request.fields}");
+      request.headers.addAll(headers);
+      http.StreamedResponse response = await request.send();
+      if (response.statusCode == 200) {
+        var result = await response.stream.bytesToString();
+        final finalResult = VendorShopDataModel.fromJson(json.decode(result));
+        print("this is a vendor shop response===========> $finalResult");
+        setState(() {
+          vendorshopdata = finalResult;
+        });
+      } else {
+        print(response.reasonPhrase);
+      }
+    } catch (e, stackTrace) {
+      print(stackTrace);
+      
     }
   }
 
@@ -775,7 +782,7 @@ class _HomeBodyState extends State<HomeScreen> {
                               shrinkWrap: true,
                               primary: false,
                               padding: const EdgeInsets.all(0),
-                              itemCount: vendorshopdata?.user?.length ?? 0,
+                              itemCount: vendorshopdata?.user.length ?? 0,
                               gridDelegate:
                                   const SliverGridDelegateWithFixedCrossAxisCount(
                                 crossAxisCount: 2,
@@ -789,9 +796,10 @@ class _HomeBodyState extends State<HomeScreen> {
                                     // vendorCharge(vendorshopdata?.user?[index].id).then((){
                                     //   clickUsers(vendorshopdata?.user?[index].id);
                                     // });
-                                    await vendorCharge(vendorshopdata?.user?[index].id);
-                                    await clickUsers(vendorshopdata?.user?[index].id);
-
+                                    await vendorCharge(
+                                        vendorshopdata?.user?[index].id);
+                                    await clickUsers(
+                                        vendorshopdata?.user?[index].id);
                                   },
                                   child: Container(
                                     decoration: BoxDecoration(
@@ -804,24 +812,36 @@ class _HomeBodyState extends State<HomeScreen> {
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
-                                          vendorshopdata?.user?[index].profileImage == null || vendorshopdata?.user?[index].shopImage == ""
+                                          vendorshopdata?.user?[index]
+                                                          .profileImage ==
+                                                      null ||
+                                                  vendorshopdata?.user?[index]
+                                                          .shopImage ==
+                                                      ""
                                               ? Container(
                                                   height: 130,
                                                   width: double.infinity,
                                                   child: ClipRRect(
                                                     borderRadius:
-                                                        const BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10)),
+                                                        const BorderRadius.only(
+                                                            topLeft:
+                                                                Radius.circular(
+                                                                    10),
+                                                            topRight:
+                                                                Radius.circular(
+                                                                    10)),
                                                     child: Image.asset(
                                                         "assets/images/placeholder.png",
                                                         fit: BoxFit.fill),
                                                   ),
-                                                ): Container(
+                                                )
+                                              : Container(
                                                   height: 130,
                                                   width: double.infinity,
                                                   child: ClipRRect(
                                                       borderRadius:
                                                           const BorderRadius
-                                                                  .only(
+                                                              .only(
                                                               topLeft: Radius
                                                                   .circular(10),
                                                               topRight: Radius
@@ -1007,7 +1027,7 @@ class _HomeBodyState extends State<HomeScreen> {
                                                   child: ClipRRect(
                                                       borderRadius:
                                                           const BorderRadius
-                                                                  .only(
+                                                              .only(
                                                               topLeft: Radius
                                                                   .circular(10),
                                                               topRight: Radius
