@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
@@ -152,7 +153,7 @@ class _HomeBodyState extends State<HomeScreen> {
       setState(() {
         isLoading = false;
       });
-      Navigator.pushReplacement(
+      Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) => AllCategory(
@@ -179,8 +180,9 @@ class _HomeBodyState extends State<HomeScreen> {
       http.StreamedResponse response = await request.send();
       if (response.statusCode == 200) {
         var result = await response.stream.bytesToString();
+        log(result.toString());
         final finalResult = VendorShopDataModel.fromJson(json.decode(result));
-        print("this is a vendor shop response===========> $finalResult");
+        log("this is a vendor shop response===========> $finalResult");
         setState(() {
           vendorshopdata = finalResult;
         });
@@ -189,7 +191,6 @@ class _HomeBodyState extends State<HomeScreen> {
       }
     } catch (e, stackTrace) {
       print(stackTrace);
-      
     }
   }
 
@@ -782,7 +783,7 @@ class _HomeBodyState extends State<HomeScreen> {
                               shrinkWrap: true,
                               primary: false,
                               padding: const EdgeInsets.all(0),
-                              itemCount: vendorshopdata?.user.length ?? 0,
+                              itemCount: vendorshopdata!.user.length ?? 0,
                               gridDelegate:
                                   const SliverGridDelegateWithFixedCrossAxisCount(
                                 crossAxisCount: 2,
@@ -971,7 +972,7 @@ class _HomeBodyState extends State<HomeScreen> {
                               shrinkWrap: true,
                               primary: false,
                               padding: const EdgeInsets.all(0),
-                              itemCount: vendorshopdata?.user?.length ?? 0,
+                              itemCount: vendorshopdata?.user.length ?? 0,
                               gridDelegate:
                                   const SliverGridDelegateWithFixedCrossAxisCount(
                                 crossAxisCount: 2,
@@ -1002,7 +1003,7 @@ class _HomeBodyState extends State<HomeScreen> {
                                           vendorshopdata?.user?[index]
                                                           .profileImage ==
                                                       null ||
-                                                  vendorshopdata?.user?[index]
+                                                  vendorshopdata?.user[index]
                                                           .profileImage ==
                                                       ""
                                               ? SizedBox(

@@ -16,7 +16,6 @@ import '../Model/getCartListModel.dart';
 import '../Model/getTimeSlotModel.dart';
 import 'OrderListing.dart';
 import 'address/updateAddress.dart';
-import 'bottomScreen.dart';
 
 class Cart extends StatefulWidget {
   const Cart({Key? key}) : super(key: key);
@@ -85,7 +84,7 @@ class _CartState extends State<Cart> {
                             } else if (timefrom == null) {
                               Fluttertoast.showToast(
                                   msg: "Plaese Select Time Slot");
-                            } else if (selectwhehicle == null) {
+                            } else if (selectedVehicle == null) {
                               Fluttertoast.showToast(
                                   msg: "Plaese Select Vehicle Type");
                             } else if (selectOrders == null) {
@@ -93,8 +92,12 @@ class _CartState extends State<Cart> {
                                   msg: "Plaese Select Order Type");
                             } else {
                               placeproduct();
+                              placeorder().then((value) => Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => OrderListing(),
+                                  )));
                             }
-                            placeorder();
                           },
                           child: Padding(
                             padding: const EdgeInsets.only(left: 20, top: 10),
@@ -1395,8 +1398,11 @@ class _CartState extends State<Cart> {
         'orders_type': 'One Way',
         'payment_method': 'COD',
         'delivery_charge': DeliveryCharge.toString(),
+        'sub_total':
+            (DeliveryCharge + double.parse(cartListModel!.cartTotal.toString()))
+                .toString(),
         'product_type':
-            (productitem.indexOf(selectproducts.toString()) + 1).toString()
+            (productitem.indexOf(selectproducts.toString()) + 1).toString(),
       };
       log(body.toString());
       var request = await http.post(

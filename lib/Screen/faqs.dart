@@ -1,144 +1,157 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_html/flutter_html.dart';
-import 'package:ho_jayega_user_main/Helper/api.path.dart';
+import 'package:ho_jayega_user_main/Model/faqModel.dart';
 import 'package:http/http.dart' as http;
+
 import '../Helper/color.dart';
 
-class FaqScreen extends StatefulWidget {
-  const FaqScreen({Key? key}) : super(key: key);
+class FaqPage extends StatefulWidget {
+  const FaqPage({super.key});
 
   @override
-  State<FaqScreen> createState() => _FaqScreenState();
+  State<FaqPage> createState() => _FaqPageState();
 }
 
-class _FaqScreenState extends State<FaqScreen> {
+class _FaqPageState extends State<FaqPage> {
+  int selected = -1;
+  FaqModel? faqs;
+  Future<void> getFaqs() async {
+    try {
+      var headers = {
+        'Cookie': 'ci_session=0a68526a3ce5b251a6761ec7c01fe4892118b57b'
+      };
+      var request = http.Request('POST',
+          Uri.parse('https://developmentalphawizz.com/hojayega/api/faq'));
 
+      request.headers.addAll(headers);
 
+      http.StreamedResponse response = await request.send();
+      var json = jsonDecode(await response.stream.bytesToString());
+      if (response.statusCode == 200) {
+        faqs = FaqModel.fromJson(json);
+      } else {
+        print(response.reasonPhrase);
+      }
+    } catch (e, stackTrace) {
+      print(stackTrace);
+      throw Exception(e);
+    }
+  }
+
+  late Future myFuture;
+  @override
   void initState() {
     // TODO: implement initState
     super.initState();
-   
+    myFuture = getFaqs();
   }
-  
-
-
 
   @override
   Widget build(BuildContext context) {
-    return
-      SafeArea(
-          child:Scaffold(
-            // key: _key,
-              appBar: AppBar(
-                backgroundColor:const Color(0xff112C48),
-                title: const Text(
-                  "Faqs",
-                  style: TextStyle(color: Colors.white),
-                ),
-                centerTitle: true,
-                toolbarHeight: 70,
-                elevation: 6,
-              ),
-              body:
-              SingleChildScrollView(
-                child: Column(children: [
-
-                  SizedBox(height: 20,),
-
-                  Row(
-                    children: [
-                      SizedBox(width: 20,),
-                      Text("FAQ",style: TextStyle(fontWeight: FontWeight.w500,color: colors.primary,fontSize: 17),),
-                    ],
-                  ),
-
-                  Column(
-                      children: [
-
-
-                        // !isLoading?
-                        Container(
-                          padding: EdgeInsets.all(15),
-                          height: MediaQuery.of(context).size.height/1.2,
-                          child: ListView.builder(
-                            shrinkWrap: true,
-                            itemBuilder: (context, index) {
-                              return Padding(
-                                padding: const EdgeInsets.only(bottom: 8,),
-                                child: faqTileDetails(
-                                    question: "What Is Your Name", answer: 'My name id sura', index: index+1),
-                              );
-                            },
-                            itemCount: 50,
-                          ),
-                        )
-                        //     :
-                        //
-                        //
-                        // Container(
-                        //     height: MediaQuery.of(context).size.height/2,
-                        //     child: Center(child: LoadingWidget2(context))),
-
-                      ]
+    return SafeArea(
+        child: Scaffold(
+      // key: _key,
+      appBar: AppBar(
+        backgroundColor: Color(0xff112C48),
+        title: const Text(
+          "FAQ",
+          style: TextStyle(color: Colors.white),
+        ),
+        centerTitle: true,
+        toolbarHeight: 70,
+        elevation: 6,
+      ),
+      body: FutureBuilder(
+          future: myFuture,
+          builder: (context, snap) {
+            return snap.connectionState == ConnectionState.waiting
+                ? Center(
+                    child: CircularProgressIndicator(),
                   )
-
-
-
-                ],),
-              )
-          )
-      );
+                : Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 20, vertical: 20),
+                    decoration: const BoxDecoration(
+                      border: Border(
+                        top: BorderSide(
+                          color: colors.primary,
+                          width: 1,
+                        ),
+                      ),
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Text(
+                          'FAQ',
+                          style: TextStyle(
+                              fontSize: 18,
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold),
+                        ),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        ListView.builder(
+                          shrinkWrap: true,
+                          itemBuilder: (context, index) {
+                            return faqTileDetails(
+                                question: faqs!.setting[index].title.toString(),
+                                answer:
+                                    faqs!.setting[index].description.toString(),
+                                index: index);
+                          },
+                          itemCount: faqs!.setting.length,
+                        )
+                      ],
+                    ),
+                  );
+          }),
+    ));
   }
 
-
-  int selected = -1;
   Widget faqTileDetails(
       {required String question, required String answer, required int index}) {
-    return
-
-      Column(
-        children: [
-          Card(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),),
-            elevation: 1,
-            child: Container(
-              decoration: BoxDecoration(borderRadius:BorderRadius.circular(10),
-
-                  color: colors.whiteTemp
-              ),
-              child: ListTile(
-                onTap: () {
-                  setState(() {
-                    if (selected == index) {
-                      selected = -1;
-                    } else {
-                      selected = index;
-                    }
-                  });
-                },
-                title: Text(
-                  question,
-                  style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold,color: colors.appbarColor
-                  ),
-                ),
-                trailing: Icon(selected == index
-                    ? Icons.keyboard_arrow_up
-                    : Icons.keyboard_arrow_down),
-              ),
+    return Column(
+      children: [
+        Card(
+          elevation: 2,
+          child: ListTile(
+            onTap: () {
+              setState(() {
+                if (selected == index) {
+                  selected = -1;
+                } else {
+                  selected = index;
+                }
+              });
+            },
+            title: Text(
+              question,
+              style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
             ),
+            trailing: Icon(selected == index
+                ? Icons.arrow_drop_down
+                : Icons.arrow_drop_down),
           ),
-          selected == index
-              ? Container(
-              padding: EdgeInsets.all(10),
-              margin: EdgeInsets.symmetric(horizontal: 5),
-              color: colors.secondary,
-              child: Html(data: answer,)
-          )
-              : Container(),
-        ],
-      );
+        ),
+        selected == index
+            ? Container(
+                padding: EdgeInsets.all(10),
+                margin: EdgeInsets.symmetric(horizontal: 5),
+                color: Colors.grey.shade300,
+                child: Text(
+                  'Lorem Ipsum is simply dummy text of the and typesetting industry. Lorem Ipsum industry\'s standard dummy since the 1500s, when an unknown printer took a galley of type and scrambled it Lorem Ipsum is simply dummy text and typesetting industry.',
+                  style: TextStyle(fontSize: 10, color: Colors.black),
+                ),
+              )
+            : Container(),
+      ],
+    );
   }
 }
