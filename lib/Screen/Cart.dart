@@ -1377,7 +1377,7 @@ class _CartState extends State<Cart> {
       getCatList.forEach((element) {
         product_id.add(element.productId.toString());
         qty.add(element.quantity.toString());
-        print('Naman ${product_id}');
+        print('Naman $product_id');
       });
 
       var headers = {

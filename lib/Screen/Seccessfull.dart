@@ -30,7 +30,7 @@ class _SuccessfullyState extends State<Successfully> {
            const SizedBox(height: 20),
             InkWell(
               onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => BottomNavBar()));
+                Navigator.pushAndRemoveUntil(context,  MaterialPageRoute(builder: (context) => BottomNavBar()), (route) => false);
               },
               child: Container(
                 height: 40,

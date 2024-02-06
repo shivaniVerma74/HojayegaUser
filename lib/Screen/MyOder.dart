@@ -249,7 +249,7 @@ class _ProgressScreenState extends State<MyOrders> {
                                             .toString())),
                                         totalSteps: 4,
                                       ),
-                                      const Row(
+                                       Row(
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,
                                         children: [
