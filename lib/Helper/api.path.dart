@@ -44,8 +44,12 @@ class ApiServicves {
   static const String clickUser = baseUrl + 'click_user';
 
   //services Api
-  static const String getServicesCat = baseUrl + 'get_service_category';
+  static const String getServicesCat = baseUrl + 'get_vendor_servicess';
+  static const String serviceDetail = baseUrl + 'get_vendor_servicesss';
   static const String gerServicesofServices = baseUrl + 'type_shops';
+  static const String vendor_bank_detail = baseUrl + 'get_vendor_bank_details';
+  static const String servicePaymentDone = baseUrl + 'booking_payment';
+  static const String addToWishlist = baseUrl + 'likePro';
 }
 
 String? user_id;

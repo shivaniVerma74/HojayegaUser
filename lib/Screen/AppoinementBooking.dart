@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ho_jayega_user_main/Screen/ServicePayment.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 import '../Helper/color.dart';
@@ -6,6 +7,11 @@ import 'ConfirmService.dart';
 
 class AppointmentBooking extends StatefulWidget {
   @override
+  final String amount;
+  final String vendor_id;
+
+  const AppointmentBooking(
+      {super.key, required this.amount, required this.vendor_id});
   _MyTimePickerState createState() => _MyTimePickerState();
 }
 
@@ -130,7 +136,7 @@ class _MyTimePickerState extends State<AppointmentBooking> {
                       children: [
                         Card(
                           child: Container(
-                            height: MediaQuery.of(context).size.height/1.6,
+                            height: MediaQuery.of(context).size.height / 1.6,
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(5),
                                 color: Colors.white,
@@ -185,7 +191,7 @@ class _MyTimePickerState extends State<AppointmentBooking> {
                           const EdgeInsets.only(left: 20, right: 20, top: 5),
                       child: Card(
                         child: Container(
-                          width:MediaQuery.of(context).size.width/1.2,
+                          width: MediaQuery.of(context).size.width / 1.2,
                           height: 50,
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(5),
@@ -215,26 +221,35 @@ class _MyTimePickerState extends State<AppointmentBooking> {
                     ),
                     InkWell(
                       onTap: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => ConfirmService()));
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => ServicePayment(
+                                      amount: widget.amount,
+                                      selectedDate: _selectedDay!,
+                                      vendor_id: widget.vendor_id,
+                                    )));
                       },
                       child: Padding(
-                        padding: const EdgeInsets.only(left: 20, right: 20, top: 10),
+                        padding:
+                            const EdgeInsets.only(left: 20, right: 20, top: 10),
                         child: Card(
-                            child: Container(
-                          width: MediaQuery.of(context).size.width/1.5,
-                          height: 45,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(5),
-                            color: colors.secondary,
-                           ),
-                           child: const Center(
+                          child: Container(
+                            width: MediaQuery.of(context).size.width / 1.5,
+                            height: 45,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(5),
+                              color: colors.secondary,
+                            ),
+                            child: const Center(
                               child: Text(
-                            "Payment",
-                            style: TextStyle(
-                                color: Colors.white, fontWeight: FontWeight.bold),
+                                "Payment",
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ),
                           ),
-                          ),
-                        ),
                         ),
                       ),
                     ),

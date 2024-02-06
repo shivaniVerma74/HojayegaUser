@@ -44,7 +44,7 @@ dependencies:
   shared_preferences:
   carousel_slider: ^4.1.1
   flutter_rating_bar: ^4.0.1
-  image_picker: ^0.8.4+9
+  image_picker: ^1.0.7
   geolocator: ^9.0.2
   image_cropper: ^3.0.1
   table_calendar: ^3.0.9

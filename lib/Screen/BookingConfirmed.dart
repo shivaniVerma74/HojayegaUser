@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:ho_jayega_user_main/Screen/bottomScreen.dart';
+import 'package:ho_jayega_user_main/Screen/homePage.dart';
 
 import '../Helper/btn.dart';
 import '../Helper/color.dart';
@@ -18,11 +20,7 @@ class _BookingConfirmedState extends State<BookingConfirmed> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        leading: InkWell(
-          onTap: () {
-            //   Navigator.pop(context, false);
-          },
-        ),
+        automaticallyImplyLeading: false,
       ),
       body: Container(
         height: MediaQuery.of(context).size.height,
@@ -54,7 +52,7 @@ class _BookingConfirmedState extends State<BookingConfirmed> {
                 "Your Booking Confirmed",
                 style: TextStyle(
                   fontSize: 14,
-                    // fontWeight: FontWeight.bold,
+                  // fontWeight: FontWeight.bold,
                   color: Color(0xFF100F0F),
                 ),
               ),
@@ -67,16 +65,14 @@ class _BookingConfirmedState extends State<BookingConfirmed> {
                 child: FilledBtn(
                   title: 'Got It',
                   onPress: () {
-                    // Navigator.push(
-                    //                  context,
-                    //                  MaterialPageRoute(
-                    //                      builder: (context) => const personal_information()),
-                    //                );
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => BottomNavBar()),
+                    );
                   },
                 ),
               )
-            ]
-        ),
+            ]),
       ),
     );
   }

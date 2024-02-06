@@ -91,7 +91,7 @@ class _CartState extends State<Cart> {
                               Fluttertoast.showToast(
                                   msg: "Plaese Select Order Type");
                             } else {
-                              placeproduct();
+                            
                               placeorder().then((value) => Navigator.push(
                                   context,
                                   MaterialPageRoute(
@@ -1197,53 +1197,53 @@ class _CartState extends State<Cart> {
   var addressids;
   var vendoriddd;
 
-  placeproduct() async {
-    final SharedPreferences sharedPreferences =
-        await SharedPreferences.getInstance();
-    String? user_id = sharedPreferences.getString('user_id');
-    String? mobile = sharedPreferences.getString('mobile');
-    var headers = {
-      'Cookie': 'ci_session=c4664ff6d31ce6221e37b407dfcd60d4e14b6df3'
-    };
-    var request =
-        http.MultipartRequest('POST', Uri.parse(ApiServicves.placeOrder));
-    request.fields.addAll({
-      'product_id': roductsIds.toString(),
-      'qty': productsQty.toString(),
-      'user_id': user_id.toString(),
-      'total': cartListModel?.cartTotal.toString() ?? "",
-      'mobile_no': mobile.toString(),
-      'address_id': addressids.toString(),
-      'vendor_id': vendoriddd.toString(),
-      'time': timefrom.toString(),
-      'vehicle_type': selectwhehicle.toString(),
-      'order_type': selectOrders.toString(),
-    });
+  // placeproduct() async {
+  //   final SharedPreferences sharedPreferences =
+  //       await SharedPreferences.getInstance();
+  //   String? user_id = sharedPreferences.getString('user_id');
+  //   String? mobile = sharedPreferences.getString('mobile');
+  //   var headers = {
+  //     'Cookie': 'ci_session=c4664ff6d31ce6221e37b407dfcd60d4e14b6df3'
+  //   };
+  //   var request =
+  //       http.MultipartRequest('POST', Uri.parse(ApiServicves.placeOrder));
+  //   request.fields.addAll({
+  //     'product_id': roductsIds.toString(),
+  //     'qty': productsQty.toString(),
+  //     'user_id': user_id.toString(),
+  //     'total': cartListModel?.cartTotal.toString() ?? "",
+  //     'mobile_no': mobile.toString(),
+  //     'address_id': addressids.toString(),
+  //     'vendor_id': vendoriddd.toString(),
+  //     'time': timefrom.toString(),
+  //     'vehicle_type': selectwhehicle.toString(),
+  //     'order_type': selectOrders.toString(),
+  //   });
 
-    request.headers.addAll(headers);
+  //   request.headers.addAll(headers);
 
-    http.StreamedResponse response = await request.send();
-    print("===my technic=======${request.fields}===============");
-    print("===my technic=======${request.url}===============");
+  //   http.StreamedResponse response = await request.send();
+  //   print("===my technic=======${request.fields}===============");
+  //   print("===my technic=======${request.url}===============");
 
-    if (response.statusCode == 200) {
-      var result = await response.stream.bytesToString();
-      var finalresult = jsonDecode(result);
-      if (finalresult['status'] == true) {
-        Fluttertoast.showToast(msg: "${finalresult['message']}");
-        Navigator.pushReplacement(context,
-            MaterialPageRoute(builder: (context) => const OrderListing()));
+  //   if (response.statusCode == 200) {
+  //     var result = await response.stream.bytesToString();
+  //     var finalresult = jsonDecode(result);
+  //     if (finalresult['status'] == true) {
+  //       Fluttertoast.showToast(msg: "${finalresult['message']}");
+  //       Navigator.pushReplacement(context,
+  //           MaterialPageRoute(builder: (context) => const OrderListing()));
 
-        getCrt();
-      } else {
-        setState(() {
-          isLoading = false;
-        });
-      }
-    } else {
-      print(response.reasonPhrase);
-    }
-  }
+  //       getCrt();
+  //     } else {
+  //       setState(() {
+  //         isLoading = false;
+  //       });
+  //     }
+  //   } else {
+  //     print(response.reasonPhrase);
+  //   }
+  // }
 
   List<String> productqtyy = [];
   List<String> productidss = [];
