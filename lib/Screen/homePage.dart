@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:ho_jayega_user_main/Helper/api.path.dart';
 import 'package:ho_jayega_user_main/Screen/MyHistory.dart';
+import 'package:ho_jayega_user_main/Screen/wishlist.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../Helper/color.dart';
 import 'package:http/http.dart' as http;
@@ -440,18 +441,24 @@ class _HomeBodyState extends State<HomeScreen> {
                     Row(
                       children: [
                         Expanded(
-                          child: Container(
-                            height: 30,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(8),
-                                color: colors.primary),
-                            child: Center(
-                              child: Text(
-                                'My Wishlist',
-                                style: TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white),
+                          child: GestureDetector(
+                            onTap: () =>
+                                Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => Wishlist(),
+                            )),
+                            child: Container(
+                              height: 30,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(8),
+                                  color: colors.primary),
+                              child: Center(
+                                child: Text(
+                                  'My Wishlist',
+                                  style: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white),
+                                ),
                               ),
                             ),
                           ),
