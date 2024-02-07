@@ -88,7 +88,11 @@ class _AddaddressState extends State<Addaddress> {
           ),
           appBar: PreferredSize(
             preferredSize: Size.fromHeight(80),
-            child: commonAppBar(context, text: "Add Address"),
+            child: commonAppBar(
+              context,
+              text: "Add Address",
+              isHome: false,
+            ),
           ),
           body: !isLoading
               ? SingleChildScrollView(

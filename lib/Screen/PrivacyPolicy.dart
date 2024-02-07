@@ -52,7 +52,7 @@ class _PrivacyPolicyScreenState extends State<PrivacyPolicyScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        // key: _key,
+        //
         appBar: AppBar(
           backgroundColor: Color(0xff112C48),
           title: const Text(

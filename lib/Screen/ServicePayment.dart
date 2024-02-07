@@ -84,7 +84,8 @@ class _ServicePaymentState extends State<ServicePayment> {
         if (json['msg'] == " Transasction Succesfuly") {
           Navigator.of(context).pushAndRemoveUntil(
               MaterialPageRoute(
-                builder: (context) => BookingConfirmed(),
+                builder: (context) =>
+                    BookingConfirmed(date: widget.selectedDate),
               ),
               (route) => false);
         }
@@ -110,11 +111,12 @@ class _ServicePaymentState extends State<ServicePayment> {
     setState(() {});
   }
 
+  late Future myFuture;
   TextEditingController Transaction = TextEditingController();
   @override
   void initState() {
     // TODO: implement initState
-    getQrCode();
+    myFuture = getQrCode();
     super.initState();
   }
 
@@ -132,86 +134,123 @@ class _ServicePaymentState extends State<ServicePayment> {
         ),
       ),
       resizeToAvoidBottomInset: false,
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              CircleAvatar(
-                radius: 100,
-                backgroundImage: NetworkImage(
-                  vendor!.data.first.qrCode.toString(),
-                ),
-                onBackgroundImageError: (exception, stackTrace) =>
-                    CircularProgressIndicator(),
-              ),
-              Divider(color: Colors.transparent),
-              Text(
-                "Amount : ₹${widget.amount}",
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              Divider(color: Colors.transparent),
-              TextField(
-                controller: Transaction,
-                decoration: InputDecoration(
-                  labelText: "Transaction ID",
-                  contentPadding:
-                      EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: BorderSide(
-                      color: colors.primary,
+      body: FutureBuilder(
+          future: myFuture,
+          builder: (context, snap) {
+            return snap.connectionState == ConnectionState.waiting
+                ? Center(
+                    child: CircularProgressIndicator(),
+                  )
+                : Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: SingleChildScrollView(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          CircleAvatar(
+                            radius: 100,
+                            backgroundImage: NetworkImage(
+                              vendor!.data.first.qrCode.toString(),
+                            ),
+                            onBackgroundImageError: (exception, stackTrace) =>
+                                CircularProgressIndicator(),
+                          ),
+                          Divider(color: Colors.transparent),
+                          Text(
+                            "Amount : ₹${widget.amount}",
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Divider(color: Colors.transparent),
+                          TextField(
+                            controller: Transaction,
+                            decoration: InputDecoration(
+                              labelText: "Transaction ID",
+                              contentPadding: EdgeInsets.symmetric(
+                                  horizontal: 10, vertical: 6),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
+                                borderSide: BorderSide(
+                                  color: colors.primary,
+                                ),
+                              ),
+                            ),
+                          ),
+                          Divider(color: Colors.transparent),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              GestureDetector(
+                                onTap: () => getImageFromGallery(),
+                                child: Container(
+                                  height: 170,
+                                  width: 150,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    border: Border.all(color: colors.primary),
+                                  ),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        Icons.add_photo_alternate_outlined,
+                                        color: colors.primary,
+                                        size: 30,
+                                      ),
+                                      Text("Select Screenshot"),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              Container(
+                                alignment: Alignment.center,
+                                height: 170,
+                                width: 150,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  border: Border.all(color: colors.primary),
+                                ),
+                                child: image == null
+                                    ? Center(
+                                        child: Text(
+                                        "Please Select Screenshot",
+                                        textAlign: TextAlign.center,
+                                      ))
+                                    : Image.file(_image!),
+                              ),
+                            ],
+                          ),
+                          const Divider(color: Colors.transparent),
+                          ElevatedButton(
+                            onPressed: () {
+                              if (Transaction.text.isEmpty || image == null) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                        content:
+                                            Text("Some Fields are Missing")));
+                              } else {
+                                paymentDone(
+                                    transaction_id:
+                                        Transaction.text.toString());
+                              }
+                            },
+                            style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.green,
+                                fixedSize: Size(double.maxFinite, 45),
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10))),
+                            child: Text(
+                              "DONE",
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                ),
-              ),
-              Divider(color: Colors.transparent),
-              ElevatedButton(
-                onPressed: () {
-                  getImageFromGallery();
-                },
-                style: ElevatedButton.styleFrom(
-                    backgroundColor: colors.primary,
-                    fixedSize: Size(double.maxFinite, 45),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10))),
-                child: Text(
-                  "Select Screenshot",
-                  style: TextStyle(color: Colors.white),
-                ),
-              ),
-              Divider(color: Colors.transparent),
-              Text("Image Path: ${image.toString()}"),
-              SizedBox(
-                height: 80,
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  if (Transaction.text.isEmpty || image == null) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text("Some Fields are Missing")));
-                  } else {
-                    paymentDone(transaction_id: Transaction.text.toString());
-                  }
-                },
-                style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green,
-                    fixedSize: Size(double.maxFinite, 45),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10))),
-                child: Text(
-                  "DONE",
-                  style: TextStyle(color: Colors.white),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
+                  );
+          }),
     );
   }
 }

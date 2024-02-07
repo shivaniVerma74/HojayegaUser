@@ -202,7 +202,7 @@ class _AllCategoryState extends State<AllCategory> {
   }
 
   int currentIndex = 0;
-
+  final GlobalKey<ScaffoldState> _key = GlobalKey();
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -210,7 +210,7 @@ class _AllCategoryState extends State<AllCategory> {
       child: Scaffold(
         appBar: PreferredSize(
           preferredSize: Size.fromHeight(80),
-          child: commonAppBar(context, text: "Products"),
+          child: commonAppBar(context, text: "Products", isHome: false),
         ),
         backgroundColor: colors.appbarColor,
         body: !isLoading
@@ -569,7 +569,7 @@ class _AllCategoryState extends State<AllCategory> {
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
-                                         Row(
+                                        Row(
                                           children: [
                                             Padding(
                                               padding: EdgeInsets.all(5),

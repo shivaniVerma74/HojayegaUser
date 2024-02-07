@@ -80,7 +80,7 @@ class _RbSaloonState extends State<ServiceDetails> {
             ),
           ),
           Container(
-            height: 140,
+            height: 130,
             padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
             width: MediaQuery.of(context).size.width,
             child: ListView.separated(
@@ -147,153 +147,170 @@ class _RbSaloonState extends State<ServiceDetails> {
                 }),
           ),
           Container(
-            height: MediaQuery.of(context).size.height * 0.6,
+            height: MediaQuery.of(context).size.height * 0.62,
             margin: const EdgeInsets.all(16),
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(25),
                 border: Border.all(color: colors.primary, width: 1)),
-            child: Column(
-              children: [
-                SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.43,
-                  child: serviceDetails?.data.length == null
-                      ? Center(child: Text("Please select a category"))
-                      : ListView.builder(
-                          shrinkWrap: true,
-                          itemCount: serviceDetails?.data.length ?? 0,
-                          itemBuilder: (context, index) => Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                serviceDetails!.data[index].name.toString(),
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                              ListView.builder(
+            child: serviceDetails?.data.length == 0
+                ? Center(child: Text("No Service Available"))
+                : Column(
+                    children: [
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height * 0.42,
+                        child: serviceDetails?.data.length == null
+                            ? Center(child: Text("Please select a category"))
+                            : ListView.builder(
                                 shrinkWrap: true,
-                                physics: NeverScrollableScrollPhysics(),
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 8),
-                                itemCount:
-                                    serviceDetails!.data[index].services.length,
-                                itemBuilder: (context, ind) => Row(
+                                itemCount: serviceDetails?.data.length ?? 0,
+                                itemBuilder: (context, index) => Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Container(
-                                      height: 6,
-                                      width: 6,
-                                      decoration: BoxDecoration(
-                                        color: colors.primary,
-                                        shape: BoxShape.circle,
-                                      ),
-                                    ),
-                                    VerticalDivider(width: 5),
                                     Text(
-                                      serviceDetails!
-                                          .data[index].services[ind].serviceName
+                                      serviceDetails!.data[index].name
                                           .toString(),
                                       style: TextStyle(
-                                        fontSize: 16,
-                                        color: colors.primary,
-                                        fontWeight: FontWeight.w500,
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w600,
                                       ),
                                     ),
-                                    Spacer(),
-                                    Text(
-                                      "₹${serviceDetails!.data[index].services[ind].specialPrice.toString()}/-",
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                        color: colors.primary,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                    SizedBox(width: 5),
-                                    GestureDetector(
-                                      onTap: () {
-                                        setState(() {
-                                          if (selectedService.contains(
-                                              serviceDetails!
-                                                  .data[index].services[ind])) {
-                                            selectedService.remove(
-                                                serviceDetails!
-                                                    .data[index].services[ind]);
-                                            amount -= double.parse(
-                                                serviceDetails!.data[index]
-                                                    .services[ind].specialPrice
-                                                    .toString());
-                                          } else {
-                                            selectedService.add(serviceDetails!
-                                                .data[index].services[ind]);
-                                            amount += double.parse(
-                                                serviceDetails!.data[index]
-                                                    .services[ind].specialPrice
-                                                    .toString());
-                                          }
-                                        });
-                                        print("Amount: $amount");
-                                      },
-                                      child: selectedService.contains(
-                                              serviceDetails!
-                                                  .data[index].services[ind])
-                                          ? Icon(
-                                              Icons.check_circle_rounded,
-                                              color: Colors.green,
-                                              size: 25,
-                                            )
-                                          : Icon(
-                                              Icons.circle_outlined,
-                                              color: Colors.green,
-                                              size: 25,
+                                    ListView.builder(
+                                      shrinkWrap: true,
+                                      physics: NeverScrollableScrollPhysics(),
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 8),
+                                      itemCount: serviceDetails!
+                                          .data[index].services.length,
+                                      itemBuilder: (context, ind) => Row(
+                                        children: [
+                                          Container(
+                                            height: 6,
+                                            width: 6,
+                                            decoration: BoxDecoration(
+                                              color: colors.primary,
+                                              shape: BoxShape.circle,
                                             ),
+                                          ),
+                                          VerticalDivider(width: 5),
+                                          Text(
+                                            serviceDetails!.data[index]
+                                                .services[ind].serviceName
+                                                .toString(),
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                              color: colors.primary,
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                          Spacer(),
+                                          Text(
+                                            "₹${serviceDetails!.data[index].services[ind].specialPrice.toString()}/-",
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                              color: colors.primary,
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                          SizedBox(width: 5),
+                                          GestureDetector(
+                                            onTap: () {
+                                              setState(() {
+                                                if (selectedService.contains(
+                                                    serviceDetails!.data[index]
+                                                        .services[ind])) {
+                                                  selectedService.remove(
+                                                      serviceDetails!
+                                                          .data[index]
+                                                          .services[ind]);
+                                                  amount -= double.parse(
+                                                      serviceDetails!
+                                                          .data[index]
+                                                          .services[ind]
+                                                          .specialPrice
+                                                          .toString());
+                                                } else {
+                                                  selectedService.add(
+                                                      serviceDetails!
+                                                          .data[index]
+                                                          .services[ind]);
+                                                  amount += double.parse(
+                                                      serviceDetails!
+                                                          .data[index]
+                                                          .services[ind]
+                                                          .specialPrice
+                                                          .toString());
+                                                }
+                                              });
+                                              print("Amount: $amount");
+                                            },
+                                            child: selectedService.contains(
+                                                    serviceDetails!.data[index]
+                                                        .services[ind])
+                                                ? Icon(
+                                                    Icons.check_circle_rounded,
+                                                    color: Colors.green,
+                                                    size: 25,
+                                                  )
+                                                : Icon(
+                                                    Icons.circle_outlined,
+                                                    color: Colors.green,
+                                                    size: 25,
+                                                  ),
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ],
                                 ),
                               ),
-                            ],
+                      ),
+                      Text(
+                        "Amount: $amount",
+                        style: TextStyle(fontSize: 16),
+                      ),
+                      Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            border:
+                                Border.all(color: colors.primary, width: 1)),
+                        child: Text("Note: Rate might change as per work"),
+                      ),
+                      Divider(
+                        color: Colors.transparent,
+                        height: 7,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 30),
+                        child: ElevatedButton(
+                          onPressed: () {
+                            if (selectedService.isEmpty) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                      content:
+                                          Text("Please Select any service.")));
+                            } else {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => AppointmentBooking(
+                                    amount: amount.toString(),
+                                    vendor_id: widget.vendorId),
+                              ));
+                            }
+                          },
+                          style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.green,
+                              fixedSize: Size(double.maxFinite, 45),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10))),
+                          child: Text(
+                            "Book",
+                            style: TextStyle(color: Colors.white),
                           ),
                         ),
-                ),
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(color: colors.primary, width: 1)),
-                  child: Text("Note: Rate might change as per work"),
-                ),
-                Divider(
-                  color: Colors.transparent,
-                  height: 7,
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 30),
-                  child: ElevatedButton(
-                    onPressed: () {
-                      if (selectedService.isEmpty) {
-                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                            content: Text("Please Select any service.")));
-                      } else {
-                        Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => AppointmentBooking(
-                              amount: amount.toString(),
-                              vendor_id: widget.vendorId),
-                        ));
-                      }
-                    },
-                    style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.green,
-                        fixedSize: Size(double.maxFinite, 45),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10))),
-                    child: Text(
-                      "Book",
-                      style: TextStyle(color: Colors.white),
-                    ),
+                      ),
+                    ],
                   ),
-                ),
-              ],
-            ),
           ),
         ],
       ),

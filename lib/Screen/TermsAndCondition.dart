@@ -53,7 +53,7 @@ class _termsAndConditionState extends State<termsAndCondition> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        // key: _key,
+        //
         appBar: AppBar(
           backgroundColor: const Color(0xff112C48),
           title: const Text(

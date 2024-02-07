@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:ho_jayega_user_main/Helper/api.path.dart';
 import 'package:ho_jayega_user_main/Screen/MyHistory.dart';
+import 'package:ho_jayega_user_main/Screen/searchScreen.dart';
 import 'package:ho_jayega_user_main/Screen/wishlist.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../Helper/color.dart';
@@ -16,7 +17,6 @@ import '../Model/VendorServiceDataModel.dart';
 import '../Model/VendorShopDataModel.dart';
 import '../Model/offerbannerModel.dart';
 import 'AllCategory.dart';
-import 'Services.dart';
 import 'TopServices.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -314,127 +314,70 @@ class _HomeBodyState extends State<HomeScreen> {
                   // crossAxisAlignment: CrossAxisAlignment.start,
                   // mainAxisSize: MainAxisSize.min,
                   children: [
-                    selected == 0
-                        ? Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Expanded(
-                                child: Container(
-                                  height: 40,
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(4),
-                                    boxShadow: const [
-                                      BoxShadow(
-                                        color: Colors.grey,
-                                        blurRadius: 2,
-                                        offset: Offset(0, 1),
-                                      ),
-                                    ],
+                    GestureDetector(
+                      onTap: () => Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => SearchScreen())),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Expanded(
+                            child: Container(
+                              height: 40,
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(4),
+                                boxShadow: const [
+                                  BoxShadow(
+                                    color: Colors.grey,
+                                    blurRadius: 2,
+                                    offset: Offset(0, 1),
                                   ),
-                                  child: const TextField(
-                                    maxLines: 1,
-                                    textAlign: TextAlign.left,
-                                    decoration: InputDecoration(
-                                      contentPadding:
-                                          EdgeInsets.symmetric(vertical: 5),
-                                      prefixIcon: Icon(
-                                        Icons.search,
-                                        color: Colors.green,
-                                      ),
-                                      hintStyle: TextStyle(
-                                        fontSize: 14,
-                                      ),
-                                      hintText: "Product Store etc",
-                                      border: InputBorder.none,
-                                    ),
-                                  ),
-                                ),
+                                ],
                               ),
-                              const SizedBox(
-                                width: 10,
-                              ),
-                              Container(
-                                  padding: const EdgeInsets.all(4.0),
-                                  height: 40,
-                                  decoration: BoxDecoration(
-                                      color: Colors.green,
-                                      borderRadius: BorderRadius.circular(4),
-                                      boxShadow: const [
-                                        BoxShadow(
-                                            color: Colors.grey,
-                                            blurRadius: 2,
-                                            offset: Offset(0, 1))
-                                      ]),
-                                  child: const Center(
-                                      child: Text(
-                                    "Search By km.",
-                                    style: TextStyle(
-                                        color: Colors.white, fontSize: 12),
-                                  )))
-                            ],
-                          )
-                        : Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Expanded(
-                                child: Container(
-                                  height: 40,
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(4),
-                                    boxShadow: const [
-                                      BoxShadow(
-                                        color: Colors.grey,
-                                        blurRadius: 2,
-                                        offset: Offset(0, 1),
-                                      )
-                                    ],
-                                  ),
-                                  child: const TextField(
-                                    maxLines: 1,
-                                    textAlign: TextAlign.left,
-                                    decoration: InputDecoration(
-                                      contentPadding:
-                                          EdgeInsets.symmetric(vertical: 5),
-                                      prefixIcon: Icon(
-                                        Icons.search,
-                                        color: Colors.green,
-                                      ),
-                                      hintStyle: TextStyle(
-                                        fontSize: 14,
-                                      ),
-                                      hintText: "Search By Services",
-                                      border: InputBorder.none,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(
-                                width: 10,
-                              ),
-                              Container(
-                                padding: const EdgeInsets.all(4.0),
-                                height: 40,
-                                decoration: BoxDecoration(
+                              child: const TextField(
+                                maxLines: 1,
+                                enabled: false,
+                                textAlign: TextAlign.left,
+                                decoration: InputDecoration(
+                                  contentPadding:
+                                      EdgeInsets.symmetric(vertical: 5),
+                                  prefixIcon: Icon(
+                                    Icons.search,
                                     color: Colors.green,
-                                    borderRadius: BorderRadius.circular(4),
-                                    boxShadow: const [
-                                      BoxShadow(
-                                          color: Colors.grey,
-                                          blurRadius: 2,
-                                          offset: Offset(0, 1))
-                                    ]),
-                                child: const Center(
-                                  child: Text(
-                                    "Search By km.",
-                                    style: TextStyle(
-                                        color: Colors.white, fontSize: 12),
                                   ),
+                                  hintStyle: TextStyle(
+                                    fontSize: 14,
+                                  ),
+                                  hintText: "Product Store etc",
+                                  border: InputBorder.none,
                                 ),
-                              )
-                            ],
+                              ),
+                            ),
                           ),
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          Container(
+                              padding: const EdgeInsets.all(4.0),
+                              height: 40,
+                              decoration: BoxDecoration(
+                                  color: Colors.green,
+                                  borderRadius: BorderRadius.circular(4),
+                                  boxShadow: const [
+                                    BoxShadow(
+                                        color: Colors.grey,
+                                        blurRadius: 2,
+                                        offset: Offset(0, 1))
+                                  ]),
+                              child: const Center(
+                                  child: Text(
+                                "Search By km.",
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 12),
+                              )))
+                        ],
+                      ),
+                    ),
                     const SizedBox(
                       height: 20,
                     ),
@@ -490,23 +433,6 @@ class _HomeBodyState extends State<HomeScreen> {
                       ],
                     ),
 
-                    // SizedBox(
-                    //   height: 70,
-                    //   child: ListView.separated(
-                    //     shrinkWrap: true,
-                    //     scrollDirection: Axis.horizontal,
-                    //     // physics: const NeverScrollableScrollPhysics(),
-                    //     itemCount: shopList?.data?.length ?? 0,
-                    //     itemBuilder: (context, index) {
-                    //       return shopContainersElement(index);
-                    //     },
-                    //     separatorBuilder: (context, index) {
-                    //       return const SizedBox(
-                    //         width: 15,
-                    //       );
-                    //     },
-                    //   ),
-                    // ),
                     Column(
                       children: [
                         CarouselSlider(
@@ -856,165 +782,205 @@ class _HomeBodyState extends State<HomeScreen> {
                                     await clickUsers(
                                         vendorshopdata?.user?[index].id);
                                   },
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                    child: Container(
-                                      // padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          vendorshopdata?.user?[index]
-                                                          .profileImage ==
-                                                      null ||
-                                                  vendorshopdata?.user?[index]
-                                                          .shopImage ==
-                                                      ""
-                                              ? Container(
-                                                  height: 130,
-                                                  width: double.infinity,
-                                                  child: ClipRRect(
-                                                    borderRadius:
-                                                        const BorderRadius.only(
-                                                            topLeft:
-                                                                Radius.circular(
-                                                                    10),
-                                                            topRight:
-                                                                Radius.circular(
-                                                                    10)),
-                                                    child: Image.asset(
-                                                        "assets/images/placeholder.png",
-                                                        fit: BoxFit.fill),
-                                                  ),
-                                                )
-                                              : Container(
-                                                  height: 130,
-                                                  width: double.infinity,
-                                                  child: ClipRRect(
-                                                      borderRadius:
-                                                          const BorderRadius
-                                                              .only(
-                                                              topLeft: Radius
-                                                                  .circular(10),
-                                                              topRight: Radius
-                                                                  .circular(
-                                                                      10)),
-                                                      child: Image.network(
-                                                        "https://developmentalphawizz.com/hojayega/uploads/profile_pics/${vendorshopdata?.user?[index].shopImage}",
-                                                        fit: BoxFit.fill,
-                                                      ))),
-                                          Padding(
-                                            padding: const EdgeInsets.only(
-                                                left: 3, right: 3),
-                                            child: Text(
-                                              '${vendorshopdata?.user?[index].shopName}',
-                                              style: TextStyle(
-                                                  fontSize: 12,
-                                                  color: Colors.black
-                                                      .withOpacity(0.8),
-                                                  fontWeight: FontWeight.bold),
-                                            ),
-                                          ),
-                                          const SizedBox(
-                                            height: 2,
-                                          ),
-                                          Padding(
-                                              padding: const EdgeInsets.only(
-                                                  left: 3, right: 3),
-                                              child: Row(
-                                                children: [
-                                                  RatingBar.builder(
-                                                    initialRating: vendorshopdata
-                                                                ?.user[index]
-                                                                .revies ==
-                                                            ""
-                                                        ? 0.0
-                                                        : double.parse(
-                                                            vendorshopdata
-                                                                    ?.user?[
-                                                                        index]
-                                                                    .revies
-                                                                    .toString() ??
-                                                                ""),
-                                                    minRating: 0,
-                                                    direction: Axis.horizontal,
-                                                    allowHalfRating: true,
-                                                    itemCount: 5,
-                                                    itemSize: 15,
-                                                    ignoreGestures: true,
-                                                    unratedColor: Colors.grey,
-                                                    itemBuilder: (context, _) =>
-                                                        const Icon(Icons.star,
-                                                            color:
-                                                                Colors.orange),
-                                                    onRatingUpdate: (rating) {
-                                                      print(rating);
-                                                    },
-                                                  ),
-                                                  Text(
-                                                    double.parse(vendorshopdata
-                                                                ?.user?[index]
-                                                                .revies
-                                                                .toString() ??
-                                                            '0.0')
-                                                        .toStringAsFixed(1),
-                                                    style: const TextStyle(
-                                                        fontSize: 12),
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
-                                                  ),
-                                                ],
-                                              )),
-                                          const SizedBox(
-                                            height: 2,
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.only(
-                                                left: 3, right: 3),
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: [
-                                                Text(
-                                                  '${vendorshopdata?.user?[index].km}Km.',
+                                  child: Stack(
+                                    children: [
+                                      Container(
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                        ),
+                                        child: Container(
+                                          // padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              vendorshopdata?.user?[index]
+                                                              .profileImage ==
+                                                          null ||
+                                                      vendorshopdata
+                                                              ?.user?[index]
+                                                              .shopImage ==
+                                                          ""
+                                                  ? Container(
+                                                      height: 130,
+                                                      width: double.infinity,
+                                                      child: ClipRRect(
+                                                        borderRadius:
+                                                            const BorderRadius
+                                                                .only(
+                                                                topLeft: Radius
+                                                                    .circular(
+                                                                        10),
+                                                                topRight: Radius
+                                                                    .circular(
+                                                                        10)),
+                                                        child: Image.asset(
+                                                            "assets/images/placeholder.png",
+                                                            fit: BoxFit.fill),
+                                                      ),
+                                                    )
+                                                  : Container(
+                                                      height: 130,
+                                                      width: double.infinity,
+                                                      child: ClipRRect(
+                                                          borderRadius:
+                                                              const BorderRadius
+                                                                  .only(
+                                                                  topLeft: Radius
+                                                                      .circular(
+                                                                          10),
+                                                                  topRight: Radius
+                                                                      .circular(
+                                                                          10)),
+                                                          child: Image.network(
+                                                            "https://developmentalphawizz.com/hojayega/uploads/profile_pics/${vendorshopdata?.user?[index].shopImage}",
+                                                            fit: BoxFit.fill,
+                                                          ))),
+                                              Padding(
+                                                padding: const EdgeInsets.only(
+                                                    left: 3, right: 3),
+                                                child: Text(
+                                                  '${vendorshopdata?.user?[index].shopName}',
                                                   style: TextStyle(
-                                                      fontSize: 13,
+                                                      fontSize: 12,
                                                       color: Colors.black
                                                           .withOpacity(0.8),
                                                       fontWeight:
                                                           FontWeight.bold),
                                                 ),
-                                                vendorshopdata?.user?[index]
-                                                            .status ==
-                                                        "1"
-                                                    ? const Text(
-                                                        'Open',
-                                                        style: TextStyle(
-                                                            fontSize: 14,
-                                                            color: Colors.green,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .bold),
-                                                      )
-                                                    : const Text(
-                                                        'Close',
-                                                        style: TextStyle(
-                                                            fontSize: 14,
-                                                            color: Colors.red,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .bold),
+                                              ),
+                                              const SizedBox(
+                                                height: 2,
+                                              ),
+                                              Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          left: 3, right: 3),
+                                                  child: Row(
+                                                    children: [
+                                                      RatingBar.builder(
+                                                        initialRating: vendorshopdata
+                                                                    ?.user[
+                                                                        index]
+                                                                    .revies ==
+                                                                ""
+                                                            ? 0.0
+                                                            : double.parse(
+                                                                vendorshopdata
+                                                                        ?.user?[
+                                                                            index]
+                                                                        .revies
+                                                                        .toString() ??
+                                                                    ""),
+                                                        minRating: 0,
+                                                        direction:
+                                                            Axis.horizontal,
+                                                        allowHalfRating: true,
+                                                        itemCount: 5,
+                                                        itemSize: 15,
+                                                        ignoreGestures: true,
+                                                        unratedColor:
+                                                            Colors.grey,
+                                                        itemBuilder: (context,
+                                                                _) =>
+                                                            const Icon(
+                                                                Icons.star,
+                                                                color: Colors
+                                                                    .orange),
+                                                        onRatingUpdate:
+                                                            (rating) {
+                                                          print(rating);
+                                                        },
                                                       ),
-                                              ],
-                                            ),
+                                                      Text(
+                                                        double.parse(vendorshopdata
+                                                                    ?.user?[
+                                                                        index]
+                                                                    .revies
+                                                                    .toString() ??
+                                                                '0.0')
+                                                            .toStringAsFixed(1),
+                                                        style: const TextStyle(
+                                                            fontSize: 12),
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                      ),
+                                                    ],
+                                                  )),
+                                              const SizedBox(
+                                                height: 2,
+                                              ),
+                                              Padding(
+                                                padding: const EdgeInsets.only(
+                                                    left: 3, right: 3),
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: [
+                                                    Text(
+                                                      '${vendorshopdata?.user?[index].km}Km.',
+                                                      style: TextStyle(
+                                                          fontSize: 13,
+                                                          color: Colors.black
+                                                              .withOpacity(0.8),
+                                                          fontWeight:
+                                                              FontWeight.bold),
+                                                    ),
+                                                    vendorshopdata?.user?[index]
+                                                                .status ==
+                                                            "1"
+                                                        ? const Text(
+                                                            'Open',
+                                                            style: TextStyle(
+                                                                fontSize: 14,
+                                                                color: Colors
+                                                                    .green,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold),
+                                                          )
+                                                        : const Text(
+                                                            'Close',
+                                                            style: TextStyle(
+                                                                fontSize: 14,
+                                                                color:
+                                                                    Colors.red,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold),
+                                                          ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ],
                                           ),
-                                        ],
+                                        ),
                                       ),
-                                    ),
+                                      Positioned(
+                                        right: 5,
+                                        top: 5,
+                                        child: GestureDetector(
+                                          onTap: () => setState(() {
+                                            addToFav(
+                                                    vendor_id: vendorshopdata!
+                                                        .user[index].id
+                                                        .toString())
+                                                .then((value) => ScaffoldMessenger
+                                                        .of(context)
+                                                    .showSnackBar(SnackBar(
+                                                        content: Text(
+                                                            "Added to Wishlist"))));
+                                          }),
+                                          child: Icon(
+                                            Icons.favorite_border,
+                                            color: Colors.red,
+                                          ),
+                                        ),
+                                      )
+                                    ],
                                   ),
                                 );
                               },
@@ -1228,9 +1194,14 @@ class _HomeBodyState extends State<HomeScreen> {
                                         child: GestureDetector(
                                           onTap: () => setState(() {
                                             addToFav(
-                                                vendor_id: vendorshopdata!
-                                                    .user[index].id
-                                                    .toString());
+                                                    vendor_id: vendorshopdata!
+                                                        .user[index].id
+                                                        .toString())
+                                                .then((value) => ScaffoldMessenger
+                                                        .of(context)
+                                                    .showSnackBar(SnackBar(
+                                                        content: Text(
+                                                            "Added to Wishlist"))));
                                           }),
                                           child: Icon(
                                             Icons.favorite_border,
@@ -1270,7 +1241,8 @@ class _HomeBodyState extends State<HomeScreen> {
       };
       var request =
           http.MultipartRequest('POST', Uri.parse(ApiServicves.addToWishlist));
-      request.fields.addAll({'vendor_id': '4', 'user_id': user_id.toString()});
+      request.fields
+          .addAll({'vendor_id': vendor_id, 'user_id': user_id.toString()});
 
       request.headers.addAll(headers);
 

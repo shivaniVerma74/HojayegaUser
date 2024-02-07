@@ -47,6 +47,7 @@ class _CartState extends State<Cart> {
     }
   }
 
+  final GlobalKey<ScaffoldState> _key = GlobalKey();
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -54,7 +55,11 @@ class _CartState extends State<Cart> {
         backgroundColor: colors.appbarColor,
         appBar: PreferredSize(
           preferredSize: Size.fromHeight(80),
-          child: commonAppBar(context, text: "My Cart"),
+          child: commonAppBar(
+            context,
+            text: "My Cart",
+            isHome: true,
+          ),
         ),
         body: !isLoading
             ? RefreshIndicator(
@@ -91,7 +96,6 @@ class _CartState extends State<Cart> {
                               Fluttertoast.showToast(
                                   msg: "Plaese Select Order Type");
                             } else {
-                            
                               placeorder().then((value) => Navigator.push(
                                   context,
                                   MaterialPageRoute(
@@ -175,61 +179,49 @@ class _CartState extends State<Cart> {
                                     )
                                   : SizedBox.shrink(),
                               getAddressList.isNotEmpty
-                                  ? Container(
-                                      decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                          color: colors.primary),
-                                      width: MediaQuery.of(context).size.width /
-                                          1.1,
-                                      child: Card(
+                                  ? DropdownButtonFormField<dynamic>(
+                                      value: selectaddress,
+                                      icon: const Icon(
+                                        Icons.keyboard_arrow_down_sharp,
                                         color: colors.primary,
-                                        elevation: 2,
-                                        child: DropdownButtonFormField<dynamic>(
-                                          value: selectaddress,
-                                          icon: const Icon(
-                                            Icons.keyboard_arrow_down_sharp,
-                                            color: colors.whiteTemp,
-                                          ),
-                                          onChanged: (newValue) {
-                                            setState(() {
-                                              selectaddress = newValue;
-                                              addressids =
-                                                  newValue.id.toString();
-                                              print(
-                                                  "===my technic=======${selectaddress.id}===============");
-                                            });
-                                          },
-                                          items: getAddressList
-                                              .map((dynamic orderitem) {
-                                            return DropdownMenuItem(
-                                              value: orderitem,
-                                              child: SizedBox(
-                                                  width: MediaQuery.of(context)
-                                                          .size
-                                                          .width /
-                                                      1.5,
-                                                  child: Text(
-                                                    orderitem.address
-                                                        .toString(),
-                                                    style: const TextStyle(
-                                                        color:
-                                                            colors.secondary),
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
-                                                    maxLines: 1,
-                                                  )),
-                                            );
-                                          }).toList(),
-                                          decoration: const InputDecoration(
-                                            border: InputBorder.none,
-                                            hintText: 'Select Address',
-                                            hintStyle:
-                                                TextStyle(color: Colors.white),
-                                            filled: true,
-                                          ),
-                                        ),
                                       ),
+                                      borderRadius: BorderRadius.circular(10),
+                                      onChanged: (newValue) {
+                                        setState(() {
+                                          selectaddress = newValue;
+                                          addressids = newValue.id.toString();
+                                          print(
+                                              "===my technic=======${selectaddress.id}===============");
+                                        });
+                                      },
+                                      items: getAddressList
+                                          .map((dynamic orderitem) {
+                                        return DropdownMenuItem(
+                                          value: orderitem,
+                                          child: SizedBox(
+                                              width: MediaQuery.of(context)
+                                                      .size
+                                                      .width /
+                                                  1.5,
+                                              child: Text(
+                                                orderitem.address.toString(),
+                                                style: const TextStyle(
+                                                    color: colors.secondary),
+                                                overflow: TextOverflow.ellipsis,
+                                                maxLines: 1,
+                                              )),
+                                        );
+                                      }).toList(),
+                                      decoration: const InputDecoration(
+                                          contentPadding: EdgeInsets.all(10),
+                                          border: OutlineInputBorder(
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(10))),
+                                          hintText: 'Select Address',
+                                          hintStyle:
+                                              TextStyle(color: colors.primary),
+                                          filled: true,
+                                          fillColor: Colors.white),
                                     )
                                   : InkWell(
                                       onTap: () {
@@ -485,53 +477,49 @@ class _CartState extends State<Cart> {
                         const SizedBox(
                           height: 5,
                         ),
-                        Container(
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              color: colors.primary),
-                          width: MediaQuery.of(context).size.width / 1.1,
-                          child: Card(
-                            color: colors.primary,
-                            elevation: 2,
-                            child: DropdownButtonFormField<dynamic>(
-                              value: selectTimeslot,
-                              icon: const Icon(
-                                Icons.keyboard_arrow_down_sharp,
-                                color: colors.whiteTemp,
-                              ),
-                              onChanged: (dynamic newValue) {
-                                setState(() {
-                                  selectTimeslot = newValue;
-                                  timefrom =
-                                      "From ${newValue.fromTime.toString()} To ${newValue.toTime.toString()}";
-                                  print(
-                                      "===my technic=======$timefrom===============");
-                                  postTimeSlot(
-                                      newValue.fromTime, newValue.toTime);
-                                });
-                              },
-                              items: timeSlot.map((dynamic orderitem) {
-                                return DropdownMenuItem(
-                                  value: orderitem,
-                                  child: SizedBox(
-                                      width: MediaQuery.of(context).size.width /
-                                          1.5,
-                                      child: Text(
-                                        "From ${orderitem.fromTime.toString()} To ${orderitem.toTime.toString()}",
-                                        style: const TextStyle(
-                                            color: colors.secondary),
-                                        overflow: TextOverflow.ellipsis,
-                                        maxLines: 1,
-                                      )),
-                                );
-                              }).toList(),
-                              decoration: const InputDecoration(
-                                border: InputBorder.none,
-                                hintText: 'Select Time Slot',
-                                hintStyle: TextStyle(color: Colors.white),
-                                filled: true,
-                              ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 12),
+                          child: DropdownButtonFormField<dynamic>(
+                            value: selectTimeslot,
+                            icon: const Icon(
+                              Icons.keyboard_arrow_down_sharp,
+                              color: colors.primary,
                             ),
+                            onChanged: (dynamic newValue) {
+                              setState(() {
+                                selectTimeslot = newValue;
+                                timefrom =
+                                    "From ${newValue.fromTime.toString()} To ${newValue.toTime.toString()}";
+                                print(
+                                    "===my technic=======$timefrom===============");
+                                postTimeSlot(
+                                    newValue.fromTime, newValue.toTime);
+                              });
+                            },
+                            items: timeSlot.map((dynamic orderitem) {
+                              return DropdownMenuItem(
+                                value: orderitem,
+                                child: SizedBox(
+                                    width:
+                                        MediaQuery.of(context).size.width / 1.5,
+                                    child: Text(
+                                      "From ${orderitem.fromTime.toString()} To ${orderitem.toTime.toString()}",
+                                      style: const TextStyle(
+                                          color: colors.secondary),
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 1,
+                                    )),
+                              );
+                            }).toList(),
+                            decoration: const InputDecoration(
+                                contentPadding: EdgeInsets.all(10),
+                                border: OutlineInputBorder(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(10))),
+                                hintText: 'Select Time Slot',
+                                hintStyle: TextStyle(color: colors.primary),
+                                filled: true,
+                                fillColor: Colors.white),
                           ),
                         ),
                         const SizedBox(
@@ -556,44 +544,40 @@ class _CartState extends State<Cart> {
                         const SizedBox(
                           height: 5,
                         ),
-                        Container(
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              color: colors.primary),
-                          width: MediaQuery.of(context).size.width / 1.1,
-                          child: Card(
-                            color: colors.primary,
-                            elevation: 2,
-                            child: DropdownButtonFormField<String>(
-                              value: selectOrders,
-                              icon: const Icon(
-                                Icons.keyboard_arrow_down_sharp,
-                                color: colors.whiteTemp,
-                              ),
-                              onChanged: (String? newValue) {
-                                setState(() {
-                                  selectOrders = newValue!;
-                                  print(
-                                      "===my technic=======$selectOrders===============");
-                                });
-                              },
-                              items: orderitem.map((String orderitem) {
-                                return DropdownMenuItem(
-                                  value: orderitem,
-                                  child: Text(
-                                    orderitem.toString(),
-                                    style: const TextStyle(
-                                        color: colors.secondary),
-                                  ),
-                                );
-                              }).toList(),
-                              decoration: const InputDecoration(
-                                border: InputBorder.none,
-                                hintText: 'Select Product Type',
-                                hintStyle: TextStyle(color: Colors.white),
-                                filled: true,
-                              ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 12),
+                          child: DropdownButtonFormField<String>(
+                            value: selectOrders,
+                            icon: const Icon(
+                              Icons.keyboard_arrow_down_sharp,
+                              color: colors.primary,
                             ),
+                            onChanged: (String? newValue) {
+                              setState(() {
+                                selectOrders = newValue!;
+                                print(
+                                    "===my technic=======$selectOrders===============");
+                              });
+                            },
+                            items: orderitem.map((String orderitem) {
+                              return DropdownMenuItem(
+                                value: orderitem,
+                                child: Text(
+                                  orderitem.toString(),
+                                  style:
+                                      const TextStyle(color: colors.secondary),
+                                ),
+                              );
+                            }).toList(),
+                            decoration: const InputDecoration(
+                                contentPadding: EdgeInsets.all(10),
+                                border: OutlineInputBorder(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(10))),
+                                hintText: 'Select Product Type',
+                                hintStyle: TextStyle(color: colors.primary),
+                                filled: true,
+                                fillColor: Colors.white),
                           ),
                         ),
                         const SizedBox(
@@ -618,44 +602,40 @@ class _CartState extends State<Cart> {
                         const SizedBox(
                           height: 5,
                         ),
-                        Container(
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              color: colors.primary),
-                          width: MediaQuery.of(context).size.width / 1.1,
-                          child: Card(
-                            color: colors.primary,
-                            elevation: 2,
-                            child: DropdownButtonFormField<String>(
-                              value: selectproducts,
-                              icon: const Icon(
-                                Icons.keyboard_arrow_down_sharp,
-                                color: colors.whiteTemp,
-                              ),
-                              onChanged: (String? newValue) {
-                                setState(() {
-                                  selectproducts = newValue!;
-                                  print(
-                                      "===my technic=======$selectOrders===============");
-                                });
-                              },
-                              items: productitem.map((String orderitem) {
-                                return DropdownMenuItem(
-                                  value: orderitem,
-                                  child: Text(
-                                    orderitem.toString(),
-                                    style: const TextStyle(
-                                        color: colors.secondary),
-                                  ),
-                                );
-                              }).toList(),
-                              decoration: const InputDecoration(
-                                border: InputBorder.none,
-                                hintText: 'Select Order Type',
-                                hintStyle: TextStyle(color: Colors.white),
-                                filled: true,
-                              ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 12),
+                          child: DropdownButtonFormField<String>(
+                            value: selectproducts,
+                            icon: const Icon(
+                              Icons.keyboard_arrow_down_sharp,
+                              color: colors.primary,
                             ),
+                            onChanged: (String? newValue) {
+                              setState(() {
+                                selectproducts = newValue!;
+                                print(
+                                    "===my technic=======$selectOrders===============");
+                              });
+                            },
+                            items: productitem.map((String orderitem) {
+                              return DropdownMenuItem(
+                                value: orderitem,
+                                child: Text(
+                                  orderitem.toString(),
+                                  style:
+                                      const TextStyle(color: colors.secondary),
+                                ),
+                              );
+                            }).toList(),
+                            decoration: const InputDecoration(
+                                contentPadding: EdgeInsets.all(10),
+                                border: OutlineInputBorder(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(10))),
+                                hintText: 'Select Order Type',
+                                hintStyle: TextStyle(color: colors.primary),
+                                filled: true,
+                                fillColor: Colors.white),
                           ),
                         ),
                         const SizedBox(
@@ -680,45 +660,41 @@ class _CartState extends State<Cart> {
                         const SizedBox(
                           height: 5,
                         ),
-                        Container(
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              color: colors.primary),
-                          width: MediaQuery.of(context).size.width / 1.1,
-                          child: Card(
-                            color: colors.primary,
-                            elevation: 2,
-                            child: DropdownButtonFormField<String>(
-                              value: selectedVehicle,
-                              icon: const Icon(
-                                Icons.keyboard_arrow_down_sharp,
-                                color: colors.whiteTemp,
-                              ),
-                              onChanged: (String? newValue) {
-                                setState(() {
-                                  selectedVehicle = newValue!;
-                                  print(
-                                      "===my technic=======${selectedVehicle}===============");
-                                  getDeliveryCharges(
-                                      vType: selectedVehicle.toString());
-                                });
-                              },
-                              items: vehicleItem.map((String orderitem) {
-                                return DropdownMenuItem(
-                                  value: orderitem,
-                                  child: Text(
-                                    orderitem.toString(),
-                                    style: TextStyle(color: colors.secondary),
-                                  ),
-                                );
-                              }).toList(),
-                              decoration: const InputDecoration(
-                                border: InputBorder.none,
-                                hintText: 'Select Vehicle Type',
-                                hintStyle: TextStyle(color: Colors.white),
-                                filled: true,
-                              ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 12),
+                          child: DropdownButtonFormField<String>(
+                            value: selectedVehicle,
+                            icon: const Icon(
+                              Icons.keyboard_arrow_down_sharp,
+                              color: colors.primary,
                             ),
+                            onChanged: (String? newValue) {
+                              setState(() {
+                                selectedVehicle = newValue!;
+                                print(
+                                    "===my technic=======${selectedVehicle}===============");
+                                getDeliveryCharges(
+                                    vType: selectedVehicle.toString());
+                              });
+                            },
+                            items: vehicleItem.map((String orderitem) {
+                              return DropdownMenuItem(
+                                value: orderitem,
+                                child: Text(
+                                  orderitem.toString(),
+                                  style: TextStyle(color: colors.secondary),
+                                ),
+                              );
+                            }).toList(),
+                            decoration: const InputDecoration(
+                                contentPadding: EdgeInsets.all(10),
+                                border: OutlineInputBorder(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(10))),
+                                hintText: 'Select Vehicle Type',
+                                hintStyle: TextStyle(color: colors.primary),
+                                filled: true,
+                                fillColor: Colors.white),
                           ),
                         ),
                         const SizedBox(

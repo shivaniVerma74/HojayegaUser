@@ -1,9 +1,15 @@
+import 'dart:convert';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:ho_jayega_user_main/Helper/api.path.dart';
 
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../Helper/appBar.dart';
 import '../Helper/color.dart';
+import '../Model/notificationModel.dart';
 
 class NotificationScreen extends StatefulWidget {
   const NotificationScreen({Key? key}) : super(key: key);
@@ -12,197 +18,185 @@ class NotificationScreen extends StatefulWidget {
 }
 
 class _NotificationScreenState extends State<NotificationScreen> {
-
   @override
   initState() {
     super.initState();
-    // getData();
-
+    myFuture = getNotification();
   }
 
-  // String? vendorId;
-  // getData() async {
-  //   final SharedPreferences preferences = await SharedPreferences.getInstance();
-  //   vendorId = preferences.getString('vendorId');
-  //   return  getNotification();
-  // }
+  NotificationModel? NotiList;
+  getNotification() async {
+    try {
+      final SharedPreferences sharedPreferences =
+          await SharedPreferences.getInstance();
+      String? user_id = sharedPreferences.getString('user_id');
+      var headers = {
+        'Cookie': 'ci_session=1826473be67eeb9329a8e5393f7907573d116ca1'
+      };
+      var request =
+          http.MultipartRequest('POST', Uri.parse(ApiServicves.notification));
+      request.fields.addAll({'user_id': user_id.toString()});
+      request.headers.addAll(headers);
+      http.StreamedResponse response = await request.send();
+      var json = jsonDecode(await response.stream.bytesToString());
+      if (response.statusCode == 200) {
+        print(json.toString());
+        setState(() {
+          NotiList = NotificationModel.fromJson(json);
+        });
+      } else {
+        print(response.reasonPhrase);
+      }
+    } catch (e, stackTrace) {
+      print(stackTrace);
+      throw Exception(e);
+    }
+  }
 
-  // NotificationModel? getNotiList;
-  // getNotification() async {
-  //   var headers = {
-  //     'Cookie': 'ci_session=1826473be67eeb9329a8e5393f7907573d116ca1'
-  //   };
-  //   var request = http.MultipartRequest('POST', Uri.parse(ApiServicves.notifications));
-  //   request.fields.addAll({
-  //     'user_id': vendorId.toString()
-  //   });
-  //   request.headers.addAll(headers);
-  //   http.StreamedResponse response = await request.send();
-  //   if (response.statusCode == 200) {
-  //     var finalResponse = await response.stream.bytesToString();
-  //     final finalResult = NotificationModel.fromJson(json.decode(finalResponse));
-  //     print("child category responsee $finalResult");
-  //     setState(() {
-  //       getNotiList = finalResult;
-  //       setState(() {});
-  //     });
-  //   } else {
-  //     print(response.reasonPhrase);
-  //   }
-  // }
+  clearNotification() async {
+    try {
+      final SharedPreferences sharedPreferences =
+          await SharedPreferences.getInstance();
+      String? user_id = sharedPreferences.getString('user_id');
+      var headers = {
+        'Cookie': 'ci_session=1826473be67eeb9329a8e5393f7907573d116ca1'
+      };
+      var request =
+          http.MultipartRequest('POST', Uri.parse(ApiServicves.clearNoti));
+      request.fields.addAll({'user_id': user_id.toString()});
+      request.headers.addAll(headers);
+      http.StreamedResponse response = await request.send();
+      if (response.statusCode == 200) {
+        print(await response.stream.bytesToString());
 
-  // notificationClear() async{
-  //   var headers = {
-  //     'Cookie': 'ci_session=1826473be67eeb9329a8e5393f7907573d116ca1'
-  //   };
-  //   var request = http.MultipartRequest('POST', Uri.parse(ApiServicves.clearNotification));
-  //   request.fields.addAll({
-  //     'user_id': vendorId.toString()
-  //   });
-  //   request.headers.addAll(headers);
-  //   http.StreamedResponse response = await request.send();
-  //   if (response.statusCode == 200) {
-  //     print(await response.stream.bytesToString());
-  //     Navigator.pop(context);
-  //   }
-  //   else {
-  //     print(response.reasonPhrase);
-  //   }
-  // }
+        setState(() {
+          getNotification();
+        });
+      } else {
+        print(response.reasonPhrase);
+      }
+    } catch (e, stackTrace) {
+      print(stackTrace);
+      throw Exception(e);
+    }
+  }
 
+  late Future myFuture;
+  final GlobalKey<ScaffoldState> _key = GlobalKey();
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-          backgroundColor: colors.appbarColor,
-          appBar:    PreferredSize(
-            preferredSize: Size.fromHeight(80),
-            child: commonAppBar(context,
-                text:
-                "Notification"
-            ),
+        backgroundColor: colors.appbarColor,
+        appBar: PreferredSize(
+          preferredSize: Size.fromHeight(80),
+          child: commonAppBar(
+            context,
+            text: "Notification",
+            isHome: false,
           ),
-          body: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.only(top: 5, left: 25, right: 25, bottom: 20),
-              child: Column(children: [
-                SizedBox(
-                  height: 10,
-                ),
-                Row(
-                  children:  [
-                    const Text(
-                      'Today',
-                      style: TextStyle(
-                          fontSize: 17,
-                          color: colors.blackTemp,
-                          fontWeight: FontWeight.w600),
-                    ),
-                    Spacer(),
-                    InkWell(
-                      onTap: () {
-                        // notificationClear();
-                      },
-                      child: const Text(
-                        'Clear All',
-                        style: TextStyle(
-                            fontSize: 17,
-                            color: colors.blackTemp,
-                            fontWeight: FontWeight.w600),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                // getNotiList?.responseCode == "0"
-                //     ? Container(
-                //   height: MediaQuery.of(context).size.height / 1.6,
-                //   width: MediaQuery.of(context).size.width,
-                //   child: const Center(
-                //     child: Text(
-                //       'Notification Not Found',
-                //       style: TextStyle(
-                //           fontSize: 15,
-                //           fontWeight: FontWeight.bold),
-                //     ),
-                //   ),
-                // ):
-                Padding(
-                  padding: const EdgeInsets.only(top: 20),
-                  child: ListView.builder(
-                    itemCount:10,
-                    shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
-                    itemBuilder: (context, index) {
-                      return Padding(
-                        padding:
-                        const EdgeInsets.only(bottom: 8),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            borderRadius:
-                            BorderRadius.circular(13), color: Colors.white,
-                            border: Border.all(color: colors.primary, width: 1),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(10),
-                            child: Column(
-                              children: [
-                                SizedBox(
-                                  height: 10,
-                                ),
-                                Row(
-                                  children: [
-                                    SizedBox(
-                                      width: 12,
-                                    ),
-                                    Text(
-                                      "${index + 1}.  This is good msg",
-                                      // "${getNotiList?.notifications?[index].dateSent.month ?? ""}-${getNotiList[index].dateSent.year ?? ""}",
-                                      style: TextStyle(
-                                          fontWeight:
-                                          FontWeight.bold,
-                                          color: colors
-                                              .blackTemp,
-                                          fontSize: 13),
-                                    ),
-                                  ],
-                                ),
-                                ListTile(
-                                  title: Text(
-                                    "Hii This Is Notidfication",
-                                    style: const TextStyle(
-                                        fontWeight:
-                                        FontWeight.bold,
-                                        color: colors
-                                            .blackTemp,
-                                        fontSize: 13),
-                                  ),
-                                  subtitle: Text(
-                                    "Hii this is msg",
-                                    style: TextStyle(
-                                        color: colors.black54,
-                                        fontSize: 10),
-                                  ),
-                                  // trailing: CachedNetworkImage(
-                                  //   imageUrl: "${getNotiList?.notifications?[index].}",
-                                  //   errorWidget: (context, url, error) => Image.asset('assets/images/splash.png'),
-                                  // ),
-                                ),
-                              ],
+        ),
+        body: FutureBuilder(
+          future: myFuture,
+          builder: (context, snapshot) => snapshot.connectionState ==
+                  ConnectionState.waiting
+              ? Center(
+                  child: CircularProgressIndicator(),
+                )
+              : RefreshIndicator(
+                  onRefresh: () async {
+                    Future.delayed(Duration(seconds: 2));
+                    setState(() {
+                      getNotification();
+                    });
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: NotiList!.status == 'Failed'
+                        ? Center(
+                            child: Text(
+                              "No New Notifications",
+                              style: TextStyle(
+                                  fontSize: 16, fontWeight: FontWeight.w500),
                             ),
+                          )
+                        : Column(
+                            children: [
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    "Today",
+                                    style: TextStyle(
+                                        fontSize: 16,
+                                        color: colors.primary,
+                                        fontWeight: FontWeight.w500),
+                                  ),
+                                  GestureDetector(
+                                    onTap: () => clearNotification(),
+                                    child: Text(
+                                      "Clear all",
+                                      style: TextStyle(
+                                          fontSize: 16,
+                                          color: colors.primary,
+                                          fontWeight: FontWeight.w500),
+                                    ),
+                                  )
+                                ],
+                              ),
+                              const Divider(color: Colors.transparent),
+                              ListView.builder(
+                                shrinkWrap: true,
+                                itemCount: NotiList!.notifications.length,
+                                itemBuilder: (context, index) => Container(
+                                  width: double.infinity,
+                                  margin: const EdgeInsets.only(bottom: 10),
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
+                                      color: Colors.white,
+                                      border: Border.all(
+                                          width: 1, color: colors.primary)),
+                                  child: ListTile(
+                                    title: Text(
+                                      NotiList!.notifications[index].title
+                                          .toString(),
+                                      style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w500),
+                                    ),
+                                    subtitle: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          NotiList!.notifications[index].message
+                                              .toString(),
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                          ),
+                                        ),
+                                        Text(
+                                          DateFormat('yMMMMd')
+                                              .format(NotiList!
+                                                  .notifications[index].date!)
+                                              .toString(),
+                                          style: TextStyle(
+                                              fontSize: 14, color: Colors.grey),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              )
+                            ],
                           ),
-                        ),
-                      );
-                    },
                   ),
                 ),
-
-
-              ]),
-            ),
-          )),
+        ),
+      ),
     );
   }
 }

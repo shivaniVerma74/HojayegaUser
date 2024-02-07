@@ -39,11 +39,11 @@ class _PickDropState extends State<PickDrop> {
     });
   }
 
+  final GlobalKey<ScaffoldState> _key = GlobalKey();
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-
         backgroundColor: Color(0xffE2EBFE),
         // appBar: AppBar(
         //   automaticallyImplyLeading: false,
@@ -55,12 +55,9 @@ class _PickDropState extends State<PickDrop> {
         //       borderRadius: BorderRadius.vertical(bottom: Radius.circular(20.0)),
         //     )),
 
-        appBar:    PreferredSize(
+        appBar: PreferredSize(
           preferredSize: Size.fromHeight(80),
-          child: commonAppBar(context,
-              text:
-              "Pick & Drop"
-          ),
+          child: commonAppBar(context, isHome: true, text: "Pick & Drop"),
         ),
 
         body: SingleChildScrollView(
@@ -103,11 +100,9 @@ class _PickDropState extends State<PickDrop> {
                           //       ? Image.file(_image!.absolute)
                           //       : const Icon(Icons.upload_file_outlined),
                           // ),
-                          Expanded
-                            (
+                          Expanded(
                             child: Container(
                               height: 100,
-
                               child: Center(
                                 child: Text(
                                   "Upload",
@@ -165,7 +160,8 @@ class _PickDropState extends State<PickDrop> {
                                   ),
                                   Text(
                                     "Select Location On Map",
-                                    style: TextStyle(fontWeight: FontWeight.bold),
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold),
                                   ),
                                 ],
                               ),
@@ -191,7 +187,8 @@ class _PickDropState extends State<PickDrop> {
                                   ),
                                   Text(
                                     "PickUp Name",
-                                    style: TextStyle(fontWeight: FontWeight.bold),
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold),
                                   ),
                                 ],
                               ),
@@ -216,8 +213,8 @@ class _PickDropState extends State<PickDrop> {
                                     width: 10,
                                   ),
                                   Text("PickUp Phone Number",
-                                      style:
-                                          TextStyle(fontWeight: FontWeight.bold)),
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold)),
                                 ],
                               ),
                             )),
@@ -242,7 +239,8 @@ class _PickDropState extends State<PickDrop> {
                                   ),
                                   Text(
                                     "Type Address",
-                                    style: TextStyle(fontWeight: FontWeight.bold),
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold),
                                   ),
                                 ],
                               ),
@@ -250,44 +248,44 @@ class _PickDropState extends State<PickDrop> {
                       ),
                       Card(
                         child: Container(
-                            width: double.infinity,
-                            height: 40,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                color: Colors.white),
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Row(
-                                children: [
-                                  const Icon(
-                                    Icons.location_on,
-                                    color: colors.secondary,
-                                  ),
-                                  const SizedBox(
-                                    width: 10,
-                                  ),
-                                  DropdownButton<String>(
-                                    autofocus: false,
-                                    value: _selectedItem2,
-                                    hint: const Text("Select Zone(Area)",
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold)),
-                                    onChanged: (String? newValue) {
-                                      setState(() {
-                                        _selectedItem2 = newValue;
-                                      });
-                                    },
-                                    items: items2.map<DropdownMenuItem<String>>(
-                                        (String value) {
-                                      return DropdownMenuItem<String>(
-                                        value: value,
-                                        child: Text(value),
-                                      );
-                                    }).toList(),
-                                  ),
-                                ],
-                              ),
+                          width: double.infinity,
+                          height: 40,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color: Colors.white),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Row(
+                              children: [
+                                const Icon(
+                                  Icons.location_on,
+                                  color: colors.secondary,
+                                ),
+                                const SizedBox(
+                                  width: 10,
+                                ),
+                                DropdownButton<String>(
+                                  autofocus: false,
+                                  value: _selectedItem2,
+                                  hint: const Text("Select Zone(Area)",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold)),
+                                  onChanged: (String? newValue) {
+                                    setState(() {
+                                      _selectedItem2 = newValue;
+                                    });
+                                  },
+                                  items: items2.map<DropdownMenuItem<String>>(
+                                      (String value) {
+                                    return DropdownMenuItem<String>(
+                                      value: value,
+                                      child: Text(value),
+                                    );
+                                  }).toList(),
+                                ),
+                              ],
                             ),
+                          ),
                         ),
                       ),
                     ],
@@ -343,7 +341,8 @@ class _PickDropState extends State<PickDrop> {
                                   ),
                                   Text(
                                     "Select Location On Map",
-                                    style: TextStyle(fontWeight: FontWeight.bold),
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold),
                                   ),
                                 ],
                               ),
@@ -369,7 +368,8 @@ class _PickDropState extends State<PickDrop> {
                                   ),
                                   Text(
                                     "PickUp Name",
-                                    style: TextStyle(fontWeight: FontWeight.bold),
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold),
                                   ),
                                 ],
                               ),
@@ -394,8 +394,8 @@ class _PickDropState extends State<PickDrop> {
                                     width: 10,
                                   ),
                                   Text("PickUp Phone Number",
-                                      style:
-                                          TextStyle(fontWeight: FontWeight.bold)),
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold)),
                                 ],
                               ),
                             )),
@@ -420,7 +420,8 @@ class _PickDropState extends State<PickDrop> {
                                   ),
                                   Text(
                                     "Type Address",
-                                    style: TextStyle(fontWeight: FontWeight.bold),
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold),
                                   ),
                                 ],
                               ),
@@ -555,7 +556,10 @@ class _PickDropState extends State<PickDrop> {
                                   });
                                 },
                               ),
-                              Icon(Icons.bike_scooter, color: colors.secondary,)
+                              Icon(
+                                Icons.bike_scooter,
+                                color: colors.secondary,
+                              )
                               // Text("aa"),
                             ],
                           ),
@@ -588,10 +592,10 @@ class _PickDropState extends State<PickDrop> {
                                   });
                                 },
                               ),
-                              Text(
-                                arrValue[index],
-                                style: const TextStyle(
-                                    fontSize: 10, fontWeight: FontWeight.bold))
+                              Text(arrValue[index],
+                                  style: const TextStyle(
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.bold))
                               // Icon(Icons.bike_scooter,color:Colors.green)
                               // Text("aa"),
                             ],
@@ -620,8 +624,8 @@ class _PickDropState extends State<PickDrop> {
                     children: const [
                       Text(
                         "Note",
-                        style:
-                            TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                            fontSize: 22, fontWeight: FontWeight.bold),
                       ),
                       Text(
                         "(Optional)",
@@ -638,8 +642,8 @@ class _PickDropState extends State<PickDrop> {
                     width: 200,
                     height: 50,
                     decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: colors.secondary,
+                      borderRadius: BorderRadius.circular(10),
+                      color: colors.secondary,
                     ),
                     child: const Center(
                       child: Text(

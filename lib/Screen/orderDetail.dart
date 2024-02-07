@@ -74,13 +74,18 @@ class _OrderDetailState extends State<OrderDetail> {
     }
   }
 
+  final GlobalKey<ScaffoldState> _key = GlobalKey();
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
         appBar: PreferredSize(
           preferredSize: Size.fromHeight(80),
-          child: commonAppBar(context, text: "Order Detail"),
+          child: commonAppBar(
+            context,
+            text: "Order Detail",
+            isHome: false,
+          ),
         ),
         body: FutureBuilder(
             future: myFuture,

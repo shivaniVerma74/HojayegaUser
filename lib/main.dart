@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'AuthView/splashScreen.dart';
 
-void main() async{
+void main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
   await SystemChrome.setPreferredOrientations([

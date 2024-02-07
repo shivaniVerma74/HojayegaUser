@@ -50,6 +50,13 @@ class ApiServicves {
   static const String vendor_bank_detail = baseUrl + 'get_vendor_bank_details';
   static const String servicePaymentDone = baseUrl + 'booking_payment';
   static const String addToWishlist = baseUrl + 'likePro';
+  static const String removeFromWishlist = baseUrl + 'unlike_product';
+  static const String getCalender = baseUrl + 'get_booked_booking_calender';
+  static const String notification = baseUrl + 'notifications';
+  static const String clearNoti = baseUrl + 'clear_all';
+  static const String search = baseUrl + 'search';
+  static const String bookingHistory = baseUrl + 'get_bookings';
+  static const String bookingAmt = baseUrl + 'get_bookings_details';
 }
 
 String? user_id;

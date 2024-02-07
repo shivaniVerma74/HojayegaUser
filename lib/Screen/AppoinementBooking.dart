@@ -1,7 +1,11 @@
-import 'package:flutter/material.dart';
-import 'package:ho_jayega_user_main/Screen/ServicePayment.dart';
-import 'package:table_calendar/table_calendar.dart';
+import 'dart:convert';
 
+import 'package:flutter/material.dart';
+import 'package:ho_jayega_user_main/Helper/api.path.dart';
+import 'package:ho_jayega_user_main/Screen/ServicePayment.dart';
+import 'package:intl/intl.dart';
+import 'package:table_calendar/table_calendar.dart';
+import 'package:http/http.dart' as http;
 import '../Helper/color.dart';
 import 'ConfirmService.dart';
 
@@ -29,6 +33,7 @@ class _MyTimePickerState extends State<AppointmentBooking> {
     _selectedYear = _focusedDay.year;
     _calendarFormat = CalendarFormat.month;
     _selectedDay = _focusedDay;
+    getBookingCalender();
   }
 
   List<DropdownMenuItem<int>> _getYearDropdownItems() {
@@ -60,6 +65,40 @@ class _MyTimePickerState extends State<AppointmentBooking> {
       setState(() {
         _selectedTime = picked;
       });
+  }
+
+  bool _isWeekend(DateTime day) {
+    print(booking.contains(DateFormat('yyyy-MM-dd').format(day)));
+    return booking.contains(DateFormat('yyyy-MM-dd').format(day));
+  }
+
+  List<String> booking = [];
+  Future<void> getBookingCalender() async {
+    try {
+      var headers = {
+        'Cookie': 'ci_session=116d327988b3013ef7dc4a036296ab9415419cb0'
+      };
+      var request =
+          http.MultipartRequest('POST', Uri.parse(ApiServicves.getCalender));
+      request.fields.addAll({'vendor_id': widget.vendor_id});
+
+      request.headers.addAll(headers);
+
+      http.StreamedResponse response = await request.send();
+      var json = jsonDecode(await response.stream.bytesToString());
+      if (response.statusCode == 200) {
+        print(json);
+        setState(() {
+          booking = json['booking'].cast<String>();
+          print("Length: ${booking.length}");
+        });
+      } else {
+        print(response.reasonPhrase);
+      }
+    } catch (e, stackTrace) {
+      print(stackTrace);
+      throw Exception(e);
+    }
   }
 
   @override
@@ -146,19 +185,30 @@ class _MyTimePickerState extends State<AppointmentBooking> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  DropdownButton<int>(
-                                    value: _selectedYear,
-                                    items: _getYearDropdownItems(),
-                                    onChanged: _onYearChanged,
+                                  Text(
+                                    DateTime.now().year.toString(),
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w600,
+                                    ),
                                   ),
                                   TableCalendar(
-                                    firstDay: DateTime.utc(2022, 1, 1),
+                                    firstDay: DateTime.now(),
                                     lastDay: DateTime.utc(2040, 12, 31),
                                     focusedDay: _focusedDay,
-                                    calendarFormat: _calendarFormat,
+                                    calendarFormat: CalendarFormat.month,
+                                    headerStyle: HeaderStyle(
+                                        formatButtonVisible: false,
+                                        titleCentered: true),
                                     selectedDayPredicate: (day) {
                                       return isSameDay(_selectedDay, day);
                                     },
+                                    calendarStyle: CalendarStyle(
+                                        disabledDecoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            color: Colors.grey.shade200)),
+                                    enabledDayPredicate: (day) =>
+                                        !_isWeekend(day),
                                     onDaySelected: (selectedDay, focusedDay) {
                                       if (!isSameDay(
                                           _selectedDay, selectedDay)) {
@@ -167,16 +217,6 @@ class _MyTimePickerState extends State<AppointmentBooking> {
                                           _focusedDay = focusedDay;
                                         });
                                       }
-                                    },
-                                    onFormatChanged: (format) {
-                                      if (_calendarFormat != format) {
-                                        setState(() {
-                                          _calendarFormat = format;
-                                        });
-                                      }
-                                    },
-                                    onPageChanged: (focusedDay) {
-                                      _focusedDay = focusedDay;
                                     },
                                   ),
                                 ],

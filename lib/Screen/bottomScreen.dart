@@ -93,7 +93,6 @@ class _BottomNavBarState extends State<BottomNavBar> {
         return true;
       },
       child: Scaffold(
-        key: _key,
         backgroundColor: colors.appbarColor,
         appBar: PreferredSize(
           preferredSize: Size.fromHeight(
@@ -109,6 +108,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
               : selectedIndex == 1
                   ? SizedBox.shrink()
                   : commonAppBar(context,
+                      isHome: true,
                       text: selectedIndex == 3
                           ? "My Bookings"
                           : selectedIndex == 4

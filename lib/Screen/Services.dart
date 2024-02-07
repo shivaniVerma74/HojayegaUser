@@ -27,7 +27,7 @@ class _TopServiceState extends State<Services> {
     'Dr',
     'Home Services'
   ];
-
+  final GlobalKey<ScaffoldState> _key = GlobalKey();
   List<String> topServicesList = ['Vedika P&D Service', 'Rb Saloon'];
   @override
   Widget build(BuildContext context) {
@@ -38,12 +38,13 @@ class _TopServiceState extends State<Services> {
           preferredSize: Size.fromHeight(80),
           child: commonAppBar(
             context,
+            isHome: false,
             text: "Top Services",
           ),
         ),
         body: Container(
           padding:
-          const EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 10),
+              const EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 10),
           child: ListView(
             children: [
               Row(
@@ -94,9 +95,9 @@ class _TopServiceState extends State<Services> {
                           ]),
                       child: const Center(
                           child: Text(
-                            "Search By km.",
-                            style: TextStyle(color: Colors.white, fontSize: 12),
-                          )))
+                        "Search By km.",
+                        style: TextStyle(color: Colors.white, fontSize: 12),
+                      )))
                 ],
               ),
               const SizedBox(
@@ -111,18 +112,18 @@ class _TopServiceState extends State<Services> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: selectList
                         .map((e) => Row(
-                      children: [
-                        Icon(
-                          Icons.radio_button_off_outlined,
-                          size: 12,
-                        ),
-                        Text(
-                          e,
-                          style: TextStyle(
-                              fontSize: 12, color: colors.primary),
-                        )
-                      ],
-                    ))
+                              children: [
+                                Icon(
+                                  Icons.radio_button_off_outlined,
+                                  size: 12,
+                                ),
+                                Text(
+                                  e,
+                                  style: TextStyle(
+                                      fontSize: 12, color: colors.primary),
+                                )
+                              ],
+                            ))
                         .toList()),
               ),
               SizedBox(
@@ -233,7 +234,7 @@ class _TopServiceState extends State<Services> {
                               width: MediaQuery.of(context).size.width * 0.4,
                               child: Column(
                                 mainAxisAlignment:
-                                MainAxisAlignment.spaceBetween,
+                                    MainAxisAlignment.spaceBetween,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
@@ -274,7 +275,7 @@ class _TopServiceState extends State<Services> {
                                   ),
                                   Row(
                                     mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                                        MainAxisAlignment.spaceBetween,
                                     children: [
                                       Text(
                                         '2KM',
