@@ -1,9 +1,15 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:ho_jayega_user_main/Helper/api.path.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
-
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:google_maps_place_picker_mb/google_maps_place_picker.dart';
 import '../Helper/appBar.dart';
 import '../Helper/color.dart';
+import '../Model/AreaModel.dart';
+import 'package:http/http.dart' as http;
 
 class PickDrop extends StatefulWidget {
   const PickDrop({super.key});
@@ -15,8 +21,6 @@ class PickDrop extends StatefulWidget {
 class _PickDropState extends State<PickDrop> {
   String _selectedOption = 'Yes';
   var arrValue = ['Cake', 'fragile', 'Ready', 'Non'];
-  //final List<String> radioLabels = ['Option 1', 'Option 2', 'Option 3', 'Option 4'];
-  //var index=0;
   Map<int, int> _radioSelections = {};
   Map<int, int> _radioSelections2 = {};
 
@@ -39,28 +43,252 @@ class _PickDropState extends State<PickDrop> {
     });
   }
 
+  File? packageImages;
+  Widget packageImage() {
+    return Card(
+      elevation: 1,
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 10),
+        //margin: EdgeInsets.symmetric(horizontal: 20),
+        height: MediaQuery.of(context).size.height/6,
+        width: MediaQuery.of(context).size.width * 0.8,
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(5),
+            color: Colors.grey.withOpacity(0.2),
+            border: Border.all(color: colors.primary)
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(10),
+          child: packageImages != null
+              ? Image.file(packageImages!, fit: BoxFit.cover)
+              : Column(
+            children: const [
+              Center(
+                  child: Icon(Icons.upload_file_outlined, size: 60)),
+              Text("Upload")
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getArea();
+  }
+  Widget imagesView() {
+    return Card(
+      elevation: 1,
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 10),
+        //margin: EdgeInsets.symmetric(horizontal: 20),
+        height: MediaQuery.of(context).size.height/7,
+        width: MediaQuery.of(context).size.width * 0.8,
+        decoration: BoxDecoration(borderRadius: BorderRadius.circular(5), color: Colors.white,
+            border: Border.all(color: colors.primary)
+        ),
+        child: Center(
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(10),
+            child: packageImages != null
+                ? Image.file(packageImages!, fit: BoxFit.cover)
+                : Column(
+                children: const [
+                Center(
+                  child: Icon(Icons.upload_file_outlined, size: 60),
+                ),
+                Text("Upload")
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Future<void> pickImage(ImageSource source, String type) async {
+    final pickedFile = await ImagePicker().pickImage(
+      source: source,
+      maxHeight: 100,
+      maxWidth: 100,
+      imageQuality: 50,
+    );
+    if (pickedFile != null) {
+      setState(() {
+        if (type == 'uploadImage') {
+          packageImages = File(pickedFile.path);
+        }
+      });
+    }
+  }
+
+  Future showAlertDialog(BuildContext context, String type) async {
+    return await showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Select Image'),
+        content: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            ElevatedButton(
+              onPressed: () {
+                pickImage(ImageSource.gallery, type);
+                Navigator.pop(context);
+                // getImage(ImageSource.camera, context, 1);
+              },
+              child: Text('Gallery'),
+            ),
+            const SizedBox(
+              width: 15,
+            ),
+            ElevatedButton(
+              onPressed: () {
+                pickImage(ImageSource.camera, type);
+                Navigator.pop(context);
+              },
+              child: Text('Camera'),
+            ),
+          ],
+        ),
+      ),
+    ) ??
+        false;
+  }
+
+  TextEditingController addressCtr = TextEditingController();
+  TextEditingController pickupnameCtr = TextEditingController();
+  TextEditingController pickupphoneCtr = TextEditingController();
+  TextEditingController typaaddressCtr = TextEditingController();
+  TextEditingController dropLocationCtr = TextEditingController();
+  TextEditingController dropnameCtr = TextEditingController();
+  TextEditingController dropphoneCtr = TextEditingController();
+  TextEditingController droptypeaddressCtr = TextEditingController();
+  TextEditingController productDescriptionCtr = TextEditingController();
+  TextEditingController noteCtr = TextEditingController();
+  String? latitude, longitudes;
+  late String myLoction = "";
+
+  getLocation() async {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => PlacePicker(
+          apiKey: Platform.isAndroid
+              ? "AIzaSyCKLIBoAca5ptn9A_1UCHNNrtzI81w2KRk"
+              : "AIzaSyCKLIBoAca5ptn9A_1UCHNNrtzI81w2KRk",
+          onPlacePicked: (result) {
+            print(result.formattedAddress);
+            setState(() {
+              addressCtr.text = result.formattedAddress.toString();
+              latitude = result.geometry!.location.lat.toString();
+              longitudes = result.geometry!.location.lng.toString();
+              myLoction = result.formattedAddress.toString();
+            });
+            Navigator.of(context).pop();
+          },
+          initialPosition: LatLng(22.719568, 75.857727),
+          useCurrentLocation: true,
+        ),
+      ),
+    );
+  }
+
+  getDropLocation() async {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => PlacePicker(
+          apiKey: Platform.isAndroid
+              ? "AIzaSyCKLIBoAca5ptn9A_1UCHNNrtzI81w2KRk"
+              : "AIzaSyCKLIBoAca5ptn9A_1UCHNNrtzI81w2KRk",
+          onPlacePicked: (result) {
+            print(result.formattedAddress);
+            setState(() {
+              dropLocationCtr.text = result.formattedAddress.toString();
+              latitude = result.geometry!.location.lat.toString();
+              longitudes = result.geometry!.location.lng.toString();
+              myLoction = result.formattedAddress.toString();
+            });
+            Navigator.of(context).pop();
+          },
+          initialPosition: LatLng(22.719568, 75.857727),
+          useCurrentLocation: true,
+        ),
+      ),
+    );
+  }
+  List<CountryData> countryList = [];
+  CountryData? countryValue;
+  String? countryId;
+
+
+  getArea() async {
+    var headers = {
+      'Cookie': 'ci_session=cb5a399c036615bb5acc0445a8cd39210c6ca648'
+    };
+    var request = http.MultipartRequest('POST', Uri.parse('https://developmentalphawizz.com/hojayega/Vendorapi/get_regions'));
+    request.fields.addAll({
+      'city_id': '120',
+    });
+    print("get aresaa ${request.fields}");
+    http.StreamedResponse response = await request.send();
+    if (response.statusCode == 200) {
+      String responseData = await response.stream.transform(utf8.decoder).join();
+      var userData = json.decode(responseData);
+      if (mounted) {
+        setState(() {
+          countryList = GetAreaModel.fromJson(userData).data!;
+        });
+      }
+    }
+    else {
+      print(response.reasonPhrase);
+    }
+  }
+
+  pickDrop() async{
+    var headers = {
+      'Content-Type': 'application/json',
+      'Cookie': 'ci_session=45dba773e37254fb67da4bb622986088aa57f12d'
+    };
+    var request = http.Request('POST', Uri.parse(ApiServicves.pickDropOrder));
+    request.body = json.encode({
+      "address": "indore",
+      "user_id": "1",
+      "pickup_name": "Rohit",
+      "pickup_mobile": "8770669964",
+      "address_type": "8770669964",
+      "region": "5",
+      "drop_data": [
+        {
+          "drop_address": "dt",
+          "drop_name": "rajes",
+          "drop_phone": "748878",
+          "drop_address_type": "dt",
+          "drop_region": "5"
+        }
+      ]
+    });
+    request.headers.addAll(headers);
+    http.StreamedResponse response = await request.send();
+    if (response.statusCode == 200) {
+      print(await response.stream.bytesToString());
+    }
+    else {
+      print(response.reasonPhrase);
+    }
+  }
+
   final GlobalKey<ScaffoldState> _key = GlobalKey();
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        backgroundColor: Color(0xffE2EBFE),
-        // appBar: AppBar(
-        //   automaticallyImplyLeading: false,
-        //     centerTitle: true,
-        //     backgroundColor: Color(0xff112C48),
-        //     foregroundColor: Colors.white, //(0xff112C48),
-        //     title: Text('Pick & Drop'),
-        //     shape: const RoundedRectangleBorder(
-        //       borderRadius: BorderRadius.vertical(bottom: Radius.circular(20.0)),
-        //     )),
-
-        appBar: PreferredSize(
-          preferredSize: Size.fromHeight(80),
-          child: commonAppBar(context, isHome: true, text: "Pick & Drop"),
-        ),
-
-        body: SingleChildScrollView(
+        backgroundColor: Color(0xffE2EBFE), //colors.bgColor,
+        body:SingleChildScrollView(
           child: Padding(
             padding:
                 const EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 30),
@@ -77,47 +305,10 @@ class _PickDropState extends State<PickDrop> {
                   style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
                 ),
                 InkWell(
-                  onTap: () {
-                    getImageGallery();
-                  },
-                  child: Card(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Container(
-                      height: 100,
-                      // width: double.infinity,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        border: Border.all(color: colors.primary),
-                        color: Colors.white,
-                      ),
-                      child: Row(
-                        children: [
-                          // Padding(
-                          //   padding: const EdgeInsets.only(left: 10),
-                          //   child: _image != null
-                          //       ? Image.file(_image!.absolute)
-                          //       : const Icon(Icons.upload_file_outlined),
-                          // ),
-                          Expanded(
-                            child: Container(
-                              height: 100,
-                              child: Center(
-                                child: Text(
-                                  "Upload",
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      color: Color(0xff5A5A5A)),
-                                ),
-                              ),
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
+                    onTap: () {
+                      showAlertDialog(context, "uploadImage");
+                    },
+                    child: imagesView()),
                 const SizedBox(
                   height: 10,
                 ),
@@ -147,25 +338,22 @@ class _PickDropState extends State<PickDrop> {
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(10),
                                 color: Colors.white),
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Row(
-                                children: const [
-                                  Icon(
-                                    Icons.map,
-                                    color: colors.secondary,
-                                  ),
-                                  SizedBox(
-                                    width: 10,
-                                  ),
-                                  Text(
-                                    "Select Location On Map",
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold),
-                                  ),
-                                ],
+                            child: TextFormField(
+                              onTap: () {
+                                getLocation();
+                              },
+                              controller: addressCtr,
+                              keyboardType: TextInputType.number,
+                              decoration: const InputDecoration(
+                                prefixIcon: Icon(Icons.map, color: colors.secondary),
+                                  counterText: "",
+                                  contentPadding: EdgeInsets.symmetric(vertical: 5, horizontal: 5),
+                                  border: OutlineInputBorder(borderSide: BorderSide.none),
+                                  hintText: "Select Location On Map",
+                                hintStyle: TextStyle(fontWeight: FontWeight.bold, color: Colors.black)
                               ),
-                            )),
+                            ),
+                        ),
                       ),
                       Card(
                         child: Container(
@@ -175,24 +363,21 @@ class _PickDropState extends State<PickDrop> {
                                 borderRadius: BorderRadius.circular(10),
                                 color: Colors.white),
                             child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Row(
-                                children: const [
-                                  Icon(
-                                    Icons.person,
-                                    color: colors.secondary,
-                                  ),
-                                  SizedBox(
-                                    width: 10,
-                                  ),
-                                  Text(
-                                    "PickUp Name",
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold),
-                                  ),
-                                ],
+                              padding: const EdgeInsets.all(1.0),
+                              child: TextFormField(
+                                controller: pickupnameCtr,
+                                keyboardType: TextInputType.number,
+                                decoration: const InputDecoration(
+                                    prefixIcon: Icon(Icons.person, color: colors.secondary),
+                                    counterText: "",
+                                    contentPadding: EdgeInsets.symmetric(vertical: 0, horizontal: 0),
+                                    border: OutlineInputBorder(borderSide: BorderSide.none),
+                                    hintText: "PickUp Name",
+                                    hintStyle: TextStyle(fontWeight: FontWeight.bold, color: Colors.black)
+                                ),
                               ),
-                            )),
+                            ),
+                        ),
                       ),
                       Card(
                         child: Container(
@@ -202,22 +387,21 @@ class _PickDropState extends State<PickDrop> {
                                 borderRadius: BorderRadius.circular(10),
                                 color: Colors.white),
                             child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Row(
-                                children: const [
-                                  Icon(
-                                    Icons.phone,
-                                    color: colors.secondary,
-                                  ),
-                                  SizedBox(
-                                    width: 10,
-                                  ),
-                                  Text("PickUp Phone Number",
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold)),
-                                ],
+                              padding: const EdgeInsets.all(1.0),
+                              child:TextFormField(
+                                controller: pickupphoneCtr,
+                                keyboardType: TextInputType.number,
+                                decoration: const InputDecoration(
+                                    prefixIcon: Icon(Icons.phone, color: colors.secondary),
+                                    counterText: "",
+                                    contentPadding: EdgeInsets.symmetric(vertical: 0, horizontal: 0),
+                                    border: OutlineInputBorder(borderSide: BorderSide.none),
+                                    hintText: "PickUp Phone Number",
+                                    hintStyle: TextStyle(fontWeight: FontWeight.bold, color: Colors.black)
+                                ),
                               ),
-                            )),
+                            ),
+                        ),
                       ),
                       Card(
                         child: Container(
@@ -227,24 +411,21 @@ class _PickDropState extends State<PickDrop> {
                                 borderRadius: BorderRadius.circular(10),
                                 color: Colors.white),
                             child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Row(
-                                children: const [
-                                  Icon(
-                                    Icons.location_on,
-                                    color: colors.secondary,
-                                  ),
-                                  SizedBox(
-                                    width: 10,
-                                  ),
-                                  Text(
-                                    "Type Address",
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold),
-                                  ),
-                                ],
+                              padding: const EdgeInsets.all(1.0),
+                              child: TextFormField(
+                                controller: typaaddressCtr,
+                                keyboardType: TextInputType.number,
+                                decoration: const InputDecoration(
+                                    prefixIcon: Icon(Icons.location_on, color: colors.secondary),
+                                    counterText: "",
+                                    contentPadding: EdgeInsets.symmetric(vertical: 0, horizontal: 0),
+                                    border: OutlineInputBorder(borderSide: BorderSide.none),
+                                    hintText: "Type Address",
+                                    hintStyle: TextStyle(fontWeight: FontWeight.bold, color: Colors.black)
+                                ),
                               ),
-                            )),
+                            ),
+                        ),
                       ),
                       Card(
                         child: Container(
@@ -255,35 +436,31 @@ class _PickDropState extends State<PickDrop> {
                               color: Colors.white),
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
-                            child: Row(
-                              children: [
-                                const Icon(
-                                  Icons.location_on,
-                                  color: colors.secondary,
-                                ),
-                                const SizedBox(
-                                  width: 10,
-                                ),
-                                DropdownButton<String>(
-                                  autofocus: false,
-                                  value: _selectedItem2,
-                                  hint: const Text("Select Zone(Area)",
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold)),
-                                  onChanged: (String? newValue) {
-                                    setState(() {
-                                      _selectedItem2 = newValue;
-                                    });
-                                  },
-                                  items: items2.map<DropdownMenuItem<String>>(
-                                      (String value) {
-                                    return DropdownMenuItem<String>(
-                                      value: value,
-                                      child: Text(value),
-                                    );
-                                  }).toList(),
-                                ),
-                              ],
+                            child:
+                            DropdownButton(
+                              isExpanded: true,
+                              value: countryValue,
+                              hint: const Text('Select Zone(Area'),
+                              // Down Arrow Icon
+                              icon: const Icon(Icons.keyboard_arrow_down),
+                              // Array list of items
+                              items: countryList.map((items) {
+                                return
+                                  DropdownMenuItem(
+                                    value: items,
+                                    child: Container(
+                                        child: Text(items.name.toString())),
+                                  );
+                              }).toList(),
+                              // After selecting the desired option,it will
+                              // change button value to selected value
+                              onChanged: (CountryData? value) {
+                                setState(() {
+                                  countryValue = value!;
+                                  countryId = countryValue!.id;
+                                });
+                              },
+                              underline: Container(),
                             ),
                           ),
                         ),
@@ -294,188 +471,202 @@ class _PickDropState extends State<PickDrop> {
                 SizedBox(
                   height: 12,
                 ),
-                Container(
-                  //  color: Color(0xffEFEFEF),
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      color: Color(0xffEFEFEF),
-                      border: Border.all(
-                        color: colors.primary,
-                      )),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  Stack(
                     children: [
-                      const Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: Text(
-                          "Drop Details",
-                          style: TextStyle(
-                              fontSize: 20, fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                      const Padding(
-                        padding: EdgeInsets.only(left: 8),
-                        child: Text(
-                          "Drop Location",
-                          style: TextStyle(
-                              fontSize: 15, fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                      Card(
-                        child: Container(
-                            width: double.infinity,
-                            height: 40,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                color: Colors.white),
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Row(
-                                children: const [
-                                  Icon(
-                                    Icons.map,
-                                    color: colors.secondary,
-                                  ),
-                                  SizedBox(
-                                    width: 10,
-                                  ),
-                                  Text(
-                                    "Select Location On Map",
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold),
-                                  ),
-                                ],
-                              ),
+                      Container(
+                        //  color: Color(0xffEFEFEF),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color: Color(0xffEFEFEF),
+                            border: Border.all(
+                              color: colors.primary,
                             )),
-                      ),
-                      Card(
-                        child: Container(
-                            width: double.infinity,
-                            height: 40,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                color: Colors.white),
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Row(
-                                children: const [
-                                  Icon(
-                                    Icons.person,
-                                    color: colors.secondary,
-                                  ),
-                                  SizedBox(
-                                    width: 10,
-                                  ),
-                                  Text(
-                                    "PickUp Name",
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold),
-                                  ),
-                                ],
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: Text(
+                                "Drop Details",
+                                style: TextStyle(
+                                    fontSize: 20, fontWeight: FontWeight.bold),
                               ),
-                            )),
-                      ),
-                      Card(
-                        child: Container(
-                            width: double.infinity,
-                            height: 40,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                color: Colors.white),
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Row(
-                                children: const [
-                                  Icon(
-                                    Icons.phone,
-                                    color: colors.secondary,
-                                  ),
-                                  SizedBox(
-                                    width: 10,
-                                  ),
-                                  Text("PickUp Phone Number",
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold)),
-                                ],
+                            ),
+                            const Padding(
+                              padding: EdgeInsets.only(left: 8),
+                              child: Text(
+                                "Drop Location",
+                                style: TextStyle(
+                                    fontSize: 15, fontWeight: FontWeight.bold),
                               ),
-                            )),
-                      ),
-                      Card(
-                        child: Container(
-                            width: double.infinity,
-                            height: 40,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                color: Colors.white),
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Row(
-                                children: const [
-                                  Icon(
-                                    Icons.location_on,
-                                    color: colors.secondary,
-                                  ),
-                                  SizedBox(
-                                    width: 10,
-                                  ),
-                                  Text(
-                                    "Type Address",
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold),
-                                  ),
-                                ],
-                              ),
-                            )),
-                      ),
-                      Card(
-                        child: Container(
-                            width: double.infinity,
-                            height: 40,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                color: Colors.white),
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Row(
-                                children: [
-                                  const Icon(
-                                    Icons.location_on,
-                                    color: colors.secondary,
-                                  ),
-                                  const SizedBox(
-                                    width: 10,
-                                  ),
-                                  //  Text("Select Zone(Area)",style: TextStyle(fontWeight: FontWeight.bold),),
-                                  DropdownButton<String>(
-                                    autofocus: false,
-                                    value: _selectedItem,
-                                    hint: const Text("Select Zone(Area)",
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold)),
-                                    onChanged: (String? newValue) {
-                                      setState(() {
-                                        _selectedItem = newValue;
-                                      });
+                            ),
+                            Card(
+                              child: Container(
+                                width: double.infinity,
+                                height: 40,
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    color: Colors.white),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(1.0),
+                                  child: TextFormField(
+                                    onTap: () {
+                                      getDropLocation();
                                     },
-                                    items: items.map<DropdownMenuItem<String>>(
-                                        (String value) {
-                                      return DropdownMenuItem<String>(
-                                        value: value,
-                                        child: Text(value),
-                                      );
-                                    }).toList(),
+                                    controller: dropLocationCtr,
+                                    keyboardType: TextInputType.number,
+                                    decoration: const InputDecoration(
+                                        prefixIcon: Icon(Icons.map, color: colors.secondary),
+                                        counterText: "",
+                                        contentPadding: EdgeInsets.symmetric(vertical: 5, horizontal: 5),
+                                        border: OutlineInputBorder(borderSide: BorderSide.none),
+                                        hintText: "Select Location On Map",
+                                        hintStyle: TextStyle(fontWeight: FontWeight.bold, color: Colors.black)
+                                    ),
                                   ),
-                                ],
+                                ),
                               ),
-                            )),
-                      )
+                            ),
+                            Card(
+                              child: Container(
+                                  width: double.infinity,
+                                  height: 40,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
+                                      color: Colors.white),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(1.0),
+                                    child:TextFormField(
+                                      controller: pickupnameCtr,
+                                      keyboardType: TextInputType.number,
+                                      decoration: const InputDecoration(
+                                          prefixIcon: Icon(Icons.person, color: colors.secondary),
+                                          counterText: "",
+                                          contentPadding: EdgeInsets.symmetric(vertical: 0, horizontal: 0),
+                                          border: OutlineInputBorder(borderSide: BorderSide.none),
+                                          hintText: "PickUp Name",
+                                          hintStyle: TextStyle(fontWeight: FontWeight.bold, color: Colors.black)
+                                      ),
+                                    ),
+                                  )),
+                            ),
+                            Card(
+                              child: Container(
+                                width: double.infinity,
+                                height: 40,
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    color: Colors.white),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(1.0),
+                                  child: TextFormField(
+                                    controller: pickupphoneCtr,
+                                    keyboardType: TextInputType.number,
+                                    decoration: const InputDecoration(
+                                        prefixIcon: Icon(Icons.phone, color: colors.secondary),
+                                        counterText: "",
+                                        contentPadding: EdgeInsets.symmetric(vertical: 0, horizontal: 0),
+                                        border: OutlineInputBorder(borderSide: BorderSide.none),
+                                        hintText: "PickUp Phone Number",
+                                        hintStyle: TextStyle(fontWeight: FontWeight.bold, color: Colors.black)
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Card(
+                              child: Container(
+                                  width: double.infinity,
+                                  height: 40,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
+                                      color: Colors.white),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(1.0),
+                                    child: TextFormField(
+                                      controller: droptypeaddressCtr,
+                                      keyboardType: TextInputType.number,
+                                      decoration: const InputDecoration(
+                                          prefixIcon: Icon(Icons.location_on, color: colors.secondary),
+                                          counterText: "",
+                                          contentPadding: EdgeInsets.symmetric(vertical: 0, horizontal: 0),
+                                          border: OutlineInputBorder(borderSide: BorderSide.none),
+                                          hintText: "Type Address",
+                                          hintStyle: TextStyle(fontWeight: FontWeight.bold, color: Colors.black)
+                                      ),
+                                    ),
+                                  )),
+                            ),
+                            Card(
+                              child: Container(
+                                  width: double.infinity,
+                                  height: 40,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
+                                      color: Colors.white),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: DropdownButton(
+                                      isExpanded: true,
+                                      value: countryValue,
+                                      hint: const Text('Select Zone(Area'),
+                                      // Down Arrow Icon
+                                      icon: const Icon(Icons.keyboard_arrow_down),
+                                      // Array list of items
+                                      items: countryList.map((items) {
+                                        return
+                                          DropdownMenuItem(
+                                            value: items,
+                                            child: Container(
+                                                child: Text(items.name.toString())),
+                                          );
+                                      }).toList(),
+                                      // After selecting the desired option,it will
+                                      // change button value to selected value
+                                      onChanged: (CountryData? value) {
+                                        setState(() {
+                                          countryValue = value!;
+                                          countryId = countryValue!.id;
+                                        });
+                                      },
+                                      underline: Container(),
+                                    ),
+                                  )),
+                            )
+                          ],
+                        ),
+                      ),
+                      Positioned(
+                        bottom: 270,
+                        left: 0,
+                        right: 0,
+                        top: 0,
+                        child: Padding(
+                          padding: const EdgeInsets.all(3.0),
+                          child: Row(
+                            // crossAxisAlignment: CrossAxisAlignment.end,
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              InkWell(
+                                onTap: () {
+
+                                },
+                                child: Container(
+                                  height: 60,
+                                  width: 30,
+                                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(70), color: colors.primary),
+                                    child: Icon(Icons.add, color: Colors.white)),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
                     ],
                   ),
-                ),
                 Padding(
                   padding: const EdgeInsets.only(top: 10),
                   child: Container(
-                    height: 40,
+                    height: 50,
                     width: double.infinity,
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
@@ -492,7 +683,8 @@ class _PickDropState extends State<PickDrop> {
                           ),
                           Text("0rs.",
                               style: TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 20)),
+                                  fontWeight: FontWeight.bold, fontSize: 20),
+                          ),
                         ],
                       ),
                     ),
@@ -559,7 +751,7 @@ class _PickDropState extends State<PickDrop> {
                               Icon(
                                 Icons.bike_scooter,
                                 color: colors.secondary,
-                              )
+                              ),
                               // Text("aa"),
                             ],
                           ),
@@ -614,12 +806,21 @@ class _PickDropState extends State<PickDrop> {
                 Card(
                   child: Container(
                     width: double.infinity,
-                    height: 50,
-                    child: TextFormField(),
+                    height: 70,
+                    child: TextFormField(
+                      controller: productDescriptionCtr,
+                      keyboardType: TextInputType.number,
+                      decoration: const InputDecoration(
+                          counterText: "",
+                          contentPadding: EdgeInsets.symmetric(vertical: 0, horizontal: 0),
+                          border: OutlineInputBorder(borderSide: BorderSide.none),
+                          hintStyle: TextStyle(fontWeight: FontWeight.bold, color: Colors.black)
+                      ),
+                    ),
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(top: 5),
+                  padding: EdgeInsets.only(top: 5),
                   child: Row(
                     children: const [
                       Text(
@@ -634,6 +835,22 @@ class _PickDropState extends State<PickDrop> {
                         ),
                       ),
                     ],
+                  ),
+                ),
+                Card(
+                  child: Container(
+                    width: double.infinity,
+                    height: 50,
+                    child: TextFormField(
+                      controller: noteCtr,
+                      keyboardType: TextInputType.number,
+                      decoration: const InputDecoration(
+                          counterText: "",
+                          contentPadding: EdgeInsets.symmetric(vertical: 0, horizontal: 0),
+                          border: OutlineInputBorder(borderSide: BorderSide.none),
+                          hintStyle: TextStyle(fontWeight: FontWeight.bold, color: Colors.black)
+                      ),
+                    ),
                   ),
                 ),
                 Padding(

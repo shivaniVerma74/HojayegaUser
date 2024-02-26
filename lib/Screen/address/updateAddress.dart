@@ -43,7 +43,9 @@ class _UpdateAddressState extends State<UpdateAddress> {
               ))),
           appBar: PreferredSize(
             preferredSize: Size.fromHeight(80),
-            child: commonAppBar(context, isHome: false, text: "Update Address"),
+            child: commonAppBar(context, isHome: false, text: "Update Address", ontap: (){
+              Navigator.pop(context);
+            }),
           ),
           body: !isLoading
               ? RefreshIndicator(

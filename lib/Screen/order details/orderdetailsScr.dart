@@ -20,7 +20,9 @@ class _OrderDetailsScrState extends State<OrderDetailsScr> {
         child: Scaffold(
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(80),
-        child: commonAppBar(context, isHome: false, text: "Product Details"),
+        child: commonAppBar(context, isHome: false, text: "Product Details", ontap: () {
+          Navigator.pop(context);
+        }),
       ),
       body: Padding(
         padding: const EdgeInsets.all(15),

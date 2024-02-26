@@ -38,9 +38,7 @@ class _AddaddressState extends State<Addaddress> {
               onTap: () {
                 if (_formKey.currentState!.validate()) {
                   if (widget.isEdit == true) {
-                    if (countryId == null) {
-                      Fluttertoast.showToast(msg: "Please Select Country");
-                    } else if (stateId == null) {
+                    if (stateId == null) {
                       Fluttertoast.showToast(msg: "Please Select State");
                     } else if (cityId == null) {
                       Fluttertoast.showToast(msg: "Please Select City");
@@ -92,6 +90,9 @@ class _AddaddressState extends State<Addaddress> {
               context,
               text: "Add Address",
               isHome: false,
+              ontap: (){
+                Navigator.pop(context);
+              }
             ),
           ),
           body: !isLoading

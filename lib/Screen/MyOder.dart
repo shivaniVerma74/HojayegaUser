@@ -221,15 +221,19 @@ class _ProgressScreenState extends State<MyOrders> {
                         await getOrders();
                         setState(() {});
                       },
-                      child: ListView.builder(
-                          itemCount: order!.orders.length,
+                      child: order?.orders.length == 0 ? Padding(
+                        padding: const EdgeInsets.only(top: 10),
+                        child: Center(
+                            child: Text("Orders Not Found", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),)),
+                      ):
+                       ListView.builder(
+                          itemCount: order?.orders.length,
                           itemBuilder: (context, index) {
                             return GestureDetector(
                               onTap: () =>
                                   Navigator.of(context).push(MaterialPageRoute(
                                       builder: (context) => OrderDetail(
-                                            order_id: order!
-                                                .orders[index].orderId
+                                            order_id: order!.orders[index].orderId
                                                 .toString(),
                                           ))),
                               child: Container(
@@ -374,7 +378,8 @@ class _ProgressScreenState extends State<MyOrders> {
                                                         style: TextStyle(
                                                             color: Colors.white,
                                                             fontSize: 10),
-                                                      )),
+                                                      ),
+                                                      ),
                                                     ),
                                                   ],
                                                 )

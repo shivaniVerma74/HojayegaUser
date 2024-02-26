@@ -64,14 +64,37 @@ class _LoginPageState extends State<LoginPage> {
             '____user data is___$user_id $user_email $user_mobile ${user_name}___');
         setState(() {});
         Fluttertoast.showToast(msg: '${finaResult['message']}');
-        Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => BottomNavBar()));
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => BottomNavBar()));
       } else {
         Fluttertoast.showToast(msg: "${finaResult['message']}");
       }
     } else {
       print(response.reasonPhrase);
     }
+  }
+
+  bool isNumeric(String s) {
+    if(s == null) {
+      return false;
+    }
+    return double.tryParse(s) != null;
+  }
+
+  bool validateMobile(String value) {
+    String pattern = r'^[0-9]{10}$';
+    RegExp regExp = RegExp(pattern);
+    return regExp.hasMatch(value);
+  }
+  bool validateEmail(String value) {
+    String pattern = r'^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$';
+    RegExp regExp = RegExp(pattern);
+    return regExp.hasMatch(value);
+  }
+
+  bool isStrongPassword(String s){
+    RegExp regex =
+    RegExp(r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{8,}$');
+    return regex.hasMatch(s);
   }
 
   @override
@@ -155,9 +178,22 @@ class _LoginPageState extends State<LoginPage> {
                                   color: Colors.grey.shade200,
                                   elevation: 5,
                                   child: TextFormField(
-                                    maxLength: 40,
+                                    validator: (value) {
+                                      if (value == null || value.isEmpty || value == "") {
+                                        return 'Mobile number or Email is required';
+                                      }
+                                      else if(isNumeric(value)){
+                                        if (!validateMobile(value)) {
+                                          return 'Invalid Mobile Number';
+                                        }
+                                      }else{
+                                        if(!validateEmail(value)){
+                                          return 'Invalid Email';
+                                        }
+                                      }
+                                      return null;
+                                    },
                                     controller: email,
-                                    validator: _validateEmail,
                                     // keyboardType: TextInputType.phone,
                                     decoration: InputDecoration(
                                       counterText: "",
@@ -205,18 +241,18 @@ class _LoginPageState extends State<LoginPage> {
                                   color: Colors.grey.shade200,
                                   elevation: 5,
                                   child: TextFormField(
+                                    maxLength: 8,
                                     obscureText: isVisible ? false : true,
                                     controller: password,
                                     validator: (value) {
                                       if (value!.isEmpty) {
                                         return 'Please Enter password';
-                                      } else if (value.length < 6) {
-                                        return 'At Least Six Character Required';
                                       }
                                       return null;
                                     },
                                     keyboardType: TextInputType.text,
                                     decoration: InputDecoration(
+                                      counterText: "",
                                       isDense: true,
                                       filled: true,
                                       fillColor: Colors.grey.shade200,

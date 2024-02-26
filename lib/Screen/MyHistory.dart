@@ -90,7 +90,8 @@ class _MyHistoryState extends State<MyHistory> {
                   )
                 : Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: ListView.separated(
+                    child: orderList.length == 0? Center(child: Text("Orders Not Found", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),)):
+                     ListView.separated(
                       separatorBuilder: (context, index) =>
                           Divider(color: Colors.transparent, height: 8),
                       itemCount: orderList.length,

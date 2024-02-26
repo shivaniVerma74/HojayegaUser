@@ -53,14 +53,7 @@ class _CartState extends State<Cart> {
     return SafeArea(
       child: Scaffold(
         backgroundColor: colors.appbarColor,
-        appBar: PreferredSize(
-          preferredSize: Size.fromHeight(80),
-          child: commonAppBar(
-            context,
-            text: "My Cart",
-            isHome: true,
-          ),
-        ),
+
         body: !isLoading
             ? RefreshIndicator(
                 onRefresh: () async {

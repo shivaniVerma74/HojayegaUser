@@ -85,7 +85,7 @@ class _MyBookingState extends State<MyBooking> {
                     ? CircularProgressIndicator()
                     : history.isEmpty
                         ? Center(
-                            child: Text("No Bookings Found"),
+                            child: Text("No Bookings Found", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),),
                           )
                         : Padding(
                             padding: const EdgeInsets.all(16.0),

@@ -93,7 +93,9 @@ class _NotificationScreenState extends State<NotificationScreen> {
           child: commonAppBar(
             context,
             text: "Notification",
-            isHome: false,
+            isHome: false, ontap: (){
+            Navigator.pop(context);
+          }
           ),
         ),
         body: FutureBuilder(

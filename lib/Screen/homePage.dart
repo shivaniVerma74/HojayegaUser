@@ -18,6 +18,7 @@ import '../Model/VendorShopDataModel.dart';
 import '../Model/offerbannerModel.dart';
 import 'AllCategory.dart';
 import 'TopServices.dart';
+import 'ViewAll.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -360,6 +361,7 @@ class _HomeBodyState extends State<HomeScreen> {
                           Container(
                               padding: const EdgeInsets.all(4.0),
                               height: 40,
+                              width: 80,
                               decoration: BoxDecoration(
                                   color: Colors.green,
                                   borderRadius: BorderRadius.circular(4),
@@ -371,10 +373,12 @@ class _HomeBodyState extends State<HomeScreen> {
                                   ]),
                               child: const Center(
                                   child: Text(
-                                "Search By km.",
+                                "Search",
                                 style: TextStyle(
-                                    color: Colors.white, fontSize: 12),
-                              )))
+                                     color: Colors.white, fontSize: 16),
+                                 ),
+                              ),
+                          ),
                         ],
                       ),
                     ),
@@ -622,7 +626,7 @@ class _HomeBodyState extends State<HomeScreen> {
                                 getShops();
                               },
                               child: Container(
-                                height: 30,
+                                height: 40,
                                 decoration: BoxDecoration(
                                     color: selected == 0
                                         ? colors.primary
@@ -633,7 +637,7 @@ class _HomeBodyState extends State<HomeScreen> {
                                   child: Text(
                                     'Shops',
                                     style: TextStyle(
-                                        fontSize: 14,
+                                        fontSize: 18,
                                         fontWeight: FontWeight.bold,
                                         color: selected == 0
                                             ? Colors.white
@@ -657,7 +661,7 @@ class _HomeBodyState extends State<HomeScreen> {
                                 getShops();
                               },
                               child: Container(
-                                height: 30,
+                                height: 40,
                                 decoration: BoxDecoration(
                                     color: selected == 1
                                         ? colors.primary
@@ -668,7 +672,7 @@ class _HomeBodyState extends State<HomeScreen> {
                                   child: Text(
                                     'Services',
                                     style: TextStyle(
-                                        fontSize: 14,
+                                        fontSize: 18,
                                         fontWeight: FontWeight.bold,
                                         color: selected == 1
                                             ? Colors.white
@@ -744,12 +748,17 @@ class _HomeBodyState extends State<HomeScreen> {
                               color: Colors.black.withOpacity(0.8),
                               fontWeight: FontWeight.bold),
                         ),
-                        Text(
-                          'View More',
-                          style: TextStyle(
-                              fontSize: 13,
-                              color: Colors.black.withOpacity(0.8),
-                              fontWeight: FontWeight.bold),
+                        InkWell(
+                          onTap: (){
+                            // Navigator.push(context, MaterialPageRoute(builder: (context) => ViewAll()));
+                          },
+                          child: Text(
+                            'View More',
+                            style: TextStyle(
+                                fontSize: 13,
+                                color: Colors.black.withOpacity(0.8),
+                                fontWeight: FontWeight.bold),
+                          ),
                         ),
                       ],
                     ),
@@ -757,13 +766,14 @@ class _HomeBodyState extends State<HomeScreen> {
                       height: 10,
                     ),
                     selected == 0
-                        ? Container(
+                        ?
+                    Container(
                             child: GridView.builder(
                               physics: const NeverScrollableScrollPhysics(),
                               shrinkWrap: true,
                               primary: false,
                               padding: const EdgeInsets.all(0),
-                              itemCount: vendorshopdata!.user.length ?? 0,
+                              itemCount: vendorshopdata?.user.length ?? 0,
                               gridDelegate:
                                   const SliverGridDelegateWithFixedCrossAxisCount(
                                 crossAxisCount: 2,
@@ -778,9 +788,9 @@ class _HomeBodyState extends State<HomeScreen> {
                                     //   clickUsers(vendorshopdata?.user?[index].id);
                                     // });
                                     await vendorCharge(
-                                        vendorshopdata?.user?[index].id);
+                                        vendorshopdata?.user[index].id);
                                     await clickUsers(
-                                        vendorshopdata?.user?[index].id);
+                                        vendorshopdata?.user[index].id);
                                   },
                                   child: Stack(
                                     children: [
@@ -796,26 +806,16 @@ class _HomeBodyState extends State<HomeScreen> {
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,
                                             children: [
-                                              vendorshopdata?.user?[index]
-                                                              .profileImage ==
-                                                          null ||
-                                                      vendorshopdata
-                                                              ?.user?[index]
-                                                              .shopImage ==
-                                                          ""
+                                              vendorshopdata?.user[index].profileImage == null || vendorshopdata?.user[index].shopImage == ""
                                                   ? Container(
                                                       height: 130,
                                                       width: double.infinity,
                                                       child: ClipRRect(
                                                         borderRadius:
-                                                            const BorderRadius
-                                                                .only(
-                                                                topLeft: Radius
-                                                                    .circular(
-                                                                        10),
-                                                                topRight: Radius
-                                                                    .circular(
-                                                                        10)),
+                                                            const BorderRadius.only(
+                                                                topLeft: Radius.circular(10),
+                                                                topRight: Radius.circular(10),
+                                                            ),
                                                         child: Image.asset(
                                                             "assets/images/placeholder.png",
                                                             fit: BoxFit.fill),
@@ -921,7 +921,7 @@ class _HomeBodyState extends State<HomeScreen> {
                                                           .spaceBetween,
                                                   children: [
                                                     Text(
-                                                      '${vendorshopdata?.user?[index].km}Km.',
+                                                      '${vendorshopdata?.user[index].km}Km.',
                                                       style: TextStyle(
                                                           fontSize: 13,
                                                           color: Colors.black
@@ -929,9 +929,7 @@ class _HomeBodyState extends State<HomeScreen> {
                                                           fontWeight:
                                                               FontWeight.bold),
                                                     ),
-                                                    vendorshopdata?.user?[index]
-                                                                .status ==
-                                                            "1"
+                                                    vendorshopdata?.user[index].status == "1"
                                                         ? const Text(
                                                             'Open',
                                                             style: TextStyle(

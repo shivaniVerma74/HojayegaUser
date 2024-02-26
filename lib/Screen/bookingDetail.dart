@@ -63,9 +63,11 @@ class _BookingDetailState extends State<BookingDetail> {
           child: commonAppBar(
             context,
             text: "Booking Detail",
-            isHome: false,
-          ),
-        ),
+            isHome: false, ontap: () {
+            Navigator.pop(context);
+
+          }
+        ),),
         body: FutureBuilder(
             future: myFuture,
             builder: (context, snap) {

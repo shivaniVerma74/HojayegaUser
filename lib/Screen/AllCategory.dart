@@ -210,8 +210,12 @@ class _AllCategoryState extends State<AllCategory> {
       child: Scaffold(
         appBar: PreferredSize(
           preferredSize: Size.fromHeight(80),
-          child: commonAppBar(context, text: "Products", isHome: false),
-        ),
+          child: commonAppBar(context, text: "Products", isHome: false, ontap: () {
+        Navigator.pop(context);
+
+        }
+        ),),
+
         backgroundColor: colors.appbarColor,
         body: !isLoading
             ? SingleChildScrollView(
@@ -872,8 +876,7 @@ class _AllCategoryState extends State<AllCategory> {
                                                                                   ),
                                                                           ],
                                                                         ),
-                                                                        sddtocart ==
-                                                                                productList[index].productId
+                                                                        sddtocart == productList[index].productId
                                                                             ? Column(
                                                                                 children: [
                                                                                   SizedBox(

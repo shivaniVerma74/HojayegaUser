@@ -39,7 +39,9 @@ class _TopServiceState extends State<Services> {
           child: commonAppBar(
             context,
             isHome: false,
-            text: "Top Services",
+            text: "Top Services", ontap: (){
+            Navigator.pop(context);
+          }
           ),
         ),
         body: Container(

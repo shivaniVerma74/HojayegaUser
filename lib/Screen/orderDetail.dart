@@ -45,8 +45,7 @@ class _OrderDetailState extends State<OrderDetail> {
   Future<void> getOrderDetail() async {
     items.clear();
     try {
-      final SharedPreferences sharedPreferences =
-          await SharedPreferences.getInstance();
+      final SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
       String? userId = sharedPreferences.getString('user_id');
       var headers = {
         'Cookie': 'ci_session=04c22abbc568c3ad9578f2ba9178c8fa538fe75e'
@@ -84,7 +83,9 @@ class _OrderDetailState extends State<OrderDetail> {
           child: commonAppBar(
             context,
             text: "Order Detail",
-            isHome: false,
+            isHome: false, ontap: (){
+            Navigator.pop(context);
+          }
           ),
         ),
         body: FutureBuilder(

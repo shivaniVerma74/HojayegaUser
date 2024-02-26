@@ -55,7 +55,9 @@ class _SearchScreenState extends State<SearchScreen> {
       child: Scaffold(
         appBar: PreferredSize(
           preferredSize: Size.fromHeight(80),
-          child: commonAppBar(context, isHome: false, text: "Search"),
+          child: commonAppBar(context, isHome: false, text: "Search" ,ontap: (){
+        Navigator.pop(context);
+        }),
         ),
         body: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -119,7 +121,9 @@ class _SearchScreenState extends State<SearchScreen> {
                             child: Text(
                           "Search",
                           style: TextStyle(color: Colors.white, fontSize: 12),
-                        ))),
+                          ),
+                        ),
+                    ),
                   ),
                 ],
               ),

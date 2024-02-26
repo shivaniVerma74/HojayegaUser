@@ -279,6 +279,7 @@ Widget commonAppBar(
   required String text,
   bool? isActionButton,
   required bool isHome,
+      required VoidCallback ontap
 }) {
   return Container(
       height: 80,
@@ -291,15 +292,15 @@ Widget commonAppBar(
               colors: [colors.primary, colors.primary]),
           borderRadius: BorderRadius.only(
               bottomLeft: Radius.circular(15),
-              bottomRight: Radius.circular(15))),
+              bottomRight: Radius.circular(15),
+          ),
+      ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           isHome
               ? InkWell(
-                  onTap: () {
-                    Scaffold.of(context).openDrawer();
-                  },
+            onTap: ontap,
                   child: Container(
                     margin: EdgeInsets.all(10),
                     padding: EdgeInsets.all(10),

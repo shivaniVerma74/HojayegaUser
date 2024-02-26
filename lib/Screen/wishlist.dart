@@ -23,16 +23,16 @@ class Wishlist extends StatefulWidget {
 class _WishlistState extends State<Wishlist> {
   WishlistModel? wishlist;
   getShops() async {
+    final SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    String? userId = sharedPreferences.getString('user_id');
     try {
       var headers = {
         'Cookie': 'ci_session=430ab6c05fea61adf343951d98f72fa714919a82'
       };
       var request = http.MultipartRequest('POST',
           Uri.parse('https://developmentalphawizz.com/hojayega/api/wishlist'));
-      request.fields.addAll({'user_id': '511'});
-
+      request.fields.addAll({'user_id': userId.toString()});
       request.headers.addAll(headers);
-
       http.StreamedResponse response = await request.send();
       var json = jsonDecode(await response.stream.bytesToString());
       if (response.statusCode == 200) {
@@ -105,7 +105,8 @@ class _WishlistState extends State<Wishlist> {
                   )
                 : Padding(
                     padding: const EdgeInsets.all(16.0),
-                    child: GridView.builder(
+                    child: wishlist!.wishlist.length == null  || wishlist!.wishlist.length == 0 ? Center(child: Text("Products Not Found", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),)):
+                    GridView.builder(
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 2,
                           childAspectRatio: 2 / 3,

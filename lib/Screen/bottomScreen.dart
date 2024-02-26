@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_share/flutter_share.dart';
 import 'package:ho_jayega_user_main/Helper/api.path.dart';
 import 'package:ho_jayega_user_main/Screen/Aboutus.dart';
+import 'package:ho_jayega_user_main/Screen/HelpAndSupport.dart';
 import 'package:ho_jayega_user_main/Screen/homePage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../AuthView/loginPage.dart';
@@ -23,7 +24,7 @@ import 'TermsAndCondition.dart';
 import 'faqs.dart';
 
 class BottomNavBar extends StatefulWidget {
-  int? dIndex;
+  int? dIndex = 0;
   BottomNavBar({super.key, this.dIndex});
   @override
   State<BottomNavBar> createState() => _BottomNavBarState();
@@ -36,8 +37,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
   final GlobalKey<ScaffoldState> _key = GlobalKey(); // Create a key
   @override
   void initState() {
-    int? index = 0;
-
+    int? index = widget.dIndex;
     if (index == 0) {
       setState(() {
         selectedIndex = 0;
@@ -60,8 +60,17 @@ class _BottomNavBarState extends State<BottomNavBar> {
     // super.initState();
   }
 
+  final List<Widget> _pages = [
+    HomeScreen(),
+    Cart(),
+    MyOrders(),
+    MyBooking(),
+    PickDrop()
+  ];
+
   @override
   Widget build(BuildContext context) {
+    selectedIndex = widget.dIndex ?? 0;
     return SafeArea(
         child: WillPopScope(
       onWillPop: () async {
@@ -93,29 +102,31 @@ class _BottomNavBarState extends State<BottomNavBar> {
         return true;
       },
       child: Scaffold(
+        key: _key,
         backgroundColor: colors.appbarColor,
         appBar: PreferredSize(
-          preferredSize: Size.fromHeight(
-              selectedIndex == 1 || selectedIndex == 4 ? 0 : 80),
+          preferredSize: Size.fromHeight(80),
           child: selectedIndex == 0
               ? homeAppBar(
                   context,
                   text: "Home",
                   ontap: () {
-                    _key.currentState!.openDrawer();
+                    _key.currentState?.openDrawer();
                   },
                 )
-              : selectedIndex == 1
-                  ? SizedBox.shrink()
-                  : commonAppBar(context,
-                      isHome: true,
-                      text: selectedIndex == 3
+              : commonAppBar(context,
+                  isHome: true,
+                  text: selectedIndex == 1
+                      ? "My Cart"
+                      : selectedIndex == 3
                           ? "My Bookings"
                           : selectedIndex == 4
                               ? "Pick & Drop"
-                              : "My Orders"),
+                              : "My Orders", ontap: () {
+                  _key.currentState?.openDrawer();
+                }),
         ),
-        body: _child,
+        body: _pages[selectedIndex],
         drawer: Drawer(
           child: ListView(children: [
             DrawerHeader(
@@ -204,10 +215,10 @@ class _BottomNavBarState extends State<BottomNavBar> {
             ),
             InkWell(
                 onTap: () {
-                  // Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(builder: (context) => const CoursesPage()),
-                  // );
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const MyProfile()),
+                  );
                   setState(() {
                     currentIndex = 3;
                   });
@@ -245,11 +256,14 @@ class _BottomNavBarState extends State<BottomNavBar> {
                   // Navigator.push(
                   //   context,
                   //   MaterialPageRoute(
-                  //       builder: (context) => const  CoursesPage()),
+                  //       builder: (context) => const  MyBooking()),
                   // );
-                  setState(() {
-                    currentIndex = 5;
-                  });
+                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => BottomNavBar(dIndex: 3)),
+                  );
+                  // selectedIndex = 3;
+                  // setState(() {
+                  //   currentIndex = 5;
+                  // });
                 },
                 child: DrawerIconTab(
                   titlee: 'My Bookings',
@@ -265,8 +279,9 @@ class _BottomNavBarState extends State<BottomNavBar> {
                   // Navigator.push(
                   //   context,
                   //   MaterialPageRoute(
-                  //       builder: (context) => const PaymentHistoryPage()),
+                  //       builder: (context) =>  MyOrders()),
                   // );
+                  _handleNavigationChange(2);
                   setState(() {
                     currentIndex = 6;
                   });
@@ -404,11 +419,11 @@ class _BottomNavBarState extends State<BottomNavBar> {
             ),
             InkWell(
                 onTap: () {
-                  // Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(
-                  //       builder: (context) => const LoginPage()),
-                  // );
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const HelpScreen()),
+                  );
                   setState(() {
                     currentIndex = 13;
                   });
@@ -624,10 +639,11 @@ class _BottomNavBarState extends State<BottomNavBar> {
                   Navigator.pop(context);
                   // SystemNavigator.pop();
                   Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => LoginPage(),
-                      ));
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => LoginPage(),
+                    ),
+                  );
                 },
               ),
               ElevatedButton(
@@ -650,31 +666,20 @@ class _BottomNavBarState extends State<BottomNavBar> {
   void _handleNavigationChange(int index) {
     setState(() {
       selectedIndex = index;
-      switch (index) {
-        case 0:
-          _child = HomeScreen();
-          break;
-        case 1:
-          _child = Cart();
-          break;
-        case 2:
-          _child = MyOrders();
-          break;
-        case 3:
-          _child = MyBooking();
-          // OrderListing();
-          break;
-        case 4:
-          _child = PickDrop();
-          break;
-      }
-      _child = AnimatedSwitcher(
-        switchInCurve: Curves.bounceOut,
-        switchOutCurve: Curves.bounceIn,
-        duration: Duration(milliseconds: 100),
-        child: _child,
-      );
     });
+    Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+            builder: (context) => BottomNavBar(
+                  dIndex: selectedIndex,
+                )));
+
+    // _child = AnimatedSwitcher(
+    //   switchInCurve: Curves.bounceOut,
+    //   switchOutCurve: Curves.bounceIn,
+    //   duration: Duration(milliseconds: 100),
+    //   child: _child,
+    // );
   }
 }
 

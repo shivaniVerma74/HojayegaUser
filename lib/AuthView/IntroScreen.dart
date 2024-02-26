@@ -65,7 +65,8 @@ class FirstScreen extends StatelessWidget {
             ),
             Text(
               'No middleman charges',
-              style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold, color: Colors.red),
+              style: TextStyle(
+                  fontSize: 20, fontWeight: FontWeight.bold, color: Colors.red),
             ),
             SizedBox(
               height: 10,
@@ -73,7 +74,7 @@ class FirstScreen extends StatelessWidget {
             Container(
               padding: EdgeInsets.symmetric(horizontal: 40),
               child: Text(
-                'correct the sentences- direct transection between user and merchant. No middleman charges for your products. Provide top-notch service to stand out in the market competition. it\'s your key to success!',
+                'correct the sentences- direct transaction between user and merchant. No middleman charges for your products. Provide top-notch service to stand out in the market competition. it\'s your key to success!',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 16,
@@ -114,7 +115,8 @@ class SecondScreen extends StatelessWidget {
             ),
             Text(
               'Everything you need in one place',
-              style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold, color: Colors.red),
+              style: TextStyle(
+                  fontSize: 20, fontWeight: FontWeight.bold, color: Colors.red),
             ),
             SizedBox(
               height: 10,
@@ -162,7 +164,8 @@ class ThirdScreen extends StatelessWidget {
             ),
             Text(
               'Boost Your Business Effortlessly',
-              style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold, color: Colors.red),
+              style: TextStyle(
+                  fontSize: 20, fontWeight: FontWeight.bold, color: Colors.red),
             ),
             SizedBox(
               height: 10,
@@ -221,7 +224,8 @@ class FourthScreen extends StatelessWidget {
             ),
             Text(
               'Effortlessly Schedule Appointment Dates',
-              style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold, color: Colors.red),
+              style: TextStyle(
+                  fontSize: 18, fontWeight: FontWeight.bold, color: Colors.red),
             ),
             SizedBox(
               height: 10,
@@ -250,9 +254,6 @@ class FifthScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-
-
-
         SizedBox(
             height: MediaQuery.of(context).size.height,
             child: Image.asset(
@@ -273,7 +274,8 @@ class FifthScreen extends StatelessWidget {
             ),
             Text(
               'It\'s Flexibility At Your Fingertips!',
-              style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold, color: Colors.red),
+              style: TextStyle(
+                  fontSize: 20, fontWeight: FontWeight.bold, color: Colors.red),
             ),
             SizedBox(
               height: 10,
@@ -295,10 +297,10 @@ class FifthScreen extends StatelessWidget {
           child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
               child: GestureDetector(
-                onTap: () =>   Navigator.of(context).pushAndRemoveUntil(
-    MaterialPageRoute(builder: (context) => LoginPage()),
-    (Route<dynamic> route) => false),
-    child: Container(
+                onTap: () => Navigator.of(context).pushAndRemoveUntil(
+                    MaterialPageRoute(builder: (context) => LoginPage()),
+                    (Route<dynamic> route) => false),
+                child: Container(
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(4),

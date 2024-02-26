@@ -17,6 +17,7 @@ class _PageIndicatorState extends State<PageIndicator> {
     widget.controller.addListener(() { setState(() {
     });});
   }
+
   @override
   void dispose() {
     // TODO: implement dispose
@@ -24,6 +25,7 @@ class _PageIndicatorState extends State<PageIndicator> {
     widget.controller.removeListener(() {setState(() {
     });});
   }
+
   @override
   Widget build(BuildContext context) {
     Widget indicatorElements(index){

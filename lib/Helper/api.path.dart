@@ -16,6 +16,7 @@ class ApiServicves {
   static const String getShopCategories = baseUrl + 'shop_get_categories_list';
   static const String updateUser = baseUrl + 'update_profile_user';
   static const String getProfiles = baseUrl + 'get_profile';
+  static const String pickDropOrder = baseUrl + 'pick_drop_order';
   static const String childCategories = baseUrl + 'child_category';
   static const String getSubCategories = baseUrl + 'show_sub_category';
   static const String getStates = baseUrl + 'get_states';
