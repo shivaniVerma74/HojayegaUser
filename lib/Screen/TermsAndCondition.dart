@@ -15,7 +15,7 @@ class termsAndCondition extends StatefulWidget {
 
 class _termsAndConditionState extends State<termsAndCondition> {
   TermsAndCondition? terms;
-  Future<void> getPrivacyPolicy() async {
+  Future<void> getTermsAndConditions() async {
     try {
       var headers = {
         'Cookie': 'ci_session=0a68526a3ce5b251a6761ec7c01fe4892118b57b'
@@ -45,7 +45,7 @@ class _termsAndConditionState extends State<termsAndCondition> {
   late Future myFuture;
   @override
   void initState() {
-    myFuture = getPrivacyPolicy(); // TODO: implement initState
+    myFuture = getTermsAndConditions(); // TODO: implement initState
     super.initState();
   }
 

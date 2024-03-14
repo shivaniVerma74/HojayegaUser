@@ -58,6 +58,7 @@ class _AllCategoryState extends State<AllCategory> {
     print("===my technic=======${request.fields}===============");
     print("===my technic=======${request.url}===============");
     if (response.statusCode == 200) {
+      print("----shop ---category------");
       var result = await response.stream.bytesToString();
       print("this is a response===========> $result");
       var finalresult = jsonDecode(result);
@@ -134,8 +135,8 @@ class _AllCategoryState extends State<AllCategory> {
     request.fields.addAll({'cat_id': subcatid.toString()});
 
     request.headers.addAll(headers);
-    print("===my technic=======${request.fields}===============");
-    print("===my technic=======${request.url}===============");
+    print("===my technic=======11${request.fields}===============");
+    print("===my technic======11=${request.url}===============");
     http.StreamedResponse response = await request.send();
     if (response.statusCode == 200) {
       var finalResponse = await response.stream.bytesToString();
@@ -177,8 +178,8 @@ class _AllCategoryState extends State<AllCategory> {
       'vendor_id': widget.ShopId.toString()
     });
     request.headers.addAll(headers);
-    print("===my technic=======${request.fields}===============");
-    print("===my technic=======${request.url}==========Navigatorinit=====");
+    print("===my technic=======22${request.fields}===============");
+    print("===my technic=======22${request.url}==========Navigatorinit=====");
     http.StreamedResponse response = await request.send();
     if (response.statusCode == 200) {
       var finalResponse = await response.stream.bytesToString();

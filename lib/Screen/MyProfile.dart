@@ -13,6 +13,7 @@ import '../Model/GetCityModel.dart';
 import '../Model/GetCountryModel.dart';
 import '../Model/GetProfileModel.dart';
 import '../Model/GetStateMOdel.dart';
+import '../Model/getareaModel.dart';
 
 class MyProfile extends StatefulWidget {
   const MyProfile({Key? key}) : super(key: key);
@@ -27,7 +28,8 @@ class _MyProfileState extends State<MyProfile> {
     // TODO: implement initState
     super.initState();
     getData();
-    getCountry();
+    // getCountry();
+   // getstate();
   }
 
   bool isLoading = false;
@@ -51,6 +53,7 @@ class _MyProfileState extends State<MyProfile> {
     request.fields.addAll({
       'user_id': user_id.toString(),
     });
+    print('id---user---${user_id.toString()}');
     print("user id in profile screen ${request.fields}");
     request.headers.addAll(headers);
     http.StreamedResponse response = await request.send();
@@ -70,12 +73,18 @@ class _MyProfileState extends State<MyProfile> {
           // stateValue = getProfileModel?.data?.state ?? "";
           // countryValue = getProfileModel?.data?.country ?? "";
           isLoading = false;
+          stateId= getProfileModel?.data?.state;
+          cityId=getProfileModel?.data?.city;
+          areaid=getProfileModel?.data?.area;
+
+          getstate();
         });
       }
     } else {
       print(response.reasonPhrase);
     }
   }
+
 
   updateProfile() async {
     var headers = {
@@ -88,14 +97,23 @@ class _MyProfileState extends State<MyProfile> {
       'email': emailEditingController.text,
       'mobile': mobileCtr.text,
       'address': addressCtr.text,
-      'country': countryId.toString(),
+      // 'country': countryId.toString(),
       'state': stateId.toString(),
       'city': cityId.toString(),
+      'area':areaid.toString(),
       'user_id': user_id.toString(),
     });
     print("update profilee parameter ${request.fields}");
-    request.files.add(
-        await http.MultipartFile.fromPath('image', profileImage!.path.toString()));
+    if (profileImage != null) {
+      print("profile image----");
+
+      request.files.add(
+          await http.MultipartFile.fromPath('image',profileImage?.path.toString() ?? ""));
+      print('profile image----${request.files}');
+      print(profileImage);
+    }
+    // request.files.addre
+    //     await http.MultipartFile.fromPath('profile_pic', profileImage?.path.toString() ?? ""));
     request.headers.addAll(headers);
     http.StreamedResponse response = await request.send();
     if (response.statusCode == 200) {
@@ -130,16 +148,16 @@ class _MyProfileState extends State<MyProfile> {
   bool showPassword = false;
   bool showPasswordNew = false;
 
-  getstate(String? countryId) async {
+  getstate(/*String? countryId*/) async {
     print("state apiii isss");
     var headers = {
       'Cookie': 'ci_session=95bbd5f6f543e31f65185f824755bcb57842c775'
     };
     var request =
         http.MultipartRequest('POST', Uri.parse(ApiServicves.getStates));
-    request.fields.addAll({
-      'country_id': countryId.toString(),
-    });
+    // request.fields.addAll({
+    //   'country_id': countryId.toString(),
+    // });
 
     request.headers.addAll(headers);
     http.StreamedResponse response = await request.send();
@@ -150,7 +168,20 @@ class _MyProfileState extends State<MyProfile> {
       if (mounted) {
         setState(() {
           stateList = GetStateMOdel.fromJson(userData).data!;
+
+
           print("state list is $stateList");
+        });
+
+        for(int i=0;i<stateList.length;i++)
+        {
+          if(stateId==stateList[i].id)
+            stateValue=stateList[i];
+        }
+        setState(() {
+          print("mmmmmmmm");
+          getCity(stateValue?.id);
+
         });
       }
     } else {
@@ -175,12 +206,65 @@ class _MyProfileState extends State<MyProfile> {
         setState(() {
           cityList = GetCityModel.fromJson(userData).data!;
         });
+
+        for(int i=0;i<cityList.length;i++)
+        {
+          if(cityId==cityList[i].id)
+            cityValue=cityList[i];
+        }
+        print("city----");
+
+        setState(() {
+          getarea(cityValue?.id);
+
+        });
       }
     } else {
       print(response.reasonPhrase);
     }
   }
+  List<AreaModelList> areaList = [];
+  var areaid;
+  dynamic selectarea;
+  getarea(String? countryId) async {
+    print('city id get area--------${countryId}');
+    print("state apiii isss");
+    var headers = {
+      'Cookie': 'ci_session=95bbd5f6f543e31f65185f824755bcb57842c775'
+    };
+    var request =
+    http.MultipartRequest('POST', Uri.parse(ApiServicves.getregions));
+    request.fields.addAll({
+      'city_id': countryId.toString(),
+    });
+    request.headers.addAll(headers);
+    http.StreamedResponse response = await request.send();
+    print("===my technic=======${request.url}===============");
+    print("===my technic=======${request.fields}===============");
+    if (response.statusCode == 200) {
+      areaList.clear();
+      String responseData = await response.stream.bytesToString();
+      print("===my technic=======${responseData}===============");
+      var userData = json.decode(responseData);
+      if (userData['response_code'] == "1") {
+        setState(() {
+          areaList = GetAreaModel.fromJson(userData).data ?? [];
+          for(int i=0;i<areaList.length;i++)
+          {
+            if(areaid==areaList[i].id)
+              selectarea=areaList[i];
+          }
+          print("area----");
+          setState(() {
 
+          });
+
+        });
+      }
+    } else {
+      print(response.reasonPhrase);
+    }
+  }
   getCountry() async {
     var headers = {
       'Cookie': 'ci_session=cb5a399c036615bb5acc0445a8cd39210c6ca648'
@@ -207,6 +291,7 @@ class _MyProfileState extends State<MyProfile> {
     return Scaffold(
         backgroundColor: colors.appbarColor,
         appBar: AppBar(
+          foregroundColor: colors.whiteTemp,
           backgroundColor: colors.primary,
           elevation: 0,
           title: const Text("My Profile",
@@ -493,7 +578,7 @@ class _MyProfileState extends State<MyProfile> {
                                           ],
                                         ),
                                         child: TextFormField(
-                                          maxLength: 10,
+                                          //zmaxLength: 10,
                                           controller: addressCtr,
                                           keyboardType: TextInputType.text,
                                           decoration: InputDecoration(
@@ -513,89 +598,89 @@ class _MyProfileState extends State<MyProfile> {
                                 ),
                               ),
 
-                              Padding(
-                                padding: const EdgeInsets.only(
-                                    left: 10, right: 10, top: 15),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Material(
-                                      elevation: 4,
-                                      borderRadius: BorderRadius.circular(10),
-                                      child: Container(
-                                        width: 40,
-                                        height: 40,
-                                        child: Image.asset(
-                                          "assets/images/Region.png",
-                                          scale: 1.4,
-                                        ),
-                                      ),
-                                    ),
-                                    const SizedBox(width: 18),
-                                    Expanded(
-                                      child: Container(
-                                        width: 80,
-                                        height: 45,
-                                        decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          borderRadius:
-                                              BorderRadius.circular(5),
-                                          boxShadow: const [
-                                            BoxShadow(
-                                              color: Colors.grey,
-                                              offset: Offset(
-                                                1.0,
-                                                1.0,
-                                              ),
-                                              blurRadius: 0.2,
-                                              spreadRadius: 0.5,
-                                            ),
-                                          ],
-                                        ),
-                                        child: DropdownButton(
-                                          isExpanded: true,
-                                          value: countryValue,
-                                          hint: Padding(
-                                            padding:
-                                                const EdgeInsets.only(left: 5),
-                                            child: const Text('Country'),
-                                          ),
-                                          // Down Arrow Icon
-                                          icon: const Icon(
-                                              Icons.keyboard_arrow_down),
-                                          // Array list of items
-                                          items: countryList.map((items) {
-                                            return DropdownMenuItem(
-                                              value: items,
-                                              child: Container(
-                                                  child: Padding(
-                                                padding: const EdgeInsets.only(
-                                                    left: 5.0),
-                                                child:
-                                                    Text(items.name.toString()),
-                                              )),
-                                            );
-                                          }).toList(),
-                                          // After selecting the desired option,it will
-                                          // change button value to selected value
-                                          onChanged: (dynamic value) {
-                                            setState(() {
-                                              stateValue = null;
-                                              countryValue = value;
-                                              countryId = value.id.toString();
-                                              print(
-                                                  "===my technic=======${countryId}===============");
-                                              getstate(
-                                                  "${value.id.toString()}");
-                                            });
-                                          },
-                                          underline: Container(),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
+                              // Padding(
+                              //   padding: const EdgeInsets.only(
+                              //       left: 10, right: 10, top: 15),
+                              //   child: Row(
+                              //     mainAxisAlignment: MainAxisAlignment.center,
+                              //     children: [
+                              //       Material(
+                              //         elevation: 4,
+                              //         borderRadius: BorderRadius.circular(10),
+                              //         child: Container(
+                              //           width: 40,
+                              //           height: 40,
+                              //           child: Image.asset(
+                              //             "assets/images/Region.png",
+                              //             scale: 1.4,
+                              //           ),
+                              //         ),
+                              //       ),
+                              //       const SizedBox(width: 18),
+                              //       Expanded(
+                              //         child: Container(
+                              //           width: 80,
+                              //           height: 45,
+                              //           decoration: BoxDecoration(
+                              //             color: Colors.white,
+                              //             borderRadius:
+                              //                 BorderRadius.circular(5),
+                              //             boxShadow: const [
+                              //               BoxShadow(
+                              //                 color: Colors.grey,
+                              //                 offset: Offset(
+                              //                   1.0,
+                              //                   1.0,
+                              //                 ),
+                              //                 blurRadius: 0.2,
+                              //                 spreadRadius: 0.5,
+                              //               ),
+                              //             ],
+                              //           ),
+                              //           child: DropdownButton(
+                              //             isExpanded: true,
+                              //             value: countryValue,
+                              //             hint: Padding(
+                              //               padding:
+                              //                   const EdgeInsets.only(left: 5),
+                              //               child: const Text('Country'),
+                              //             ),
+                              //             // Down Arrow Icon
+                              //             icon: const Icon(
+                              //                 Icons.keyboard_arrow_down),
+                              //             // Array list of items
+                              //             items: countryList.map((items) {
+                              //               return DropdownMenuItem(
+                              //                 value: items,
+                              //                 child: Container(
+                              //                     child: Padding(
+                              //                   padding: const EdgeInsets.only(
+                              //                       left: 5.0),
+                              //                   child:
+                              //                       Text(items.name.toString()),
+                              //                 )),
+                              //               );
+                              //             }).toList(),
+                              //             // After selecting the desired option,it will
+                              //             // change button value to selected value
+                              //             onChanged: (dynamic value) {
+                              //               setState(() {
+                              //                 stateValue = null;
+                              //                 countryValue = value;
+                              //                 countryId = value.id.toString();
+                              //                 print(
+                              //                     "===my technic=======${countryId}===============");
+                              //                 getstate(
+                              //                     "${value.id.toString()}");
+                              //               });
+                              //             },
+                              //             underline: Container(),
+                              //           ),
+                              //         ),
+                              //       ),
+                              //     ],
+                              //   ),
+                              // ),
                               Padding(
                                 padding: const EdgeInsets.only(
                                     left: 10, right: 10, top: 10),
@@ -738,10 +823,91 @@ class _MyProfileState extends State<MyProfile> {
                                           // change button value to selected value
                                           onChanged: (dynamic value) {
                                             setState(() {
-                                              cityValue = value;
+                                              selectarea = null;
+                                              cityValue=value;
+
                                               cityId = value.id.toString();
                                               print(
                                                   "===my technic=======${cityId}===============");
+                                              getarea(value.id.toString());
+                                            });
+                                          },
+                                          underline: Container(),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                    left: 10, right: 10, top: 10),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Material(
+                                      elevation: 4,
+                                      borderRadius: BorderRadius.circular(10),
+                                      child: Container(
+                                          width: 40,
+                                          height: 40,
+                                          child: Image.asset(
+                                            "assets/images/City.png",
+                                            scale: 1.4,
+                                          )),
+                                    ),
+                                    const SizedBox(width: 18),
+                                    Expanded(
+                                      child: Container(
+                                        width: 80,
+                                        height: 45,
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius:
+                                          BorderRadius.circular(5),
+                                          boxShadow: const [
+                                            BoxShadow(
+                                              color: Colors.grey,
+                                              offset: Offset(
+                                                1.0,
+                                                1.0,
+                                              ),
+                                              blurRadius: 0.2,
+                                              spreadRadius: 0.5,
+                                            ),
+                                          ],
+                                        ),
+                                        child: DropdownButton(
+                                          isExpanded: true,
+                                          value: selectarea,
+                                          hint: Padding(
+                                            padding: const EdgeInsets.only(left: 5),
+                                            child: const Text('Area'),
+                                          ),
+                                          // Down Arrow Icon
+                                          icon: const Icon(
+                                              Icons.keyboard_arrow_down),
+                                          // Array list of items
+                                          items: areaList.map((items) {
+                                            return DropdownMenuItem(
+                                              value: items,
+                                              child: Padding(
+                                                padding: const EdgeInsets.only(left: 5),
+                                                child: Container(
+                                                    child: Text(
+                                                        items.name.toString())),
+                                              ),
+                                            );
+                                          }).toList(),
+                                          // After selecting the desired option,it will
+                                          // change button value to selected value
+                                          onChanged: (dynamic value) {
+                                            setState(() {
+                                              selectarea = value!;
+                                              areaid = value.id.toString();
+                                              print(
+                                                  "===my technic=======${areaid}===============");
                                             });
                                           },
                                           underline: Container(),
@@ -861,6 +1027,9 @@ class _MyProfileState extends State<MyProfile> {
       setState(() {
         if (type == 'image') {
           profileImage = File(pickedFile.path);
+          print('image ------${profileImage.toString()}');
+        //  selfieImage = File(pickedFile.path);
+
         }
       });
     }

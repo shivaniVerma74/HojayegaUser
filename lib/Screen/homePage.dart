@@ -28,6 +28,9 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeBodyState extends State<HomeScreen> {
+
+
+
   @override
   void initState() {
     super.initState();
@@ -436,6 +439,7 @@ class _HomeBodyState extends State<HomeScreen> {
                         ),
                       ],
                     ),
+                    SizedBox(height: 20,),
 
                     Column(
                       children: [
@@ -443,7 +447,7 @@ class _HomeBodyState extends State<HomeScreen> {
                           options: CarouselOptions(
                             height: MediaQuery.of(context).size.height * 0.22,
                             aspectRatio: 16 / 9,
-                            viewportFraction: 1.0,
+                            viewportFraction: 1,
                             initialPage: 0,
                             enableInfiniteScroll: true,
                             reverse: false,
@@ -698,46 +702,140 @@ class _HomeBodyState extends State<HomeScreen> {
                     const SizedBox(
                       height: 10,
                     ),
-                    SizedBox(
-                      height: MediaQuery.of(context).size.height * 0.16,
-                      child: ListView.separated(
-                        shrinkWrap: true,
-                        scrollDirection: Axis.horizontal,
-                        // physics: const NeverScrollableScrollPhysics(),
-                        itemCount: ooferBanner.length,
-                        itemBuilder: (context, index) {
-                          return InkWell(
-                            onTap: () {
-                              // Navigator.push(context, MaterialPageRoute(builder: (context) => ProductScreen()));
+
+                    Column(
+                      children: [
+                        CarouselSlider(
+                          options: CarouselOptions(
+                            height: MediaQuery.of(context).size.height * 0.15,
+                            aspectRatio: 16 / 9,
+                            viewportFraction: .35,
+                            initialPage: 0,
+                            enableInfiniteScroll: true,
+                            reverse: false,
+                            autoPlay: true,
+                            autoPlayInterval: const Duration(seconds: 3),
+                            autoPlayAnimationDuration:
+                            const Duration(milliseconds: 800),
+                            autoPlayCurve: Curves.fastOutSlowIn,
+                            enlargeCenterPage: false,
+                            onPageChanged: (index, reason) {
+                              setState(() {
+                                currentIndex = index;
+                              });
                             },
-                            child: Container(
-                              width: MediaQuery.of(context).size.width * 0.3,
-                              decoration: BoxDecoration(
-                                // color: Colors.amber,
-                                image: DecorationImage(
-                                    image:
-                                        NetworkImage('${ooferBanner[index]}'),
-                                    fit: BoxFit.fill),
-                                borderRadius: const BorderRadius.only(
-                                  topRight: Radius.circular(20),
-                                  bottomLeft: Radius.circular(5),
-                                  bottomRight: Radius.circular(5),
-                                  topLeft: Radius.circular(5),
+                          ),
+                          items: ooferBanner
+                              .map(
+                                (item) => Padding(
+                              padding:
+                              const EdgeInsets.only(left: 5, right: 5),
+                              child: item == null || item == ""
+                                  ? Container(
+                                width:
+                                MediaQuery.of(context).size.width,
+                                decoration: BoxDecoration(
+                                  borderRadius:
+                                  BorderRadius.circular(8),
+                                  image: const DecorationImage(
+                                      image: AssetImage(
+                                        "assets/images/placeholder.png",
+                                      ),
+                                      fit: BoxFit.fill),
+                                ),
+                              )
+                                  : Container(
+                                width:
+                                MediaQuery.of(context).size.width,
+                                decoration: BoxDecoration(
+                                  borderRadius:
+                                  BorderRadius.circular(8),
+                                  image: DecorationImage(
+                                      image: NetworkImage(
+                                        "$item",
+                                      ),
+                                      fit: BoxFit.fill),
                                 ),
                               ),
                             ),
-                          );
-                        },
-                        separatorBuilder: (context, index) {
-                          return const SizedBox(
-                            width: 15,
-                          );
-                        },
-                      ),
+                          )
+                              .toList(),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        // Center(
+                        //   child: SizedBox(
+                        //     width: 100,
+                        //     height: 6,
+                        //     child: Center(
+                        //       child: ListView.separated(
+                        //         shrinkWrap: true,
+                        //         itemCount: sliderList.length ?? 0,
+                        //         scrollDirection: Axis.horizontal,
+                        //         itemBuilder: (context, index) {
+                        //           return Container(
+                        //             height: 6,
+                        //             width: 6,
+                        //             decoration: BoxDecoration(
+                        //               borderRadius: BorderRadius.circular(10),
+                        //               color: index == currentIndex
+                        //                   ? colors.primary
+                        //                   : Colors.grey,
+                        //             ),
+                        //           );
+                        //         },
+                        //         separatorBuilder: (context, index) {
+                        //           return const SizedBox(
+                        //             width: 5,
+                        //           );
+                        //         },
+                        //       ),
+                        //     ),
+                        //   ),
+                        // ),
+                      ],
                     ),
-                    const SizedBox(
-                      height: 20,
-                    ),
+                    // SizedBox(
+                    //   height: MediaQuery.of(context).size.height * 0.16,
+                    //   child: ListView.separated(
+                    //     shrinkWrap: true,
+                    //     scrollDirection: Axis.horizontal,
+                    //     // physics: const NeverScrollableScrollPhysics(),
+                    //     itemCount: ooferBanner.length,
+                    //     itemBuilder: (context, index) {
+                    //       return InkWell(
+                    //         onTap: () {
+                    //           // Navigator.push(context, MaterialPageRoute(builder: (context) => ProductScreen()));
+                    //         },
+                    //         child: Container(
+                    //           width: MediaQuery.of(context).size.width * 0.3,
+                    //           decoration: BoxDecoration(
+                    //             // color: Colors.amber,
+                    //             image: DecorationImage(
+                    //                 image:
+                    //                     NetworkImage('${ooferBanner[index]}'),
+                    //                 fit: BoxFit.fill),
+                    //             borderRadius: const BorderRadius.only(
+                    //               topRight: Radius.circular(20),
+                    //               bottomLeft: Radius.circular(5),
+                    //               bottomRight: Radius.circular(5),
+                    //               topLeft: Radius.circular(5),
+                    //             ),
+                    //           ),
+                    //         ),
+                    //       );
+                    //     },
+                    //     separatorBuilder: (context, index) {
+                    //       return const SizedBox(
+                    //         width: 15,
+                    //       );
+                    //     },
+                    //   ),
+                    // ),
+                    // const SizedBox(
+                    //   height: 20,
+                    // ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [

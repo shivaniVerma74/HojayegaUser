@@ -124,7 +124,7 @@ class _LoginPageState extends State<LoginPage> {
               left: 20,
               right: 20,
               child: Text(
-                ' Please enter email address or mobile number and password if you are already registered. if not the signup for new account.  ',
+                'Please provide your registered email or mobile number along with your password. If not registered, sign up for a new account. ',
                 style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.bold,

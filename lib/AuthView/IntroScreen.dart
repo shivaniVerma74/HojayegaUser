@@ -74,7 +74,8 @@ class FirstScreen extends StatelessWidget {
             Container(
               padding: EdgeInsets.symmetric(horizontal: 40),
               child: Text(
-                'correct the sentences- direct transaction between user and merchant. No middleman charges for your products. Provide top-notch service to stand out in the market competition. it\'s your key to success!',
+                "Directly pay to shop/ service – no middleman charges for you purchase.",
+                // 'correct the sentences- direct transaction between user and merchant. No middleman charges for your products. Provide top-notch service to stand out in the market competition. it\'s your key to success!',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 16,

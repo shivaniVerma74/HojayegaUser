@@ -126,7 +126,8 @@ class ProfileData {
       String? isGold, 
       String? address, 
       String? city, 
-      String? state, 
+      String? state,
+    String? area,
       String? country, 
       String? deviceToken, 
       String? agreecheck, 
@@ -174,6 +175,7 @@ class ProfileData {
     _address = address;
     _city = city;
     _state = state;
+    _area=area;
     _country = country;
     _deviceToken = deviceToken;
     _agreecheck = agreecheck;
@@ -224,6 +226,7 @@ class ProfileData {
     _address = json['address'];
     _city = json['city'];
     _state = json['state'];
+    _area=json['area'];
     _country = json['country'];
     _deviceToken = json['device_token'];
     _agreecheck = json['agreecheck'];
@@ -272,6 +275,7 @@ class ProfileData {
   String? _address;
   String? _city;
   String? _state;
+  String? _area;
   String? _country;
   String? _deviceToken;
   String? _agreecheck;
@@ -319,6 +323,7 @@ class ProfileData {
   String? address,
   String? city,
   String? state,
+    String? area,
   String? country,
   String? deviceToken,
   String? agreecheck,
@@ -366,6 +371,7 @@ class ProfileData {
   address: address ?? _address,
   city: city ?? _city,
   state: state ?? _state,
+  area: area?? _area,
   country: country ?? _country,
   deviceToken: deviceToken ?? _deviceToken,
   agreecheck: agreecheck ?? _agreecheck,
@@ -414,6 +420,7 @@ class ProfileData {
   String? get address => _address;
   String? get city => _city;
   String? get state => _state;
+  String? get area=>_area;
   String? get country => _country;
   String? get deviceToken => _deviceToken;
   String? get agreecheck => _agreecheck;
@@ -464,6 +471,7 @@ class ProfileData {
     map['address'] = _address;
     map['city'] = _city;
     map['state'] = _state;
+    map['area']=_area;
     map['country'] = _country;
     map['device_token'] = _deviceToken;
     map['agreecheck'] = _agreecheck;

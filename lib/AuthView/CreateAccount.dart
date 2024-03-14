@@ -24,7 +24,9 @@ class _CreatAState extends State<CreateAccount> {
   @override
   void initState() {
     super.initState();
-    getCountry();
+    getstate();
+
+   // getCountry();
   }
 
   final _formKey = GlobalKey<FormState>();
@@ -72,7 +74,9 @@ class _CreatAState extends State<CreateAccount> {
   bool showPassword = false;
   bool showPasswordNew = false;
 
-  getstate(String? countryId) async {
+
+
+  getstate(/*String? countryId*/) async {
     print("state apiii isss");
     var headers = {
       'Cookie': 'ci_session=95bbd5f6f543e31f65185f824755bcb57842c775'
@@ -80,7 +84,7 @@ class _CreatAState extends State<CreateAccount> {
     var request =
         http.MultipartRequest('POST', Uri.parse(ApiServicves.getStates));
     request.fields.addAll({
-      'country_id': countryId.toString(),
+      'country_id': "5"
     });
     request.headers.addAll(headers);
     http.StreamedResponse response = await request.send();
@@ -557,7 +561,10 @@ class _CreatAState extends State<CreateAccount> {
                                           validator: (value) {
                                             if (value == null || value.isEmpty) {
                                               return 'Enter password';
-                                            } else if ( !isStrongPassword(value)) {
+                                            }
+                                            else if(value.length<6)
+                                              return "Minimum 6 And 8 Maximum Character";
+                                            else if ( !isStrongPassword(value)) {
                                               return 'weak password ';
                                             }
                                             return null;
@@ -641,8 +648,16 @@ class _CreatAState extends State<CreateAccount> {
                                           validator: (value) {
                                             if (value == null || value.isEmpty) {
                                               return 'Enter password';
-                                            } else if ( !isStrongPassword(value)) {
-                                              return 'weak password ';
+                                            }
+                                            // else if(value.length<6)
+                                            //   return "Minimum 6 And 8 Maximum Character";
+                                            // else if ( !isStrongPassword(value)) {
+                                            //   return 'weak password ';
+                                            // }
+                                            // else if(value.length<6)
+                                            //   return "Minimum six And Maximum Character";
+                                            else if(passwordEditingController.text!=cPasswordEditingController.text){
+                                              return 'Password Not Match';
                                             }
                                             return null;
                                           },
@@ -692,7 +707,7 @@ class _CreatAState extends State<CreateAccount> {
                                           ],
                                         ),
                                         child: TextFormField(
-                                          maxLength: 10,
+                                          //maxLength: 10,
                                           controller: addressCtr,
                                           keyboardType: TextInputType.text,
                                           decoration: const InputDecoration(
@@ -719,86 +734,86 @@ class _CreatAState extends State<CreateAccount> {
                                 ),
                               ),
 
-                              Padding(
-                                padding: const EdgeInsets.only(
-                                    left: 10, right: 10, top: 15),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Material(
-                                      elevation: 4,
-                                      borderRadius: BorderRadius.circular(10),
-                                      child: Container(
-                                        width: 40,
-                                        height: 40,
-                                        child: Image.asset(
-                                          "assets/images/Region.png",
-                                          scale: 1.4,
-                                        ),
-                                      ),
-                                    ),
-                                    const SizedBox(width: 18),
-                                    Expanded(
-                                      child: Container(
-                                        width: 80,
-                                        height: 45,
-                                        decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          borderRadius:
-                                              BorderRadius.circular(5),
-                                          boxShadow: const [
-                                            BoxShadow(
-                                              color: Colors.grey,
-                                              offset: Offset(
-                                                1.0,
-                                                1.0,
-                                              ),
-                                              blurRadius: 0.2,
-                                              spreadRadius: 0.5,
-                                            ),
-                                          ],
-                                        ),
-                                        child:
-                                        DropdownButton(
-                                          isExpanded: true,
-                                          value: countryValue,
-                                          hint: Padding(
-                                            padding: const EdgeInsets.only(left: 5),
-                                            child: const Text('Country'),
-                                          ),
-                                          // Down Arrow Icon
-                                          icon: const Icon(
-                                              Icons.keyboard_arrow_down),
-                                          // Array list of items
-                                          items: countryList.map((items) {
-                                            return DropdownMenuItem(
-                                              value: items,
-                                              child: Padding(
-                                                padding: const EdgeInsets.only(left: 5),
-                                                child: Container(
-                                                    child: Text(
-                                                        items.name.toString())),
-                                              ),
-                                            );
-                                          }).toList(),
-                                          onChanged: (CountryData? value) {
-                                            setState(() {
-                                              stateValue = null;
-                                              countryValue = value!;
-                                              countryId = value.id.toString();
-                                              print(
-                                                  "===my technic=======${countryId}===============");
-                                              getstate(
-                                                  "${value.id.toString()}");
-                                            });
-                                          },
-                                          underline: Container(),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
+                              // Padding(
+                              //   padding: const EdgeInsets.only(
+                              //       left: 10, right: 10, top: 15),
+                              //   child: Row(
+                              //     mainAxisAlignment: MainAxisAlignment.center,
+                              //     children: [
+                              //       Material(
+                              //         elevation: 4,
+                              //         borderRadius: BorderRadius.circular(10),
+                              //         child: Container(
+                              //           width: 40,
+                              //           height: 40,
+                              //           child: Image.asset(
+                              //             "assets/images/Region.png",
+                              //             scale: 1.4,
+                              //           ),
+                              //         ),
+                              //       ),
+                              //       const SizedBox(width: 18),
+                              //       Expanded(
+                              //         child: Container(
+                              //           width: 80,
+                              //           height: 45,
+                              //           decoration: BoxDecoration(
+                              //             color: Colors.white,
+                              //             borderRadius:
+                              //                 BorderRadius.circular(5),
+                              //             boxShadow: const [
+                              //               BoxShadow(
+                              //                 color: Colors.grey,
+                              //                 offset: Offset(
+                              //                   1.0,
+                              //                   1.0,
+                              //                 ),
+                              //                 blurRadius: 0.2,
+                              //                 spreadRadius: 0.5,
+                              //               ),
+                              //             ],
+                              //           ),
+                              //           child:
+                              //           DropdownButton(
+                              //             isExpanded: true,
+                              //             value: countryValue,
+                              //             hint: Padding(
+                              //               padding: const EdgeInsets.only(left: 5),
+                              //               child: const Text('Country'),
+                              //             ),
+                              //             // Down Arrow Icon
+                              //             icon: const Icon(
+                              //                 Icons.keyboard_arrow_down),
+                              //             // Array list of items
+                              //             items: countryList.map((items) {
+                              //               return DropdownMenuItem(
+                              //                 value: items,
+                              //                 child: Padding(
+                              //                   padding: const EdgeInsets.only(left: 5),
+                              //                   child: Container(
+                              //                       child: Text(
+                              //                           items.name.toString())),
+                              //                 ),
+                              //               );
+                              //             }).toList(),
+                              //             onChanged: (CountryData? value) {
+                              //               setState(() {
+                              //                 stateValue = null;
+                              //                 countryValue = value!;
+                              //                 countryId = value.id.toString();
+                              //                 print(
+                              //                     "===my technic=======${countryId}===============");
+                              //                 getstate(
+                              //                     "${value.id.toString()}");
+                              //               });
+                              //             },
+                              //             underline: Container(),
+                              //           ),
+                              //         ),
+                              //       ),
+                              //     ],
+                              //   ),
+                              // ),
                               Padding(
                                 padding: const EdgeInsets.only(
                                     left: 10, right: 10, top: 10),
@@ -1153,10 +1168,12 @@ class _CreatAState extends State<CreateAccount> {
                                     } else if (cityValue == null) {
                                       Fluttertoast.showToast(
                                           msg: "Please Select City");
-                                    } else if (stateValue == null) {
-                                      Fluttertoast.showToast(
-                                          msg: "Please Select State");
-                                    } else if (isChecked == false) {
+                                    }
+                                    // else if (stateValue == null) {
+                                    //   Fluttertoast.showToast(
+                                    //       msg: "Please Select State");
+                                    // }
+                                    else if (isChecked == false) {
                                       Fluttertoast.showToast(
                                           msg: "Please Select Check Box");
                                     } else {

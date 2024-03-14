@@ -228,26 +228,26 @@ class _BottomNavBarState extends State<BottomNavBar> {
                     icon: Icons.file_copy,
                     tabb: 3,
                     indexx: currentIndex)),
-            SizedBox(
-              height: 5,
-            ),
-            InkWell(
-                onTap: () {
-                  // Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(
-                  //       builder: (context) => const  CoursesPage()),
-                  // );
-                  setState(() {
-                    currentIndex = 4;
-                  });
-                },
-                child: DrawerIconTab(
-                  titlee: 'Become a merchant',
-                  icon: Icons.file_copy,
-                  tabb: 4,
-                  indexx: currentIndex,
-                )),
+            // SizedBox(
+            //   height: 5,
+            // ),
+            // InkWell(
+            //     onTap: () {
+            //       // Navigator.push(
+            //       //   context,
+            //       //   MaterialPageRoute(
+            //       //       builder: (context) => const  CoursesPage()),
+            //       // );
+            //       setState(() {
+            //         currentIndex = 4;
+            //       });
+            //     },
+            //     child: DrawerIconTab(
+            //       titlee: 'Become a merchant',
+            //       icon: Icons.file_copy,
+            //       tabb: 4,
+            //       indexx: currentIndex,
+            //     )),
             SizedBox(
               height: 5,
             ),
@@ -372,48 +372,48 @@ class _BottomNavBarState extends State<BottomNavBar> {
                   tabb: 10,
                   indexx: currentIndex,
                 )),
-            SizedBox(
-              height: 5,
-            ),
-            InkWell(
-                onTap: () {
-                  // Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(
-                  //       builder: (context) => const FaqPage()),
-                  // );
-
-                  setState(() {
-                    currentIndex = 11;
-                  });
-                },
-                child: DrawerIconTab(
-                  titlee: 'Send Feedback',
-                  icon: Icons.question_answer,
-                  tabb: 11,
-                  indexx: currentIndex,
-                )),
-            SizedBox(
-              height: 5,
-            ),
-            InkWell(
-                onTap: () {
-                  // Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(
-                  //       builder: (context) => const LoginPage()),
-                  // );
-
-                  setState(() {
-                    currentIndex = 12;
-                  });
-                },
-                child: DrawerIconTab(
-                  titlee: 'Refer & Earn',
-                  icon: Icons.question_answer,
-                  tabb: 12,
-                  indexx: currentIndex,
-                )),
+            // SizedBox(
+            //   height: 5,
+            // ),
+            // InkWell(
+            //     onTap: () {
+            //       // Navigator.push(
+            //       //   context,
+            //       //   MaterialPageRoute(
+            //       //       builder: (context) => const FaqPage()),
+            //       // );
+            //
+            //       setState(() {
+            //         currentIndex = 11;
+            //       });
+            //     },
+            //     child: DrawerIconTab(
+            //       titlee: 'Send Feedback',
+            //       icon: Icons.question_answer,
+            //       tabb: 11,
+            //       indexx: currentIndex,
+            //     )),
+            // SizedBox(
+            //   height: 5,
+            // ),
+            // InkWell(
+            //     onTap: () {
+            //       // Navigator.push(
+            //       //   context,
+            //       //   MaterialPageRoute(
+            //       //       builder: (context) => const LoginPage()),
+            //       // );
+            //
+            //       setState(() {
+            //         currentIndex = 12;
+            //       });
+            //     },
+            //     child: DrawerIconTab(
+            //       titlee: 'Refer & Earn',
+            //       icon: Icons.question_answer,
+            //       tabb: 12,
+            //       indexx: currentIndex,
+            //     )),
             SizedBox(
               height: 5,
             ),
@@ -468,31 +468,31 @@ class _BottomNavBarState extends State<BottomNavBar> {
                       ));
                 },
                 child: DrawerIconTab(
-                  titlee: 'Privecy Policy',
+                  titlee: 'Privacy Policy',
                   icon: Icons.policy,
                   tabb: 15,
                   indexx: currentIndex,
                 )),
-            const SizedBox(
-              height: 5,
-            ),
-            InkWell(
-                onTap: () {
-                  setState(() {
-                    currentIndex = 16;
-                  });
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => termsAndCondition(),
-                      ));
-                },
-                child: DrawerIconTab(
-                  titlee: 'Terms & Conditions',
-                  icon: Icons.policy_outlined,
-                  tabb: 16,
-                  indexx: currentIndex,
-                )),
+            // const SizedBox(
+            //   height: 5,
+            // ),
+            // InkWell(
+            //     onTap: () {
+            //       setState(() {
+            //         currentIndex = 16;
+            //       });
+            //       Navigator.push(
+            //           context,
+            //           MaterialPageRoute(
+            //             builder: (context) => termsAndCondition(),
+            //           ));
+            //     },
+            //     child: DrawerIconTab(
+            //       titlee: 'Terms & Conditions',
+            //       icon: Icons.policy_outlined,
+            //       tabb: 16,
+            //       indexx: currentIndex,
+            //     )),
             const SizedBox(
               height: 5,
             ),
@@ -509,7 +509,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
                       ));
                 },
                 child: DrawerIconTab(
-                  titlee: 'Faq',
+                  titlee: 'FAQ',
                   icon: Icons.podcasts_sharp,
                   tabb: 17,
                   indexx: currentIndex,
